@@ -454,8 +454,8 @@ SOCIALACCOUNT_PROVIDERS = {
         # (``socialaccount`` app) containing the required client
         # credentials, or list them here:
         "APP": {
-            "client_id": env("GOOGLE_CLIENT_ID", ""),
-            "secret": env("GOOGLE_SECRET_KEY", ""),
+            "client_id": env("GOOGLE_CLIENT_ID", default=""),
+            "secret": env("GOOGLE_SECRET_KEY", default=""),
             "key": "",
         },
         "scope": [

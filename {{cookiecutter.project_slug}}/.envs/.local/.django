@@ -1,7 +1,10 @@
+# source /path/to/file
 # General
 # ------------------------------------------------------------------------------
+DATABASE_URL=postgres://root:password@127.0.0.1:5432/cpdmo_lapis
 USE_DOCKER=yes
 IPYTHONDIR=/app/.ipython
+DJANGO_ALLOWED_HOSTS='localhost,127.0.0.1,0.0.0.0'
 
 {%- if cookiecutter.use_celery == 'y' %}
 # Redis

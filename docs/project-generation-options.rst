@@ -90,6 +90,9 @@ use_async:
 use_drf:
     Indicates whether the project should be configured to use `Django Rest Framework`_.
 
+use_elasticsearch:
+    Include elasticsearch container
+
 frontend_pipeline:
     Select a pipeline to compile and optimise frontend assets (JS, CSS, ...):
 

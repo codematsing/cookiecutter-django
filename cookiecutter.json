@@ -43,6 +43,7 @@
   ],
   "use_async": "n",
   "use_drf": "n",
+  "use_elasticsearch": "n",
   "frontend_pipeline": [
     "None",
     "Django Compressor",

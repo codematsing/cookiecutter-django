@@ -4,10 +4,12 @@ Base settings to build other settings files upon.
 from pathlib import Path
 
 import environ
+import sys
 
 ROOT_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 # {{ cookiecutter.project_slug }}/
 APPS_DIR = ROOT_DIR / "{{ cookiecutter.project_slug }}"
+sys.path.append(str(ROOT_DIR / "apps"))
 env = environ.Env()
 
 READ_DOT_ENV_FILE = env.bool("DJANGO_READ_DOT_ENV_FILE", default=False)
@@ -24,6 +26,8 @@ DEBUG = env.bool("DJANGO_DEBUG", False)
 # though not all of them may be available with every OS.
 # In Windows, this must be set to your system time zone.
 TIME_ZONE = "{{ cookiecutter.timezone }}"
+# reset to manil timezone
+TIME_ZONE = "Asia/Manila"
 # https://docs.djangoproject.com/en/dev/ref/settings/#language-code
 LANGUAGE_CODE = "en-us"
 # https://docs.djangoproject.com/en/dev/ref/settings/#site-id
@@ -73,20 +77,38 @@ DJANGO_APPS = [
     "django.forms",
 ]
 THIRD_PARTY_APPS = [
+    # select2 fields
+    "dal",
+    "dal_select2",
+    "dal_queryset_sequence",
+    # models
+    "colorfield",
+    "martor",
+    "mptt",
+    # forms
     "crispy_forms",
     "crispy_bootstrap5",
+    "formtools",
+    # auth
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
+    "allauth.socialaccount.providers.google",
 {%- if cookiecutter.use_celery == 'y' %}
+    # celery
     "django_celery_beat",
 {%- endif %}
 {%- if cookiecutter.use_drf == "y" %}
+    # drf
     "rest_framework",
     "rest_framework.authtoken",
     "corsheaders",
     "drf_spectacular",
 {%- endif %}
+    # object permissions
+    "guardian",
+    # notifications
+    "notifications",
 ]
 
 LOCAL_APPS = [
@@ -201,6 +223,10 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "{{cookiecutter.project_slug}}.users.context_processors.allauth_settings",
             ],
+            "libraries": {
+                "util_tags": "utils.tags.tags",
+                "detail_tags": "detail_wrapper.tags",
+                }
         },
     }
 ]
@@ -311,7 +337,8 @@ ACCOUNT_AUTHENTICATION_METHOD = "username"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_EMAIL_REQUIRED = True
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
-ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+# replace to "mandatory" for is_staff verification needed
+ACCOUNT_EMAIL_VERIFICATION = "none" 
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_ADAPTER = "{{cookiecutter.project_slug}}.users.adapters.AccountAdapter"
 # https://django-allauth.readthedocs.io/en/latest/forms.html
@@ -352,5 +379,97 @@ SPECTACULAR_SETTINGS = {
     "SERVE_PERMISSIONS": ["rest_framework.permissions.IsAdminUser"],
 }
 {%- endif %}
+# LOGS FORMAT
+# ------------------------------------------------------------------------------
+LOG_FILE = ROOT_DIR / "logs" / "debug.log"
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "%(asctime)s %(pathname)s:%(lineno)d\npid%(process)d | %(levelname)s: %(message)s",
+        },
+        "console": {"format": "%(pathname)s:%(lineno)d | %(levelname)s: %(message)s"},
+    },
+    "handlers": {
+        "file": {
+            "level": "DEBUG",
+            "class": "logging.handlers.RotatingFileHandler",
+            "formatter": "verbose",
+            "filename": LOG_FILE,
+        },
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "console",
+        },
+    },
+    "root": {"level": "INFO", "handlers": ["file", "console"]},
+}
+# ELASTIC SEARCH
+# ------------------------------------------------------------------------------
+ELASTICSEARCH_DSL = {
+    "default": {"hosts": "localhost:9200"},
+}
+# MARTOR
+# ------------------------------------------------------------------------------
+# https://github.com/agusmakmun/django-markdown-editor#setting-configurations-settingspy
+CSRF_COOKIE_HTTPONLY = False
+# Choices are: "semantic", "bootstrap"
+MARTOR_THEME = 'semantic'
+
+MARTOR_ENABLE_CONFIGS = {
+    'emoji': 'false',        # to enable/disable emoji icons.
+    'imgur': 'false',        # to enable/disable imgur/custom uploader.
+    'mention': 'true',     # to enable/disable mention
+    'jquery': 'true',       # to include/revoke jquery (require for admin default django)
+    'living': 'false',      # to enable/disable live updates in preview
+    'spellcheck': 'false',  # to enable/disable spellcheck in form textareas
+    'hljs': 'true',         # to enable/disable hljs highlighting in preview
+}
+
+# To show the toolbar buttons
+MARTOR_TOOLBAR_BUTTONS = [
+]
+
+# To setup the martor editor with title label or not (default is False)
+MARTOR_ENABLE_LABEL = True
+
+# please change this to your domain
+MARTOR_MARKDOWN_BASE_MENTION_URL = ''
+
+MARTOR_ALTERNATIVE_JS_FILE_THEME = "semantic-themed/semantic.min.js"   # default None
+MARTOR_ALTERNATIVE_CSS_FILE_THEME = "semantic-themed/semantic.min.css"  # default None
+MARTOR_ALTERNATIVE_JQUERY_JS_FILE = "jquery/dist/jquery.min.js"
+
+# ALLAUTH
+# ------------------------------------------------------------------------------
+SOCIALACCOUNT_PROVIDERS = {
+    "google": {
+        # For each OAuth based provider, either add a ``SocialApp``
+        # (``socialaccount`` app) containing the required client
+        # credentials, or list them here:
+        "APP": {
+            "client_id": env("GOOGLE_CLIENT_ID"),
+            "secret": env("GOOGLE_SECRET_KEY"),
+            "key": "",
+        },
+        "scope": [
+            "profile",
+            "email",
+        ],
+        "AUTH_PARAMS": {
+            "access_type": "online",
+        },
+    }
+}
+
+#
+ALLOWED_LOGIN_DOMAINS = []
+
+# DJANGO TABLES
+# ------------------------------------------------------------------------------
+DJANGO_TABLE2_TEMPLATE = "partials/table.html"
+
 # Your stuff...
 # ------------------------------------------------------------------------------

@@ -126,3 +126,14 @@ services:
       - "3001:3001"
 
   {%- endif %}
+  {%- if cookiecutter.use_elasticsearch == 'y' %}
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.5.2
+    container_name: {{ cookiecutter.project_slug }}_local_elasticsearch
+    environment:
+      - xpack.security.enabled=false
+      - discovery.type=single-node
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+  {%- endif %}

@@ -291,7 +291,8 @@ def set_flags_in_settings_files():
 
 
 def remove_envs_and_associated_files():
-    shutil.rmtree(".envs")
+    shutil.rmtree(".envs/.production")
+    print("removed .envs/.production")
     os.remove("merge_production_dotenvs_in_dotenv.py")
 
 

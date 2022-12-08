@@ -5,9 +5,9 @@ from django.views.generic import DetailView
 
 class DetailView(DetailView):
     """Allows use of fields in detail view for template view
-    Use in templates
-    {% load detail %}
-    {% detail fields %}
+    Use in tags in 'utils/detail_wrapper/tags.py'
+    \{\% load detail \%\}
+    \{\% detail fields \%\}
     """
 
     fields = "__all__"

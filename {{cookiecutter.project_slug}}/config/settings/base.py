@@ -111,12 +111,16 @@ THIRD_PARTY_APPS = [
     "notifications",
 ]
 
+UTIL_APPS = [
+    "utils.detail_wrapper",
+]
+
 LOCAL_APPS = [
     "{{ cookiecutter.project_slug }}.users",
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
-INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
+INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + UTIL_APPS + LOCAL_APPS
 
 # MIGRATIONS
 # ------------------------------------------------------------------------------
@@ -225,7 +229,7 @@ TEMPLATES = [
             ],
             "libraries": {
                 "util_tags": "utils.tags.tags",
-                "detail_tags": "detail_wrapper.tags",
+                "detail_tags": "utils.detail_wrapper.tags",
                 }
         },
     }

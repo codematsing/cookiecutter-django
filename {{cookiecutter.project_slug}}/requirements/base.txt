@@ -68,3 +68,5 @@ django-elasticsearch-dsl==7.2.2
 elasticsearch==7.17.7
 elasticsearch-dsl==7.4.0
 {%- endif %}
+# Object Permissions
+django-guardian==2.4.0

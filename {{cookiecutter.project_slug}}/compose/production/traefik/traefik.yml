@@ -33,10 +33,12 @@ certificatesResolvers:
 http:
   routers:
     web-secure-router:
+      #toggle rules on actual production
+      rule: "HostRegexp(`127.0.0.1`) || HostRegexp(`localhost`) || HostRegexp(`0.0.0.0`)"
       {%- if cookiecutter.domain_name.count('.') == 1 %}
-      rule: "Host(`{{ cookiecutter.domain_name }}`) || Host(`www.{{ cookiecutter.domain_name }}`)"
+      #rule: "Host(`{{ cookiecutter.domain_name }}`) || Host(`www.{{ cookiecutter.domain_name }}`)"
       {%- else %}
-      rule: "Host(`{{ cookiecutter.domain_name }}`)"
+      #rule: "Host(`{{ cookiecutter.domain_name }}`)"
       {%- endif %}
       entryPoints:
         - web-secure

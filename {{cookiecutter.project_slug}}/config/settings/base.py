@@ -5,6 +5,7 @@ from pathlib import Path
 
 import environ
 import sys
+import os
 
 ROOT_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 # {{ cookiecutter.project_slug }}/
@@ -42,6 +43,13 @@ LOCALE_PATHS = [str(ROOT_DIR / "locale")]
 # DATABASES
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
+# Debugging container toggle
+# DATABASES = {
+    # 'default': {
+        # 'ENGINE': 'django.db.backends.sqlite3',
+        # 'NAME': os.path.join(ROOT_DIR, 'db.sqlite3'),
+    # }
+# }
 {% if cookiecutter.use_docker == "y" -%}
 DATABASES = {"default": env.db("DATABASE_URL")}
 {%- else %}

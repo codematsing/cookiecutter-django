@@ -65,7 +65,7 @@ DATABASES["default"]["ATOMIC_REQUESTS"] = True
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # URLS
-# ------------------------------------------------------------------------------
+
 # https://docs.djangoproject.com/en/dev/ref/settings/#root-urlconf
 ROOT_URLCONF = "config.urls"
 # https://docs.djangoproject.com/en/dev/ref/settings/#wsgi-application
@@ -482,6 +482,7 @@ ALLOWED_LOGIN_DOMAINS = []
 # DJANGO TABLES
 # ------------------------------------------------------------------------------
 DJANGO_TABLE2_TEMPLATE = "partials/table.html"
+
 
 # Your stuff...
 # ------------------------------------------------------------------------------

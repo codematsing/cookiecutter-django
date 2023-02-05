@@ -97,3 +97,12 @@ CELERY_TASK_EAGER_PROPAGATES = True
 {%- endif %}
 # Your stuff...
 # ------------------------------------------------------------------------------
+# Notebooks: https://github.com/django-extensions/django-extensions/issues/865
+NOTEBOOK_ARGUMENTS = [
+    '--notebook-dir', 'notebooks',
+    '--no--browser',
+]
+
+IPYTHON_ARGUMENTS = [
+    '--debug',
+]

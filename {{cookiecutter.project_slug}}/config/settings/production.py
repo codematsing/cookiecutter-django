@@ -380,3 +380,5 @@ SPECTACULAR_SETTINGS["SERVERS"] = [  # noqa F405
 {%- endif %}
 # Your stuff...
 # ------------------------------------------------------------------------------
+# DJANGO ALLAUTH REDIRECT URI TO HTTPS
+ACCOUNT_DEFAULT_HTTP_PROTOCOL='https'

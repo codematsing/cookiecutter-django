@@ -26,16 +26,16 @@ git clone <project repository>
 ```shell
 cd <project>
 
-#script to create virtualenv and automate setting and unsetting of environments in existing environment 
-#dependency: virtualenv
+# Script to create virtualenv and automate setting and unsetting of environments in existing environment 
+# Dependency: virtualenv
 utility/./initialize_local_venv.sh 
 ```
 
 * Activating virtual environment
 
 ```shell
-# enter virtual environment. 
-# this should automatically export env variables in .envs/*
+# Enter virtual environment. 
+# This should automatically export env variables in .envs/*
 source .local_venv/bin/activate
 ```
 
@@ -49,13 +49,13 @@ pip install -r requirements/local.txt
 * Deactivate virtual environment
 
 ```shell
-# this should automatically unset env variables in .envs/*
+# This should automatically unset env variables in .envs/*
 deactivate
 ```
 
 ### Production Deployment
 
-You can use `.prod_venv` as virtual environment for deployment in scratch and to separate dependencies from `.local_venv` in case server will be tested both local and production settings
+You can use `.prod_venv` as virtual environment for deployment in scratch. Separating virtualenvs for local and production and reduce conflicts of dependencies in case server will tested both local and production settings
 
 * Scratch Deployment
 
@@ -72,7 +72,7 @@ pip install -r requirements/production.txt
 ```
 
 * Containerized deployment
-    * read [docs](https://cookiecutter-django.readthedocs.io/en/latest/deployment-with-docker.html)
+    * Read [docs](https://cookiecutter-django.readthedocs.io/en/latest/deployment-with-docker.html) for guide
 
 ## Step 3: Git Branch Standard
 
@@ -80,7 +80,7 @@ pip install -r requirements/production.txt
 
 ![Git Branch Image](https://miro.medium.com/max/786/1*q_w5pcaH7WT1larRd631jQ.webp)
 
-# Cookiecutter README.md
+# Cookiecutter README.md Section
 
 ## Settings
 

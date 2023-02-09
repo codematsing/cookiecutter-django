@@ -26,14 +26,9 @@ git clone <project repository>
 ```shell
 cd <project>
 
-# checkpoint: existing virtualenv folder
-ls .local_venv
-# checkpoint: existing virtualenv with activation scipts
-ls .local_venv/bin #*activate*
-
-# create virtual enviroment at .local_venv. 
-# should retain activation scripts
-virtualenv .local_venv
+#script to create virtualenv and automate setting and unsetting of environments in existing environment 
+#dependency: virtualenv
+utility/./initialize_local_venv.sh 
 ```
 
 * Activating virtual environment
@@ -65,6 +60,12 @@ You can use `.prod_venv` as virtual environment for deployment in scratch and to
 * Scratch Deployment
 
 ```shell
+#script to create virtualenv and automate exporting of environments in existing environment
+#dependency, virtualenv
+utility/./initialize_prod_venv.sh 
+
+source .prod_venv/bin/activate
+
 # For production environment dependencies
 # Includes base.txt and production.txt dependencies
 pip install -r requirements/production.txt

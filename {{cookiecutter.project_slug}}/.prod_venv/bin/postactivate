@@ -1,3 +1,0 @@
-export $(grep -v '^#' ../../.envs/.production/.django | xargs)
-export $(grep -v '^#' ../../.envs/.production/.postgres | xargs)
-export $(grep -v '^#' ../../.envs/.production/.tokens | xargs)

@@ -34,7 +34,10 @@ deactivate () {
         unset _OLD_VIRTUAL_PS1
     fi
 
-    source ${VIRTUAL_ENV}/bin/predeactivate
+    if [ -z "${VIRTUAL_ENV}" ] ; then
+        source ${VIRTUAL_ENV}/bin/predeactivate
+    fi
+
     unset VIRTUAL_ENV
     if [ ! "${1-}" = "nondestructive" ] ; then
     # Self destruct!

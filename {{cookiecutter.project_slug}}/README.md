@@ -28,7 +28,7 @@ cd <project>
 
 # Script to create virtualenv and automate setting and unsetting of environments in existing environment 
 # Dependency: virtualenv
-utility/./initialize_local_venv.sh 
+.envs/./initialize_local_venv.sh 
 ```
 
 * Activating virtual environment
@@ -62,7 +62,7 @@ You can use `.prod_venv` as virtual environment for deployment in scratch. Separ
 ```shell
 #script to create virtualenv and automate exporting of environments in existing environment
 #dependency, virtualenv
-utility/./initialize_prod_venv.sh 
+.envs/./initialize_prod_venv.sh 
 
 source .prod_venv/bin/activate
 

@@ -1,0 +1,3 @@
+unset $(grep -v '^#' ../../.envs/.local/.django | sed -E 's/(.*)=.*/\1/' | xargs)
+unset $(grep -v '^#' ../../.envs/.local/.postgres | sed -E 's/(.*)=.*/\1/' | xargs)
+unset $(grep -v '^#' ../../.envs/.local/.tokens | sed -E 's/(.*)=.*/\1/' | xargs)

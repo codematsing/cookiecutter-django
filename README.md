@@ -1,29 +1,81 @@
-# Practice
+# Set-up
 
-## Automate env variables everytime virtualenv is activated
-
-in [your_virtualenv_dir]/bin/postactivate:
-
-``` shell
-YOUR_ENV_VAR="hello world!"
+## Step 1: Github
+```shell
+git clone <project repository>
 ```
 
-## Automate env variables deactivation
+## Step 2: Preparing Dependencies
 
-in [your_virtualenv_dir]/bin/predeactivate:
+### Local Development
 
-``` shell
-unset YOUR_ENV_VAR
+* When creating virtual environment in local development
+
+```shell
+cd <project>
+
+# checkpoint: existing virtualenv folder
+ls .local_venv
+# checkpoint: existing virtualenv with activation scipts
+ls .local_venv/bin #*activate*
+
+# create virtual enviroment at .local_venv. 
+# should retain activation scripts
+virtualenv .local_venv
 ```
 
-## Git Branch Standard
+* Activating virtual environment
+
+```shell
+# enter virtual environment. 
+# this should automatically export env variables in .envs/*
+source .local_venv/bin/activate
+```
+
+* Installing dependencies
+
+```shell
+# Includes base.txt and local.txt dependencies
+pip install -r requirements/local.txt
+```
+
+* Deactivate virtual environment
+
+```shell
+# this should automatically unset env variables in .envs/*
+deactivate
+```
+
+### Production Deployment
+
+You can use `.prod_venv` as virtual environment for deployment in scratch and to separate dependencies from `.local_venv` in case server will be tested both local and production settings
+
+* Scratch Deployment
+
+```shell
+# For production environment dependencies
+# Includes base.txt and production.txt dependencies
+pip install -r requirements/production.txt
+```
+
+* Containerized deployment
+    * read [docs](https://cookiecutter-django.readthedocs.io/en/latest/deployment-with-docker.html)
+
+## Step 3: Git Branch Standard
 
 [Reference](https://towardsdatascience.com/how-to-structure-your-git-branching-strategy-by-a-data-engineer-45ff96857bb)
 
 ![Git Branch Image](https://miro.medium.com/max/786/1*q_w5pcaH7WT1larRd631jQ.webp)
 
 
-# Usage
+# Additional Standard Practices
+
+* Database should not be containerized and be in separate server
+* For Containers:
+    * For local deployment, best practice is to mount volume of app to accommodate dynamically changing source code. Do not convert to image.
+    * Persistent storage (a.k.a media files) should not be in container. Common practice is to mount volume and link to media directory (follow the settings configuration. Find: "MEDIA_ROOT")
+
+# Usage of Cookiecutter to create new Project
 
 Let's pretend you want to create a Django project called "redditclone". Rather than using `startproject`
 and then editing the results to include your name, email, and various configuration issues that always get forgotten until the worst possible moment, get [cookiecutter](https://github.com/cookiecutter/cookiecutter) to do all the work.
@@ -130,15 +182,14 @@ For local development, see the following:
 -   [Developing locally](http://cookiecutter-django.readthedocs.io/en/latest/developing-locally.html)
 -   [Developing locally using docker](http://cookiecutter-django.readthedocs.io/en/latest/developing-locally-docker.html)
 
-## Forked Cookiecutter Django
+# TODOs
+
+* Change local.yml to mount app vs. converting to image
+
+# Forked Cookiecutter Django
 
 Powered by [Cookiecutter](https://github.com/cookiecutter/cookiecutter), Cookiecutter Django is a framework for jumpstarting
 production-ready Django projects quickly.
 
 -   Documentation: <https://cookiecutter-django.readthedocs.io/en/latest/>
 -   See [Troubleshooting](https://cookiecutter-django.readthedocs.io/en/latest/troubleshooting.html) for common errors and obstacles
-
-This project is run by volunteers. Please support them in their efforts to maintain and improve Cookiecutter Django:
-
--   Daniel Roy Greenfeld, Project Lead ([GitHub](https://github.com/pydanny), [Patreon](https://www.patreon.com/danielroygreenfeld)): expertise in Django and AWS ELB.
--   Nikita Shupeyko, Core Developer ([GitHub](https://github.com/webyneter)): expertise in Python/Django, hands-on DevOps and frontend experience.

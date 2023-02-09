@@ -10,6 +10,77 @@
 License: {{cookiecutter.open_source_license}}
 {%- endif %}
 
+# Custom Set-up
+
+## Step 1: Github
+```shell
+git clone <project repository>
+```
+
+## Step 2: Preparing Dependencies
+
+### Local Development
+
+* When creating virtual environment in local development
+
+```shell
+cd <project>
+
+# checkpoint: existing virtualenv folder
+ls .local_venv
+# checkpoint: existing virtualenv with activation scipts
+ls .local_venv/bin #*activate*
+
+# create virtual enviroment at .local_venv. 
+# should retain activation scripts
+virtualenv .local_venv
+```
+
+* Activating virtual environment
+
+```shell
+# enter virtual environment. 
+# this should automatically export env variables in .envs/*
+source .local_venv/bin/activate
+```
+
+* Installing dependencies
+
+```shell
+# Includes base.txt and local.txt dependencies
+pip install -r requirements/local.txt
+```
+
+* Deactivate virtual environment
+
+```shell
+# this should automatically unset env variables in .envs/*
+deactivate
+```
+
+### Production Deployment
+
+You can use `.prod_venv` as virtual environment for deployment in scratch and to separate dependencies from `.local_venv` in case server will be tested both local and production settings
+
+* Scratch Deployment
+
+```shell
+# For production environment dependencies
+# Includes base.txt and production.txt dependencies
+pip install -r requirements/production.txt
+```
+
+* Containerized deployment
+    * read [docs](https://cookiecutter-django.readthedocs.io/en/latest/deployment-with-docker.html)
+
+## Step 3: Git Branch Standard
+
+[Reference](https://towardsdatascience.com/how-to-structure-your-git-branching-strategy-by-a-data-engineer-45ff96857bb)
+
+![Git Branch Image](https://miro.medium.com/max/786/1*q_w5pcaH7WT1larRd631jQ.webp)
+
+# Cookiecutter README.md
+
 ## Settings
 
 Moved to [settings](http://cookiecutter-django.readthedocs.io/en/latest/settings.html).

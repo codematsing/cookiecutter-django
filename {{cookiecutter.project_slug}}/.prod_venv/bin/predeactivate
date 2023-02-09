@@ -1,0 +1,4 @@
+
+unset $(grep -v '^#' ../../.envs/.production/.django | sed -E 's/(.*)=.*/\1/' | xargs)
+unset $(grep -v '^#' ../../.envs/.production/.postgres | sed -E 's/(.*)=.*/\1/' | xargs)
+unset $(grep -v '^#' ../../.envs/.production/.tokens | sed -E 's/(.*)=.*/\1/' | xargs)

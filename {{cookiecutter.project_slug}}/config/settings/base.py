@@ -253,7 +253,7 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 # FIXTURES
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#fixture-dirs
-FIXTURE_DIRS = (str(APPS_DIR / "fixtures"),)
+# FIXTURE_DIRS = (str(APPS_DIR / "fixtures"),) # Will cause error in `python manage.py loaddata`
 
 # SECURITY
 # ------------------------------------------------------------------------------
@@ -393,7 +393,7 @@ SPECTACULAR_SETTINGS = {
 {%- endif %}
 # LOGS FORMAT
 # ------------------------------------------------------------------------------
-LOG_FILE = ROOT_DIR / "logs" / "debug.log"
+LOG_FILE = APPS_DIR / "logs" / "debug.log"
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,

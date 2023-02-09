@@ -69,4 +69,6 @@ elasticsearch==7.17.7
 elasticsearch-dsl==7.4.0
 {%- endif %}
 # Object Permissions
+django-ajax-datatable==4.4.4
 django-guardian==2.4.0
+pandas==1.4.4

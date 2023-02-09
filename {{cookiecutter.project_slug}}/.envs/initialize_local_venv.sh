@@ -1,4 +1,4 @@
-UTIL_DIR=$(realpath "$0")
+UTIL_DIR=$(dirname "$(realpath "$0")")
 ROOT_DIR=$(dirname "$(dirname "$(realpath "$0")")")
 VENV=$ROOT_DIR/.local_venv
 virtualenv $VENV

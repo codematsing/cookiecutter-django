@@ -75,7 +75,7 @@ pip install -r requirements/production.txt
     * For local deployment, best practice is to mount volume of app to accommodate dynamically changing source code. Do not convert to image.
     * Persistent storage (a.k.a media files) should not be in container. Common practice is to mount volume and link to media directory (follow the settings configuration. Find: "MEDIA_ROOT")
 
-# Usage of Cookiecutter to create new Project
+# Usage of Cookiecutter to create new project
 
 Let's pretend you want to create a Django project called "redditclone". Rather than using `startproject`
 and then editing the results to include your name, email, and various configuration issues that always get forgotten until the worst possible moment, get [cookiecutter](https://github.com/cookiecutter/cookiecutter) to do all the work.
@@ -86,7 +86,41 @@ First, get Cookiecutter. Trust me, it's awesome:
 
 Now run it against this repo:
 
-    $ cookiecutter https://github.com/cookiecutter/cookiecutter-django
+    $ cookiecutter https://github.com/codematsing/cookiecutter-django
+
+Or, run using with configuration file
+
+    $ cookiecutter https://github.com/codematsing/cookiecutter-django --config-file <path/to/cookiecutter.yaml> --no-input
+
+*Sample of cookiecutter.yaml file*
+
+```yaml
+default_context:
+    project_name: "project name"
+    description: "project description"
+    author_name: "Sam Solis"
+    email: "sam.solis@codematsing.com"
+    domain_name: "*.com"
+    open_source_license: "None"
+    use_elasticsearch: "y"
+    windows: "y"
+    use_pycharm: "n"
+    use_docker: "y"
+    postgresql_version: 1 #latest selection
+    cloud_provider: "None"
+    mail_service: "Other SMTP"
+    use_async: "y"
+    use_drf: "y"
+    frontend_pipeline: "Django Compressor"
+    use_celery: "y"
+    use_mailhog: "n"
+    use_sentry: "y"
+    use_whitenoise: "y"
+    use_heroku: "n"
+    ci_tool: "Github"
+    keep_local_envs_in_vcs: "y"
+    debug: "n"
+```
 
 You'll be prompted for some values. Provide them, then a Django project will be created for you.
 

@@ -1,3 +1,4 @@
-export $(grep -v '^#' ../../.envs/.local/.django | xargs)
-export $(grep -v '^#' ../../.envs/.local/.postgres | xargs)
-export $(grep -v '^#' ../../.envs/.local/.tokens | xargs)
+ROOT_DIR=$(dirname "$(dirname "$(dirname "$(realpath "$0")")")")
+export $(grep -v '^#' $ROOT_DIR/.envs/.local/.django | xargs)
+export $(grep -v '^#' $ROOT_DIR/.envs/.local/.postgres | xargs)
+export $(grep -v '^#' $ROOT_DIR/.envs/.local/.tokens | xargs)

@@ -12,6 +12,26 @@ License: {{cookiecutter.open_source_license}}
 
 # Custom Set-up
 
+## Project Preparations:
+
+* Contracts Detail Form:
+  * Ask for Personal Information
+  * Valid ID
+    * ID No
+    * Date / Place Issued
+  * TIN
+  * PhilHealth Number
+  * Bank Details
+    * Savings Account
+    * Photo of Front Face
+  * CV
+  * Github details
+  * Pubkeys
+  * SMTP Settings
+* Request for dev server credentials
+* Request for VPN
+* [Handbook Template](./docs/Software%20Development%20Handbook%20Template.docx)
+
 ## Step 1: Github
 ```shell
 git clone <project repository>

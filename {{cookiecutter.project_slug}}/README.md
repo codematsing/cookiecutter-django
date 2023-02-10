@@ -59,26 +59,79 @@ You can use `.prod_venv` as virtual environment for deployment in scratch. Separ
 
 * Scratch Deployment
 
-```shell
-#script to create virtualenv and automate exporting of environments in existing environment
-#dependency, virtualenv
-.envs/./initialize_prod_venv.sh 
+    * Dependencies
 
-source .prod_venv/bin/activate
+    ```shell
+    #script to create virtualenv and automate exporting of environments in existing environment
+    #dependency, virtualenv .envs/./initialize_prod_venv.sh 
 
-# For production environment dependencies
-# Includes base.txt and production.txt dependencies
-pip install -r requirements/production.txt
-```
+    source .prod_venv/bin/activate
+
+    # For production environment dependencies
+    # Includes base.txt and production.txt dependencies
+    pip install -r requirements/production.txt
+    ```
+
+    * Settings.py: Don't forget to replace settings in `manage.py` to production settings
+
+    * Collectstatic is important during deployment
 
 * Containerized deployment
     * Read [docs](https://cookiecutter-django.readthedocs.io/en/latest/deployment-with-docker.html) for guide
 
-## Step 3: Git Branch Standard
+## Step 3: Running the App
+
+* Checking for errors
+
+``` shell
+python manage.py check
+```
+
+* Migrations
+
+``` shell
+python manage.py migrate
+```
+
+* Running Server
+
+``` shell
+python manage.py runserver
+```
+
+## Step 4: Git Branch Standard
 
 [Reference](https://towardsdatascience.com/how-to-structure-your-git-branching-strategy-by-a-data-engineer-45ff96857bb)
-
 ![Git Branch Image](https://miro.medium.com/max/786/1*q_w5pcaH7WT1larRd631jQ.webp)
+
+# Additional Standard Practices
+
+* Database should not be containerized and be in separate server
+* For Containers:
+    * For local deployment, best practice is to mount volume of app to accommodate dynamically changing source code. Do not convert to image.
+    * Persistent storage (a.k.a media files) should not be in container. Common practice is to mount volume and link to media directory (follow the settings configuration. Find: "MEDIA_ROOT")
+
+# Common issues during development
+
+* [Need to completely reset database in local development](https://www.linkedin.com/pulse/how-do-i-reset-django-migration-nitin-raturi?trk=pulse-article_more-articles_related-content-card#:~:text=Django%27s%20migration%20can%20be%20reset,and%20python%20manage.py%20migrate.)
+
+```shell
+find . -path "*/migrations/*.py" -not -name "__init__.py" -delete
+find . -path "*/migrations/*.pyc" -delete
+# delete and create database
+```
+
+Error:
+```
+django.db.migrations.exceptions.NodeNotFoundError: Migration socialaccount.0001_initial dependencies reference nonexistent parent node ('sites', '0001_initial')
+
+```
+
+Solution:
+``` python
+# at settings.py
+MIGRATION_MODULES = {"sites": "<app_name>.contrib.sites.migrations"} #comment out
+```
 
 # Cookiecutter README.md Section
 

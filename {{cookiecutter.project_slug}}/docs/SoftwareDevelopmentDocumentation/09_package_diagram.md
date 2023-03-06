@@ -14,4 +14,32 @@ There are two sub-types involved in dependency. They are <<import>> & <<access>>
 
 Refer to [PlantUML Documentation](https://plantuml.com/component-diagram)
 
-![Sample Package Diagram](https://cdn-images.visual-paradigm.com/guide/uml/what-is-package-diagram/11-use-of-import.png)
+```plantuml { .plantuml plantuml-filename=media/package_diagram.png }
+@startuml
+
+skinparam monochrome true
+skinparam shadowing false
+skinparam arrowThickness 0.7
+skinparam packageTitleAlignment left
+skinparam usecaseBorderThickness 0.4
+skinparam rectangleBorderThickness 1
+skinparam actorStyle awesome
+
+package "Track Order" as to {
+
+}
+
+package "Order Processing" as op {
+
+}
+
+package "Shipping" as s {
+
+}
+
+op -u-> to : <<access>>
+to -d-> op : <<access>>
+s -u-> to : <<import>>
+
+@enduml
+```

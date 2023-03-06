@@ -9,3 +9,6 @@
 
 
 ## Scope
+
+
+## Definition of Terms

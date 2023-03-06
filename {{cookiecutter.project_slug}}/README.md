@@ -133,6 +133,8 @@ python manage.py runserver
 
 # Common issues during development
 
+Kindly update and/or check [Issues Tracker](./docs/IssuesTracker.md) for any probably issues encountered relating migrations, environment setup, runserver, etc, that could affect other local development environments
+
 * [Need to completely reset database in local development](https://www.linkedin.com/pulse/how-do-i-reset-django-migration-nitin-raturi?trk=pulse-article_more-articles_related-content-card#:~:text=Django%27s%20migration%20can%20be%20reset,and%20python%20manage.py%20migrate.)
 
 ```shell

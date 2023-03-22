@@ -24,13 +24,18 @@ class BaseDetailView(DetailView):
 	fields = '__all__'
 
 class BaseUpdateView(UpdateView):
-	def form_valid(self, form):
-		obj = form.save(commit=False)
-		if hasattr(self.model, 'updated_by'):
-			obj.updated_by = self.request.user
-		obj.save()
-		return redirect(self.get_success_url())
+	def get_initial(self):
+		initial = super().get_initial()
+		if hasattr(self.model, 'updated_by') and ('updated_by' in self.fields or self.fields=='__all__'):
+			initial['updated_by'] = self.request.user
+		return initial
 
+	def get_form(self, form_class=None):
+		form = super().get_form(form_class)
+		if 'updated_by' in form.fields.keys():
+			form.fields['updated_by'].widget.attrs['readonly'] = True
+		return form
+ 
 class BaseDeleteView(DeleteView):
 	# assumption is modal confirmation
 	# direct delete without confirmation

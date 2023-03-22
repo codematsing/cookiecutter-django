@@ -61,5 +61,9 @@
     "Github"
   ],
   "keep_local_envs_in_vcs": "y",
-  "debug": "n"
+  "debug": "n",
+  "_copy_without_render": [
+      "**/template/**",
+      "**/utils/cookiecutter-app/**"
+  ]
 }

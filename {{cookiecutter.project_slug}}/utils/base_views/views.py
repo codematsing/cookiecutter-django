@@ -2,11 +2,11 @@ from django.shortcuts import render, redirect
 from django.views.generic import (
     ListView,
     CreateView,
-    DetailView,
     UpdateView,
     DeleteView,
     RedirectView
 )
+from utils.detail_wrapper.views import DetailView
 from django.urls import reverse_lazy
 from django.contrib import messages
 
@@ -21,7 +21,7 @@ class BaseCreateView(CreateView):
 	pass
 
 class BaseDetailView(DetailView):
-	pass
+	fields = '__all__'
 
 class BaseUpdateView(UpdateView):
 	def form_valid(self, form):

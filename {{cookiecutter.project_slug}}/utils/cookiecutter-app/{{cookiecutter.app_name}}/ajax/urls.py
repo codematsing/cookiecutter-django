@@ -1,3 +1,4 @@
+{% raw %}
 from django.urls import path, include
 from views import (
 	{{cookiecutter.snake_case_model_name}}ListAjaxView,
@@ -69,3 +70,5 @@ url_patterns = [
     #     "<action>_<model_name_fk>"
     # ),
 ]
+
+{% endraw %}

@@ -1,3 +1,4 @@
+{% raw %}
 from django.shortcuts import render
 from {{cookiecutter.app_name}}.models import {{cookiecutter.snake_case_model_name}}
 from utils.views.ajax import (
@@ -40,4 +41,4 @@ class {{cookiecutter.snake_case_model_name}}Remove<snake_case_model_name_fk>Ajax
 
 class {{cookiecutter.snake_case_model_name}}<snake_case_action><snake_case_model_name_fk>AjaxView(BaseActionObjectAjaxView):
 	model = {{cookiecutter.snake_case_model_name}}
-
+{% endraw %}

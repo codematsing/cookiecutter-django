@@ -1,3 +1,4 @@
+{% raw %}
 from django.shortcuts import render
 from models import {{cookiecutter.snake_case_model_name}}
 from utils.base_views.views import (
@@ -42,3 +43,4 @@ class {{cookiecutter.snake_case_model_name}}DeleteView(BaseDeleteView):
 
 # class {{cookiecutter.snake_case_model_name}}<snake_case_action><snake_case_model_name_fk>View(BaseActionObjectView):
 # 	model= {{cookiecutter.snake_case_model_name}}
+{% endraw %}

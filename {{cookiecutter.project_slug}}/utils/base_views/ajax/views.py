@@ -8,8 +8,15 @@ logger = logging.getLogger(__name__)
 
 class BaseListAjaxView(AjaxDatatableView):
     # show_column_filters=False
+    # refer to https://github.com/morlandi/django-ajax-datatable#16column_defs-customizations
     column_defs = [
         {'name':'pk', 'visible':False},
+        {
+            'name':'updated_by', 
+            'choices': True, 
+            'autofilter': True, 
+            'initialSearchValue': None
+        },
         {'name':'action'},
     ]
     def customize_row(self, row, obj):

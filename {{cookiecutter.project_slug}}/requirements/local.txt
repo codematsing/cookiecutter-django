@@ -50,3 +50,4 @@ pytest-django==4.5.2  # https://github.com/pytest-dev/pytest-django
 # Jupyter
 # ------------------------------------------------------------------------------
 jupyter==1.0.0
+cookiecutter==1.7.3

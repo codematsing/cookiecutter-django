@@ -1,3 +1,4 @@
+{% raw %}
 ## Coding Conventions
 
 ### Common Confusion
@@ -408,3 +409,4 @@ Student o-- Course
 
 @enduml
 ```
+{% endraw %}

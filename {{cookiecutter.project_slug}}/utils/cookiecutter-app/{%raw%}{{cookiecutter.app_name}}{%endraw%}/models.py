@@ -16,11 +16,11 @@ class {{cookiecutter.snake_case_model_name}}(models.Model):
 
     class Meta:
         permissions = [
-            ('add_<model>_<model_fk>', 'Can add {{ cookiecutter.app_name[:-1]|replace('_', ' ')|title}} <model_fk>')
-            ('change_<model>_<model_fk>', 'Can change {{ cookiecutter.app_name[:-1]|replace('_', ' ')|title}} <model_fk>')
-            ('view_<model>_<model_fk>', 'Can view {{ cookiecutter.app_name[:-1]|replace('_', ' ')|title}} <model_fk>')
-            ('remove_<model>_<model_fk>', 'Can remove {{ cookiecutter.app_name[:-1]|replace('_', ' ')|title}} <model_fk>')
-            ('delete_<model>_<model_fk>', 'Can delete {{ cookiecutter.app_name[:-1]|replace('_', ' ')|title}} <model_fk>')
+            ('add_{{cookiecutter.model_name}}_<model_fk>', 'Can add {{ cookiecutter.model_name[:-1]|replace('_', ' ')|title}} <model_fk>')
+            ('change_{{cookiecutter.model_name}}_<model_fk>', 'Can change {{ cookiecutter.model_name[:-1]|replace('_', ' ')|title}} <model_fk>')
+            ('view_{{cookiecutter.model_name}}_<model_fk>', 'Can view {{ cookiecutter.model_name[:-1]|replace('_', ' ')|title}} <model_fk>')
+            ('remove_{{cookiecutter.model_name}}_<model_fk>', 'Can remove {{ cookiecutter.model_name[:-1]|replace('_', ' ')|title}} <model_fk>')
+            ('delete_{{cookiecutter.model_name}}_<model_fk>', 'Can delete {{ cookiecutter.model_name[:-1]|replace('_', ' ')|title}} <model_fk>')
         ]
 
     def __str__(self):
@@ -28,19 +28,20 @@ class {{cookiecutter.snake_case_model_name}}(models.Model):
 
     def get_absolute_url(self):
         return reverse(
-            "{{cookiecutter.app_name}}:detail", 
+            "{{cookiecutter.model_name}}:detail", 
             kwargs={"pk": self.pk}
             )
 
     def get_update_url(self):
         return reverse(
-            "{{cookiecutter.app_name}}:update", 
+            "{{cookiecutter.model_name}}:update", 
             kwargs={"pk": self.pk}
             )
 
     def get_delete_url(self):
         return reverse(
-            "{{cookiecutter.app_name}}:delete", 
+            "{{cookiecutter.model_name}}:delete", 
             kwargs={"pk": self.pk}
             )
+
 {% endraw %}

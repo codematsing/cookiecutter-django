@@ -61,10 +61,11 @@ course_urls --> course_user_urls : <<includes>>
 | `<model>`DetailView     | detail            | `<identifier>`                                     |
 | `<model>`UpdateView     | update            | `<identifier>`/edit                                |
 | `<model>`DeleteView     | delete            | `<identifier>`/delete                              |
-| `<model>`AddView        | add\_`model`      | `<identifier>`/add/`<model>`/`<identifier>`                  |
-| `<model>`RemoveView     | remove\_`model`   | `<identifier>`/remove/`<model>`/`<identifier>`               |
 | `<Action>`View | `action` | `<identifier>`/`<action>` |
-| *include* | `<model>` | `<model>`|
+| `<model>`Add`<model_fk>`View        | add\_`<model_fk>`      | `<identifier>`/add/`<model_fk>`/`<identifier_fk>`                  |
+| `<model>`Remove`<model_fk>`View     | remove\_`<model_fk>`   | `<identifier>`/remove/`<model_fk>`/`<identifier_fk>`               |
+| `<model>``<action>``<model_fk>`View     | `<action>`\_`<model_fk>`   | `<identifier>`/`<action>`/`<model_fk>`/`<identifier_fk>`               |
+| *include* | `<model>` | `<model>`/|
 
 #### Ajax Views
 
@@ -94,10 +95,11 @@ package app {
 | `<model>`DetailAjaxView     | detail            | `<identifier>`                                     |
 | `<model>`UpdateAjaxView     | update            | `<identifier>`/edit                                |
 | `<model>`DeleteAjaxView     | delete            | `<identifier>`/delete                              |
-| `<model>`AddAjaxView        | add\_`model`      | `<identifier>`/add/`<model>`/`<identifier>`                  |
-| `<model>`RemoveAjaxView     | remove\_`model`   | `<identifier>`/remove/`<model>`/`<identifier>`               |
-| `<Action>`View | `action` | `<identifier>`/`<action>` |
-| *include* | `<model>` | `<model>`|
+| `<Action>`AjaxView | `action` | `<identifier>`/`<action>` |
+| `<model>`Add`<model_fk>`AjaxView        | add\_`<model_fk>`      | `<identifier>`/add/`<model_fk>`/`<identifier_fk>`                  |
+| `<model>`Remove`<model_fk>`AjaxView     | remove\_`<model_fk>`   | `<identifier>`/remove/`<model_fk>`/`<identifier_fk>`               |
+| `<model>``<action>``<model_fk>`AjaxView     | `<action>`\_`<model_fk>`   | `<identifier>`/`<action>`/`<model_fk>`/`<identifier_fk>`               |
+| *include* | `<model>` | `<model>`/|
 
 
 ```shell
@@ -232,7 +234,7 @@ url_patterns = [
     <arg>=object.<identifier> 
 %}
 {% url 
-    '<app_name>:<action>_<model_fk>' 
+    '<app_name>:<action>_`<model_fk>`' 
     <arg>=object.<identifier> 
     <arg_fk>=object.fk.<identifier_fk> 
 %}

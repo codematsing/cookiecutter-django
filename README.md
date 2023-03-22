@@ -60,8 +60,14 @@ pip install -r requirements/production.txt
 
 * Containerized deployment
     * read [docs](https://cookiecutter-django.readthedocs.io/en/latest/deployment-with-docker.html)
+    
+## Step 3: Adding new apps
 
-## Step 3: Git Branch Standard
+``` shell
+cookiecutter ../utils/cookiecutter-app
+```
+
+## Step 4: Git Branch Standard
 
 [Reference](https://towardsdatascience.com/how-to-structure-your-git-branching-strategy-by-a-data-engineer-45ff96857bb)
 

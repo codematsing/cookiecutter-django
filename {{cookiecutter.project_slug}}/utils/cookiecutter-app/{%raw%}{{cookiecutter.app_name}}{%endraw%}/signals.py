@@ -1,6 +1,8 @@
 from django.db.models.signals import post_save, m2m_changed
 from django.dispatch import receiver
 from {{cookiecutter.app_name}}.models import {{cookiecutter.snake_case_model_name}}
+import logging
+logger = logging.getLogger(__name__)
 
 # @receiver(post_save, sender={{cookiecutter.snake_case_model_name}})
 # def {{cookiecutter.model_name[:-1]}}_saved(sender, instance, created, **kwargs):

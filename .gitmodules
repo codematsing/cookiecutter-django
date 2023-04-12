@@ -1,0 +1,3 @@
+[submodule "{{cookiecutter.project_slug}}/utils/cookiecutter-app"]
+	path = {{cookiecutter.project_slug}}/utils/cookiecutter-app
+	url = git@github.com:codematsing/django-cookiecutter-app.git

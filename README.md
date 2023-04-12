@@ -5,6 +5,11 @@
 git clone <project repository>
 ```
 
+```shell
+# whenever pulling repository for update this will ensure that submodules are synced
+git pull --recurse-submodules
+```
+
 ## Step 2: Preparing Dependencies
 
 ### Local Development

@@ -3,7 +3,6 @@ from django.views.generic import (
     ListView,
     CreateView,
     UpdateView,
-    DeleteView,
     RedirectView
 )
 from utils.detail_wrapper.views import DetailView
@@ -15,15 +14,16 @@ logger = logging.getLogger(__name__)
 
 # Create your views here.
 class BaseListView(ListView):
-	pass
+	template_name='pages/list.html'
 
 class BaseCreateView(CreateView):
-	pass
+	template_name='pages/create.html'
 
 class BaseDetailView(DetailView):
-	fields = '__all__'
+	template_name='pages/detail.html'
 
 class BaseUpdateView(UpdateView):
+	template_name='pages/update.html'
 	def get_initial(self):
 		initial = super().get_initial()
 		if hasattr(self.model, 'updated_by') and ('updated_by' in self.fields or self.fields=='__all__'):
@@ -36,7 +36,7 @@ class BaseUpdateView(UpdateView):
 			form.fields['updated_by'].widget.attrs['readonly'] = True
 		return form
  
-class BaseDeleteView(DeleteView):
+class BaseDeleteView(RedirectView):
 	# assumption is modal confirmation
 	# direct delete without confirmation
 	def get(self, request, *args, **kwargs):

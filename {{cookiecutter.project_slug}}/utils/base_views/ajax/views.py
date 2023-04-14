@@ -2,6 +2,7 @@ from django.views.generic import View
 from ajax_datatable.views import AjaxDatatableView
 from django.http import JsonResponse
 from django.template.loader import render_to_string
+from guardian.shortcuts import get_objects_for_user
 
 import logging
 logger = logging.getLogger(__name__)
@@ -19,6 +20,9 @@ class BaseListAjaxView(AjaxDatatableView):
         },
         {'name':'action'},
     ]
+    def get_initial_queryset(self, request):
+        return get_objects_for_user(request.user, klass=self.model)
+
     def customize_row(self, row, obj):
         row['action'] = render_to_string('tables/action_column.html', {'record':obj}) 
         return

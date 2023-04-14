@@ -3,6 +3,7 @@ from ajax_datatable.views import AjaxDatatableView
 from django.http import JsonResponse
 from django.template.loader import render_to_string
 from guardian.shortcuts import get_objects_for_user
+from urllib.parse import parse_qs
 
 import logging
 logger = logging.getLogger(__name__)
@@ -20,8 +21,20 @@ class BaseListAjaxView(AjaxDatatableView):
         },
         {'name':'action'},
     ]
+    def filter_qs(self, qs, query_dict):
+        return qs
+
     def get_initial_queryset(self, request):
-        return get_objects_for_user(request.user, klass=self.model)
+        if not getattr(request, 'REQUEST', None):
+            request.REQUEST = request.GET if request.method=='GET' else request.POST
+            query_dict = parse_qs(request.REQUEST.get('forward'))
+            # no action done in parameters. need to do filter
+        try:
+            qs = get_objects_for_user(request.user, klass=self.model)
+        except Exception as e:
+            logger.exception(e)    
+            qs = self.model.objects.all()
+        return self.filter_qs(qs, query_dict)
 
     def customize_row(self, row, obj):
         row['action'] = render_to_string('tables/action_column.html', {'record':obj}) 

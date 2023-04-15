@@ -54,8 +54,17 @@ INSTALLED_APPS = ["whitenoise.runserver_nostatic"] + INSTALLED_APPS  # noqa F405
 # ------------------------------------------------------------------------------
 # https://django-debug-toolbar.readthedocs.io/en/latest/installation.html#prerequisites
 INSTALLED_APPS += ["debug_toolbar"]  # noqa F405
+# hijack
+# ------------------------------------------------------------------------------
+# https://django-hijack.readthedocs.io/en/stable/
+INSTALLED_APPS += ["hijack", "hijack.contrib.admin"]  # noqa F405
+#overrides base.html
+TEMPLATES[0]['DIRS'] = [str(APPS_DIR/"tests"/"templates"), str(APPS_DIR/"templates")]
+
 # https://django-debug-toolbar.readthedocs.io/en/latest/installation.html#middleware
-MIDDLEWARE += ["debug_toolbar.middleware.DebugToolbarMiddleware"]  # noqa F405
+MIDDLEWARE += ["debug_toolbar.middleware.DebugToolbarMiddleware", 
+               'hijack.middleware.HijackUserMiddleware',
+               ]  # noqa F405
 # https://django-debug-toolbar.readthedocs.io/en/latest/configuration.html#debug-toolbar-config
 DEBUG_TOOLBAR_CONFIG = {
     "DISABLE_PANELS": ["debug_toolbar.panels.redirects.RedirectsPanel"],

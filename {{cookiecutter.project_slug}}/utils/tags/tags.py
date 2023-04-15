@@ -1,5 +1,6 @@
 from django import template
 import markdown as md
+from django.contrib.auth import get_user_model
 
 register = template.Library()
 
@@ -27,3 +28,7 @@ def active_namespace(request, namespace):
 # @register.inclusion_tag("/path/to/template", takes_context=True)
 # def func(context, *args):
 #    return context
+
+@register.simple_tag
+def get_all_users():
+    return get_user_model().objects.exclude(username="AnonymousUser")

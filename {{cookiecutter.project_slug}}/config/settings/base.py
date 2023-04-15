@@ -221,6 +221,8 @@ TEMPLATES = [
         # https://docs.djangoproject.com/en/dev/ref/settings/#dirs
         "DIRS": [
             str(APPS_DIR / "templates"), 
+            str(ROOT_DIR / "utils" / "detail_wrapper" / "templates"), 
+            str(ROOT_DIR / "utils" / "hijack_wrapper" / "templates"), 
             ],
         # https://docs.djangoproject.com/en/dev/ref/settings/#app-dirs
         "APP_DIRS": True,
@@ -240,6 +242,7 @@ TEMPLATES = [
             "libraries": {
                 "util_tags": "utils.tags.tags",
                 "detail_tags": "utils.detail_wrapper.tags",
+                "hijack_tags": "utils.hijack_wrapper.tags",
                 }
         },
     }

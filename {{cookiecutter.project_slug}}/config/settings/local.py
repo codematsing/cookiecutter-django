@@ -59,8 +59,6 @@ INSTALLED_APPS += ["debug_toolbar"]  # noqa F405
 # https://django-hijack.readthedocs.io/en/stable/
 INSTALLED_APPS += ["hijack", "hijack.contrib.admin"]  # noqa F405
 #overrides base.html
-TEMPLATES[0]['DIRS'] = [str(APPS_DIR/"tests"/"templates"), str(APPS_DIR/"templates")]
-
 # https://django-debug-toolbar.readthedocs.io/en/latest/installation.html#middleware
 MIDDLEWARE += ["debug_toolbar.middleware.DebugToolbarMiddleware", 
                'hijack.middleware.HijackUserMiddleware',

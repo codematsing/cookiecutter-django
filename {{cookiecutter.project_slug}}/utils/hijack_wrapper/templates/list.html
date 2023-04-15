@@ -1,0 +1,24 @@
+{% raw %}{% load hijack %}
+{% if debug %}
+<div class="dropdown">
+  <button
+    class="btn btn-primary dropdown-toggle"
+    type="button"
+    data-toggle="dropdown"
+  >
+    Login as<span class="caret"></span>
+  </button
+  <ul class="dropdown-menu">
+    {% for user in users %}
+    <li class="dropdown-item">
+      <form action="{% url 'hijack:acquire' %}" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="user_pk" value="{{user.pk}}" />
+        <button type="submit">{{user.username}} <{{user.email}}></button>
+        <input type="hidden" name="next" value="{{ request.path }}" />
+      </form>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}{% endraw %}

@@ -24,7 +24,9 @@
         scrollX: false,
       },
       {
-        forward: {{request.GET.urlencode}}
+        {% if request.GET.urlencode %}
+        forward: {{request.GET.urlencode}},
+        {% endif %}
       }
     );
   });

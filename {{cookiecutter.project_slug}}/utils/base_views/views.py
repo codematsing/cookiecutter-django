@@ -5,28 +5,14 @@ from django.views.generic import (
     UpdateView,
     RedirectView
 )
-from utils.detail_wrapper.views import DetailView
 from django.urls import reverse_lazy
 from django.contrib import messages
+from utils.detail_wrapper.views import DetailView
 
 import logging
 logger = logging.getLogger(__name__)
 
-# Create your views here.
-class BaseListView(ListView):
-	template_name='pages/list.html'
-
-class BaseCreateView(CreateView):
-	template_name='pages/create.html'
-	fields = '__all__'
-
-class BaseDetailView(DetailView):
-	template_name='pages/detail.html'
-	fields = '__all__'
-
-class BaseUpdateView(UpdateView):
-	template_name='pages/update.html'
-	fields = '__all__'
+class BaseForm:
 	def get_initial(self):
 		initial = super().get_initial()
 		if hasattr(self.model, 'updated_by') and ('updated_by' in self.fields or self.fields=='__all__'):
@@ -37,8 +23,26 @@ class BaseUpdateView(UpdateView):
 		form = super().get_form(form_class)
 		if 'updated_by' in form.fields.keys():
 			form.fields['updated_by'].widget.attrs['readonly'] = True
+			form.fields['updated_by'].disabled = True
 		return form
- 
+
+
+# Create your views here.
+class BaseListView(ListView):
+	template_name='pages/list.html'
+
+class BaseCreateView(BaseForm, CreateView):
+	template_name='pages/create.html'
+	fields = '__all__'
+
+class BaseDetailView(DetailView):
+	template_name='pages/detail.html'
+	fields = '__all__'
+
+class BaseUpdateView(BaseForm, UpdateView):
+	template_name='pages/update.html'
+	fields = '__all__'
+
 class BaseDeleteView(RedirectView):
 	# assumption is modal confirmation
 	# direct delete without confirmation

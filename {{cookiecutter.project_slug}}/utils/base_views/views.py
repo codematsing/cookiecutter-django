@@ -18,12 +18,15 @@ class BaseListView(ListView):
 
 class BaseCreateView(CreateView):
 	template_name='pages/create.html'
+	fields = '__all__'
 
 class BaseDetailView(DetailView):
 	template_name='pages/detail.html'
+	fields = '__all__'
 
 class BaseUpdateView(UpdateView):
 	template_name='pages/update.html'
+	fields = '__all__'
 	def get_initial(self):
 		initial = super().get_initial()
 		if hasattr(self.model, 'updated_by') and ('updated_by' in self.fields or self.fields=='__all__'):

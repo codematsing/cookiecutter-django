@@ -11,8 +11,10 @@ logger = logging.getLogger(__name__)
 class BaseListAjaxView(AjaxDatatableView):
     # show_column_filters=False
     # refer to https://github.com/morlandi/django-ajax-datatable#16column_defs-customizations
+    sort_field = "-updated_at"
     column_defs = [
         {'name':'pk', 'visible':False},
+        {'name':'updated_at'},
         {
             'name':'updated_by', 
             'choices': True, 
@@ -25,6 +27,7 @@ class BaseListAjaxView(AjaxDatatableView):
         return qs
 
     def get_initial_queryset(self, request):
+        query_dict = {}
         if not getattr(request, 'REQUEST', None):
             request.REQUEST = request.GET if request.method=='GET' else request.POST
             query_dict = parse_qs(request.REQUEST.get('forward'))

@@ -11,16 +11,16 @@ logger = logging.getLogger(__name__)
 class BaseListAjaxView(AjaxDatatableView):
     # show_column_filters=False
     # refer to https://github.com/morlandi/django-ajax-datatable#16column_defs-customizations
-    sort_field = "-updated_at"
+    sort_field='-updated_at'
     column_defs = [
         {'name':'pk', 'visible':False},
-        {'name':'updated_at'},
         {
             'name':'updated_by', 
-            'choices': True, 
+			'foreign_field': 'updated_by__username',
             'autofilter': True, 
             'initialSearchValue': None
         },
+        {'name':'updated_at'},
         {'name':'action'},
     ]
     def filter_qs(self, qs, query_dict):
@@ -33,7 +33,7 @@ class BaseListAjaxView(AjaxDatatableView):
             query_dict = parse_qs(request.REQUEST.get('forward'))
             # no action done in parameters. need to do filter
         try:
-            qs = get_objects_for_user(request.user, klass=self.model)
+            qs =get_objects_for_user(request.user, perms=f"view_{self.model._meta.verbose_name}", klass=self.model)
         except Exception as e:
             logger.exception(e)    
             qs = self.model.objects.all()

@@ -17,19 +17,22 @@ logger = logging.getLogger(__name__)
 
 class BaseForm:
 	def __init__(self, *args, **kwargs):
-		disabled_fields = set(getattr(self, 'disabled_fields', []))
-		hidden_fields = set(getattr(self, 'hidden_fields', []))
-		fields = set(getattr(self, 'fields', []))
-		if self.fields != '__all__':
-			self.fields = (self.fields 
-                  + list(disabled_fields.difference(fields))
-                  + list(hidden_fields.difference(fields))
-                  )
+		if self.form_class == None:
+			disabled_fields = set(getattr(self, 'disabled_fields', []))
+			hidden_fields = set(getattr(self, 'hidden_fields', []))
+			fields = set(getattr(self, 'fields', []))
+			if self.fields != '__all__':
+				self.fields = (self.fields 
+					+ list(disabled_fields.difference(fields))
+					+ list(hidden_fields.difference(fields))
+					)
+		else: #form_class is set
+			self.fields = None
 		return super().__init__(*args, **kwargs)
 
 	def get_initial(self):
 		initial = super().get_initial()
-		if hasattr(self.model, 'updated_by') and ('updated_by' in self.fields or self.fields=='__all__'):
+		if not self.form_class and hasattr(self.model, 'updated_by') and ('updated_by' in self.fields or self.fields=='__all__'):
 			initial['updated_by'] = self.request.user
 		return initial
 

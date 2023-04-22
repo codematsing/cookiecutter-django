@@ -10,6 +10,7 @@ from django.urls import reverse_lazy
 from django.contrib import messages
 from utils.detail_wrapper.views import DetailView
 from collections import OrderedDict
+from dal import autocomplete
 
 import logging
 logger = logging.getLogger(__name__)
@@ -98,3 +99,15 @@ class BaseRemoveObjectView(RedirectView):
 
 class BaseActionObjectView(RedirectView):
 	pass
+
+class BaseAutocompleteView(autocomplete.Select2QuerySetView):
+	def get_queryset(self):
+		if not self.request.user.is_authenticated:
+			return self.model.objects.none()
+
+		qs = self.model.objects.all()
+
+		if self.q:
+			qs = qs.filter(name__istartswith=self.q)
+
+		return qs

@@ -69,6 +69,9 @@ class BaseCreateView(BaseForm, CreateView):
 	fields = '__all__'
 	disabled_fields=['updated_by']
 
+	def get_success_url(self):
+		return reverse_lazy(f'{self.model._meta.app_label}:list')
+
 class BaseDetailView(DetailView):
 	template_name='pages/detail.html'
 	fields = '__all__'

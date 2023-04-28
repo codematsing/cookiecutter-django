@@ -27,6 +27,7 @@ class DetailView(DetailView):
         template_name = 'pages/detail.html'
     """
 
+    fields = "__all__"
     def get_field_value(self, obj, field_name):
         return getattr(obj, field_name)
 
@@ -35,10 +36,14 @@ class DetailView(DetailView):
         context["fields"] = self.get_field_context()
         return context
 
+    def get_fields(self):
+        return self.fields
+
     def get_field_context(self):
         obj = self.get_object()
+        fields = self.get_fields()
         if hasattr(self, "model"):
-            if self.fields == "__all__":
-                self.fields = self.model._meta.fields
-            return {field.name:self.get_field_value(obj, field.name) for field in self.fields}
+            if fields == "__all__":
+                fields = [field.name for field in self.model._meta.fields]
+            return {field:self.get_field_value(obj, field) for field in fields}
         return {}

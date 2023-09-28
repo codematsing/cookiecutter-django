@@ -51,16 +51,20 @@ DATE_INPUT_FORMATS = ['%m-%d-%Y']
         # 'NAME': os.path.join(ROOT_DIR, 'db.sqlite3'),
     # }
 # }
-{% if cookiecutter.use_docker == "y" -%}
-DATABASES = {"default": env.db("DATABASE_URL")}
-{%- else %}
+
+user=env("POSTGRES_USER")
+pw=env("POSTGRES_PASSWORD")
+host=env("POSTGRES_HOST")
+port=env("POSTGRES_PORT")
+db=env("POSTGRES_DB")
+default_db_url = "postgres://%s:%s@%s:%s/%s" % (user, pw, host, port, db)
+
 DATABASES = {
     "default": env.db(
         "DATABASE_URL",
-        default="postgres://{% if cookiecutter.windows == 'y' %}localhost{% endif %}/{{cookiecutter.project_slug}}",
+        default=default_db_url,
     ),
 }
-{%- endif %}
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
 # https://docs.djangoproject.com/en/stable/ref/settings/#std:setting-DEFAULT_AUTO_FIELD
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
@@ -144,7 +148,7 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + UTIL_APPS + LOCAL_APPS
 # MIGRATIONS
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#migration-modules
-MIGRATION_MODULES = {"sites": "base.contrib.sites.migrations"}
+#MIGRATION_MODULES = {"sites": "base.contrib.sites.migrations"}
 
 # AUTHENTICATION
 # ------------------------------------------------------------------------------

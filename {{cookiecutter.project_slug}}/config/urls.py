@@ -20,6 +20,8 @@ urlpatterns = [
     ),
     # Django Admin, use {% raw %}{% url 'admin:index' %}{% endraw %}
     path(settings.ADMIN_URL, admin.site.urls),
+    # Notifications
+    path('inbox/notifications', include("notifications.urls", namespace='notifications')),
     # User management
     path("users/", include("users.urls", namespace="users")),
     path("accounts/", include("allauth.urls")),
@@ -27,6 +29,8 @@ urlpatterns = [
     path("", include("file_management.urls", namespace="file")),
     # Admin
     path("dashboard/", DashboardView.as_view(), name="dashboard"),
+    # Comments
+    path(r'comments/', include('django_comments_xtd.urls')),
     # Your stuff: custom urls includes go here
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 {%- if cookiecutter.use_async == 'y' %}

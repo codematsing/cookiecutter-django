@@ -8,12 +8,14 @@ if [ -f db.sqlite3 ]; then
     echo "db.sqlite3 deleted"
 fi
 
-if sudo psql -lqt | cut -d \| -f 1 | grep -qw $(POSTGRES_DB); then
-    sudo dropdb $(POSTGRES_DB)
-    echo "$(POSTGRES_DB) deleted"
-fi
+# Warning: using this variable may be a concern in security
+export PGPASSWORD=$POSTGRES_PASSWORD
 
-sudo createdb $(POSTGRES_DB)
-echo "$(POSTGRES_DB) recreated"
+dropdb -h localhost -p 5432 -U $POSTGRES_USER $POSTGRES_DB
+echo "$POSTGRES_DB deleted"
+
+createdb -h localhost -p 5432 -U $POSTGRES_USER $POSTGRES_DB
+echo "$POSTGRES_DB recreated"
 
 echo "You may now reload database from fixtures"
+

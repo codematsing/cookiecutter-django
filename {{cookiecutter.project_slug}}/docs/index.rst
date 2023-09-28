@@ -17,6 +17,7 @@ Welcome to {{ cookiecutter.project_name }}'s documentation!
    user-authentication
    user-preregistration
    third-party-libraries
+   cookiecutter-app
    utils
    tips-and-tricks
    users

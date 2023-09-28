@@ -7,8 +7,13 @@
       <a href="#" class="nav-link flex-column">
         <div class="nav-profile-text d-flex ms-0 flex-column">
           <span class="font-weight-semibold mb-1 mt-2 text-center">Welcome back, {{request.user.username}}!</span>
-          {% comment %} #TODO: badge for notifications here {% endcomment %}
-          <span class="text-secondary icon-sm mb-3 text-center">*insert notification badge</span>
+          {% with request.user.notifications.unread.count as notifs %}
+          <a href="{% url 'notifications:all' %}">
+          {% if notifs %}
+            <span class="badge badge-warning">{{request.user.notifications.unread.count}} new notifications</span>
+          {% endif %}
+            <span class="badge badge-light">No new notifications</span>
+          {% endwith %}
         </div>
         {% render_hijacks %}
       </a>

@@ -12,6 +12,13 @@ Welcome to {{ cookiecutter.project_name }}'s documentation!
 
    howto{% if cookiecutter.use_pycharm == 'y' %}
    pycharm/configuration{% endif %}
+   getting-started
+   projectstructure
+   user-authentication
+   user-preregistration
+   third-party-libraries
+   utils
+   tips-and-tricks
    users
 
 

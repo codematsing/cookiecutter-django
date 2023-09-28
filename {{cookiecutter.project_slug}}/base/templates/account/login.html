@@ -1,0 +1,66 @@
+{% extends "account/base.html" %}
+{% load i18n %}
+{% load account socialaccount %}
+{% load socialaccount %}
+{% load crispy_forms_tags %}
+{% block head_title %}
+  {% translate "Sign In" %}
+{% endblock %}
+{% block inner %}
+  <div class="card p-0">
+    <div class="card-header p-3 bg-warning bg-opacity-50">
+      <div class="d-flex justify-content-between px-2">
+        <div class="card-title align-self-center mb-0">
+          <h3>{% translate "Sign In" %}</h3>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="card-text">
+        <h6>
+        For users with UP email
+      </h6>
+      {% get_providers as socialaccount_providers %}
+      {% if socialaccount_providers %}
+        <div class="socialaccount_ballot">
+          <a class="btn btn-social-icon-text btn-google"
+             href="{% provider_login_url 'google' %}">
+            <i class="mdi mdi-google-plus"></i>UP Email
+          </a>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+  <div class="card-body pt-0">
+    <div class="card-text">
+      <h6>For users with no UP email</h6>
+      <form class="login" method="POST" action="{% url 'account_login' %}">
+        {% csrf_token %}
+        {{ form|crispy }}
+        {% if redirect_field_value %}
+          <input type="hidden"
+                 name="{{ redirect_field_name }}"
+                 value="{{ redirect_field_value }}" />
+        {% endif %}
+        <div class="d-flex justify-content-between">
+          <a class="button secondaryAction"
+             href="{% url 'account_reset_password' %}">{% translate "Forgot Password?" %}</a>
+          <button class="primaryAction btn btn-primary" type="submit">{% translate "Sign In" %}</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <small class="card-body pt-0">
+    <div class="card-text text-muted">
+      {% if ACCOUNT_ALLOW_REGISTRATION %}
+        {% blocktranslate trimmed %}
+          <h6>For students with no UP and no site account:</h6>
+          <div>
+            Kindly <a href="{{ signup_url }}">apply</a> for an account.
+          </div>
+          <i>Applicants are subject to verification. Please monitor your email for approval status.</i>
+        {% endblocktranslate %}
+      {% endif %}
+    </div>
+  </small>
+{% endblock %}

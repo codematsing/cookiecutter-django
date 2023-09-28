@@ -1,0 +1,34 @@
+{% load static i18n compress%}<!DOCTYPE html>
+{% get_current_language as LANGUAGE_CODE %}
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+  <title>{% block title %}CODEMATSING{% endblock %}</title>
+  {% include 'partials/public/head.html' %}
+  {% block extra_css %}{% endblock  %}
+</head>
+  <body>
+    <div class="container-scroller">
+      <!-- partial:partials/_horizontal-navbar.html -->
+      {% include 'partials/public/navbar.html' %}
+      <!-- partial -->
+      <div class="container-fluid page-body-wrapper">
+        <div class="main-panel">
+          <div class="content-wrapper pb-5 mb-5">
+            {% include 'partials/common/messages.html' %}
+            {% block content %}
+            {% endblock %}
+          </div>
+          <!-- content-wrapper ends -->
+          <!-- partial:partials/_footer.html -->
+          {% include 'partials/public/footer.html' %}
+          <!-- partial -->
+        </div>
+        <!-- main-panel ends -->
+      </div>
+      <!-- page-body-wrapper ends -->
+    </div>
+    {% include 'partials/public/js.html' %}
+    {% block extra_js %}
+    {% endblock %}
+  </body>
+</html>

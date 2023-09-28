@@ -31,4 +31,4 @@ def active_namespace(request, namespace):
 
 @register.simple_tag
 def get_all_users():
-    return get_user_model().objects.exclude(username="AnonymousUser")
+    return get_user_model().objects.filter()

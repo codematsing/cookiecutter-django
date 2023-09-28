@@ -14,21 +14,6 @@ git pull --recurse-submodules
 
 ### Local Development
 
-* When creating virtual environment in local development
-
-```shell
-cd <project>
-
-# checkpoint: existing virtualenv folder
-ls .local_venv
-# checkpoint: existing virtualenv with activation scipts
-ls .local_venv/bin #*activate*
-
-# create virtual enviroment at .local_venv. 
-# should retain activation scripts
-virtualenv .local_venv
-```
-
 * Activating virtual environment
 
 ```shell
@@ -78,6 +63,22 @@ cookiecutter ../utils/cookiecutter-app
 
 ![Git Branch Image](https://miro.medium.com/max/786/1*q_w5pcaH7WT1larRd631jQ.webp)
 
+# Viewing Base Documentation
+
+* After you have set up to develop locally, run the following command from the project directory to build and serve HTML documentation:
+
+```shell
+make -C docs livehtml
+```
+
+* If you set up your project to develop locally with docker, run the following command:
+* Navigate to port 9000 on your host to see the documentation. This will be opened automatically at localhost for local, non-docker development.
+
+```shell
+docker compose -f local.yml up docs
+```
+
+*[Reference](https://cookiecutter-django.readthedocs.io/en/latest/document.html#)
 
 # Additional Standard Practices
 

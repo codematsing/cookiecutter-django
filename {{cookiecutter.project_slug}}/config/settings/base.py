@@ -8,8 +8,7 @@ import sys
 import os
 
 ROOT_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
-# {{ cookiecutter.project_slug }}/
-APPS_DIR = ROOT_DIR / "{{ cookiecutter.project_slug }}"
+BASE_DIR = ROOT_DIR / "base" #used to be apps dir. for purpose of generalized template, changed to base
 sys.path.append(str(ROOT_DIR / "apps"))
 env = environ.Env()
 
@@ -119,13 +118,24 @@ THIRD_PARTY_APPS = [
     "guardian",
     # notifications
     "notifications",
+    # audit
+    "auditlog", #replacement of simplehistory to integrate with existing functionality of Django
+    # comments
+    "django_comments_xtd",
+    "django_comments",
+    # forms
+    "formset",
+    # datatable
+    "ajax_datatable",
 ]
 
 UTIL_APPS = [
+    "base.mock_data" #dummy generator
 ]
 
 LOCAL_APPS = [
-    "{{ cookiecutter.project_slug }}.users",
+    "users",
+    "file_management",
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -134,7 +144,7 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + UTIL_APPS + LOCAL_APPS
 # MIGRATIONS
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#migration-modules
-MIGRATION_MODULES = {"sites": "{{ cookiecutter.project_slug }}.contrib.sites.migrations"}
+MIGRATION_MODULES = {"sites": "base.contrib.sites.migrations"}
 
 # AUTHENTICATION
 # ------------------------------------------------------------------------------
@@ -199,7 +209,7 @@ STATIC_ROOT = str(ROOT_DIR / "staticfiles")
 # https://docs.djangoproject.com/en/dev/ref/settings/#static-url
 STATIC_URL = "/static/"
 # https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
-STATICFILES_DIRS = [str(APPS_DIR / "static")]
+STATICFILES_DIRS = [str(BASE_DIR / "static")]
 # https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#staticfiles-finders
 STATICFILES_FINDERS = [
     "django.contrib.staticfiles.finders.FileSystemFinder",
@@ -209,7 +219,7 @@ STATICFILES_FINDERS = [
 # MEDIA
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#media-root
-MEDIA_ROOT = str(APPS_DIR / "media")
+MEDIA_ROOT = str(BASE_DIR / "media")
 # https://docs.djangoproject.com/en/dev/ref/settings/#media-url
 MEDIA_URL = "/media/"
 
@@ -222,7 +232,7 @@ TEMPLATES = [
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         # https://docs.djangoproject.com/en/dev/ref/settings/#dirs
         "DIRS": [
-            str(APPS_DIR / "templates"), 
+            str(BASE_DIR / "templates"), 
             str(ROOT_DIR / "utils" / "detail_wrapper" / "templates"), 
             str(ROOT_DIR / "utils" / "hijack_wrapper" / "templates"), 
             ],
@@ -239,7 +249,7 @@ TEMPLATES = [
                 "django.template.context_processors.static",
                 "django.template.context_processors.tz",
                 "django.contrib.messages.context_processors.messages",
-                "{{cookiecutter.project_slug}}.users.context_processors.allauth_settings",
+                "users.context_processors.allauth_settings",
             ],
             "libraries": {
                 "util_tags": "utils.tags.tags",
@@ -260,7 +270,7 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 # FIXTURES
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#fixture-dirs
-# FIXTURE_DIRS = (str(APPS_DIR / "fixtures"),) # Will cause error in `python manage.py loaddata`
+# FIXTURE_DIRS = (str(BASE_DIR / "fixtures"),) # Will cause error in `python manage.py loaddata`
 
 # SECURITY
 # ------------------------------------------------------------------------------
@@ -359,13 +369,13 @@ ACCOUNT_EMAIL_REQUIRED = True
 # replace to "mandatory" for is_staff verification needed
 ACCOUNT_EMAIL_VERIFICATION = "none" 
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
-ACCOUNT_ADAPTER = "{{cookiecutter.project_slug}}.users.adapters.AccountAdapter"
+ACCOUNT_ADAPTER = "users.adapters.AccountAdapter"
 # https://django-allauth.readthedocs.io/en/latest/forms.html
-ACCOUNT_FORMS = {"signup": "{{cookiecutter.project_slug}}.users.forms.UserSignupForm"}
+ACCOUNT_FORMS = {"signup": "users.forms.UserSignupForm"}
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
-SOCIALACCOUNT_ADAPTER = "{{cookiecutter.project_slug}}.users.adapters.SocialAccountAdapter"
+SOCIALACCOUNT_ADAPTER = "users.adapters.SocialAccountAdapter"
 # https://django-allauth.readthedocs.io/en/latest/forms.html
-SOCIALACCOUNT_FORMS = {"signup": "{{cookiecutter.project_slug}}.users.forms.UserSocialSignupForm"}
+SOCIALACCOUNT_FORMS = {"signup": "users.forms.UserSocialSignupForm"}
 {% if cookiecutter.frontend_pipeline == 'Django Compressor' -%}
 # django-compressor
 # ------------------------------------------------------------------------------
@@ -400,7 +410,7 @@ SPECTACULAR_SETTINGS = {
 {%- endif %}
 # LOGS FORMAT
 # ------------------------------------------------------------------------------
-LOG_FILE = APPS_DIR / "logs" / "debug.log"
+LOG_FILE = BASE_DIR / "logs" / "debug.log"
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -434,32 +444,6 @@ ELASTICSEARCH_DSL = {
 # ------------------------------------------------------------------------------
 # https://github.com/agusmakmun/django-markdown-editor#setting-configurations-settingspy
 CSRF_COOKIE_HTTPONLY = False
-# Choices are: "semantic", "bootstrap"
-MARTOR_THEME = 'semantic'
-
-MARTOR_ENABLE_CONFIGS = {
-    'emoji': 'false',        # to enable/disable emoji icons.
-    'imgur': 'false',        # to enable/disable imgur/custom uploader.
-    'mention': 'true',     # to enable/disable mention
-    'jquery': 'true',       # to include/revoke jquery (require for admin default django)
-    'living': 'false',      # to enable/disable live updates in preview
-    'spellcheck': 'false',  # to enable/disable spellcheck in form textareas
-    'hljs': 'true',         # to enable/disable hljs highlighting in preview
-}
-
-# To show the toolbar buttons
-MARTOR_TOOLBAR_BUTTONS = [
-]
-
-# To setup the martor editor with title label or not (default is False)
-MARTOR_ENABLE_LABEL = True
-
-# please change this to your domain
-MARTOR_MARKDOWN_BASE_MENTION_URL = ''
-
-MARTOR_ALTERNATIVE_JS_FILE_THEME = "semantic-themed/semantic.min.js"   # default None
-MARTOR_ALTERNATIVE_CSS_FILE_THEME = "semantic-themed/semantic.min.css"  # default None
-MARTOR_ALTERNATIVE_JQUERY_JS_FILE = "jquery/dist/jquery.min.js"
 
 # ALLAUTH
 # ------------------------------------------------------------------------------
@@ -484,7 +468,9 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 #
-ALLOWED_LOGIN_DOMAINS = []
+#Restrict login domains shall toggle 
+RESTRICT_LOGIN_DOMAINS = os.environ.get("RESTRICT_LOGIN_DOMAINS", DEBUG)
+ALLOWED_LOGIN_DOMAINS = None if RESTRICT_LOGIN_DOMAINS else os.environ.get("ALLOWED_LOGIN_DOMAINS", [])
 
 # DJANGO TABLES
 # ------------------------------------------------------------------------------

@@ -1,0 +1,22 @@
+{% load static i18n compress%}
+<!-- common css-->
+{% compress css %}
+<link rel="stylesheet" href="{% static 'vendors/bootstrap/5.1.3/css/bootstrap.min.css' %}">
+<!-- Your stuff: Third-party CSS libraries go here -->
+<link rel="stylesheet" href="{% static 'vendors/mdi/css/materialdesignicons.min.css' %}">
+<link rel="stylesheet" href="{% static 'vendors/flag-icon-css/css/flag-icon.min.css' %}">
+<link rel="stylesheet" href="{% static 'vendors/css/vendor.bundle.base.css' %}">
+<link rel="stylesheet" href="{% static 'vendors/jquery-bar-rating/css-stars.css' %}">
+<link rel="stylesheet" href="{% static 'vendors/font-awesome/css/font-awesome.min.css' %}">
+<link rel="stylesheet" href="{% static 'css/custom.css' %}">
+
+<!-- AjaxDatatable-->
+<link href="{% static 'ajax_datatable/css/style.css' %}" rel="stylesheet" />
+<link href="//cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css" />
+
+<!-- Formset -->
+<link href="{% static 'formset/css/bootstrap5-extra.css' %}" rel="stylesheet">
+{% endcompress %}
+
+{% block partial_css %}
+{% endblock %}

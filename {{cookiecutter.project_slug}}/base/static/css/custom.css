@@ -1,0 +1,128 @@
+.dataTables_paginate {
+  text-align: right;
+}
+
+.paginate_button {
+  margin-left: 0.5rem;
+}
+
+.paginate_button:hover {
+  font-weight: bold !important;
+}
+
+.current{
+  font-weight: bold !important;
+}
+
+table.dataTable {
+  margin-top: 1rem;
+  width: 99%;
+}
+
+table.dataTable th {
+    font-weight: bold !important;
+}
+
+.table-responsive {
+  overflow-x: hidden;
+}
+
+/* .dataTables_length {
+  display: none;
+} */
+
+.dataTables_filter {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    flex: 1 1 auto;
+    width: 100%;
+}
+
+.dataTables_filter input {
+    margin-left: 1rem;
+    flex: 1 1 auto;
+}
+
+.table {
+  margin-bottom: 1rem;
+}
+
+.paginate_button {
+  padding: 0.5em 0.75em;
+  border: #efefef;
+  margin-left: 0.5rem;
+  border-radius: 0.1875rem;
+}
+
+.paginate_button.current {
+  background-color: rgba(246, 183, 88, 0.5);
+}
+
+.paginate_button:hover {
+  background-color: rgba(246, 183, 88, 0.25);
+  border-color: rgba(246, 183, 88, 0.25);
+}
+
+.dataTables_wrapper .dataTables_paginate {
+  margin-top: 4px;
+  margin-bottom: 1rem;
+}
+
+input[type="checkbox"] {
+  margin:0.25rem !important;
+}
+
+.page-link {
+  border-width: 0;
+  border-color: #731a19 !important;
+  color: #731a19 !important;
+}
+
+.page-link-active {
+  color: #fff !important;
+  background-color: #731a19 !important;
+  border-color: #731a19 !important;
+}
+
+.dropdown-item:hover{
+  background: #731a19 !important;
+  color: #fff !important;
+}
+
+.card-img-top {
+  width: 100%;
+  height: 10vw;
+  object-fit: center;
+}
+
+.btn-outline-warning:focus {
+  color: rgba(246, 183, 88) !important;
+}
+
+.btn-outline-warning:active, .btn-outline-warning:hover  {
+  color: #fff !important;
+}
+
+.dj-form, .collection-siblings:last-child {
+  background-color: white !important;
+  padding-bottom: 5vh;
+  margin-bottom: 5vh;
+  border-bottom: 1px solid gray;
+}
+
+.collection-siblings > * > .dj-form {
+  border-bottom: 0px !important;
+  padding-bottom: initial;
+  margin-bottom: initial;
+}
+
+django-form-collection > legend {
+  background-color: rgba(246, 183, 88, 0.5) !important;
+}
+
+#filter-collapse > div > div > div > django-formset > div.dj-form.row {
+  background-color: initial !important;
+  padding-bottom: initial;
+  border-bottom: initial;
+  margin-bottom: initial;
+}

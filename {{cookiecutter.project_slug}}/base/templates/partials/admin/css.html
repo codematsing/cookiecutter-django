@@ -1,0 +1,8 @@
+{% extends 'partials/common/css.html' %}
+{% load static i18n compress%}
+<!-- admin css-->
+{% block partial_css %}
+{% compress css %}
+<link href="{% static 'css/admin.css' %}" rel="stylesheet">
+{% endcompress %}
+{% endblock %}

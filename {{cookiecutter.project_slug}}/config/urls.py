@@ -11,6 +11,7 @@ from django.views.generic import TemplateView
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework.authtoken.views import obtain_auth_token
 {%- endif %}
+from commons.views import DashboardView
 
 urlpatterns = [
     path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
@@ -20,8 +21,12 @@ urlpatterns = [
     # Django Admin, use {% raw %}{% url 'admin:index' %}{% endraw %}
     path(settings.ADMIN_URL, admin.site.urls),
     # User management
-    path("users/", include("{{ cookiecutter.project_slug }}.users.urls", namespace="users")),
+    path("users/", include("users.urls", namespace="users")),
     path("accounts/", include("allauth.urls")),
+    # FileManagement
+    path("", include("file_management.urls", namespace="file")),
+    # Admin
+    path("dashboard/", DashboardView.as_view(), name="dashboard"),
     # Your stuff: custom urls includes go here
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 {%- if cookiecutter.use_async == 'y' %}

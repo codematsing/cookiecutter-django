@@ -1,7 +1,7 @@
 # source /path/to/file
 # General
 # ------------------------------------------------------------------------------
-DATABASE_URL=postgres://root:password@127.0.0.1:5432/{{ cookiecutter.project_slug }}
+DATABASE_URL=postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST:$POSTGRES_PORT/$POSTGRES_DB
 USE_DOCKER=yes
 IPYTHONDIR=/app/.ipython
 DJANGO_ALLOWED_HOSTS='localhost,127.0.0.1,0.0.0.0'

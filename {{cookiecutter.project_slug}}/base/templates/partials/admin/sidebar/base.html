@@ -1,0 +1,17 @@
+{% load static %}
+{% load hijack_tags %}
+<!-- partial:partials/_sidebar.html -->
+<nav class="sidebar sidebar-offcanvas" id="sidebar">
+<ul class="nav">
+    <li class="nav-item nav-profile border-bottom pb-3">
+      <a href="#" class="nav-link flex-column">
+        <div class="nav-profile-text d-flex ms-0 flex-column">
+          <span class="font-weight-semibold mb-1 mt-2 text-center">Welcome back, {{request.user.username}}!</span>
+          {% comment %} #TODO: badge for notifications here {% endcomment %}
+          <span class="text-secondary icon-sm mb-3 text-center">*insert notification badge</span>
+        </div>
+        {% render_hijacks %}
+      </a>
+    </li>
+</ul>
+</nav>

@@ -1,0 +1,5 @@
+<ol class="breadcrumb border-0 mb-0 p-0">
+{% for label, href in breadcrumbs.items %}
+<li class="breadcrumb-item"><a href="{{href}}">{{label|capfirst}}</a></li>
+{% endfor %}
+</ol>

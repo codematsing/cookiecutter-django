@@ -1,7 +1,7 @@
 from django.urls import resolve, reverse
 from django.test import TestCase
 from django.test import Client
-from sikap.users.tests.factories import UserFactory
+from users.tests.factories import UserFactory
 from posts.tests.factories import PostFactory
 import logging
 logger = logging.getLogger(__name__)

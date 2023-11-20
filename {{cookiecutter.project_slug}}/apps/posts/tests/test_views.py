@@ -8,7 +8,7 @@ from django.contrib.sessions.middleware import SessionMiddleware
 from django.http import HttpRequest, HttpResponseRedirect
 from django.test import Client, RequestFactory
 from django.urls import reverse
-from sikap.users.tests.factories import UserFactory
+from users.tests.factories import UserFactory
 from posts.tests.factories import PostFactory
 from posts.views import (
     PostListView,

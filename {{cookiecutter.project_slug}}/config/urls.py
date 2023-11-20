@@ -22,8 +22,11 @@ urlpatterns = [
     path(settings.ADMIN_URL, admin.site.urls),
     # Notifications
     path('inbox/notifications', include("notifications.urls", namespace='notifications')),
+    # Posts
+    path("posts/", include("posts.urls", namespace="posts")),
     # User management
     path("users/", include("users.urls", namespace="users")),
+    path("users/registrations/", include("user_registration.urls", namespace="user_registration")),
     path("accounts/", include("allauth.urls")),
     # FileManagement
     path("", include("file_management.urls", namespace="file")),

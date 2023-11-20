@@ -17,7 +17,7 @@ def pdf_view(request, *args, **kwargs):
 	filename = filename.replace('/media/', '')
 	submission = DocumentSubmission.objects.filter(attachment__icontains=filename).last()
 	if request.user.has_perm('view_documentsubmission', submission):
-		return render(request, "pdf/viewer.html", context={'is_downloadable': True})
+		return render(request, "pdf/viewer.html", context={'is_downloadable': getattr(submission, 'is_downloadable', False)})
 	return HttpResponseForbidden()
 
 def download(request, *args, **kwargs):

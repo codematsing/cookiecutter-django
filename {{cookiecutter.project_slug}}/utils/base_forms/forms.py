@@ -2,6 +2,7 @@ from django import forms
 from django.forms.widgets import HiddenInput
 from formset.renderers.bootstrap import FormRenderer
 from formset.collection import FormCollection
+from django.contrib.auth import get_user_model
 from utils.validators import EmailValidator
 import logging
 logger = logging.getLogger(__name__)

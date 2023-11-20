@@ -1,27 +1,24 @@
-.. {{ cookiecutter.project_name }} documentation master file, created by
+.. Project documentation master file, created by
    sphinx-quickstart.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to {{ cookiecutter.project_name }}'s documentation!
+Welcome to Codematsing documentation!
 ======================================================================
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-   howto{% if cookiecutter.use_pycharm == 'y' %}
-   pycharm/configuration{% endif %}
    getting-started
-   projectstructure
-   user-authentication
-   user-preregistration
-   third-party-libraries
-   cookiecutter-app
-   utils
-   tips-and-tricks
-   users
-
+   project-structure
+   coding-guidelines
+   version-control
+   dev-tools
+   deployment-settings
+   utils-modules
+   app-modules
+   handbook
 
 
 Indices and tables

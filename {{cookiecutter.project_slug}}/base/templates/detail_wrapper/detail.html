@@ -1,39 +1,30 @@
+<div class="row grid-margin">
 <div class="card p-0">
-  <div class="card-header p-3 bg-warning bg-opacity-50">
-    <div class="d-flex justify-content-between px-2">
-      <div class="card-title align-self-center mb-0">Details</div>
-      {% if show_action_buttons %}
-      <div class="text-muted">
-        <a
-          href="{{object.get_update_url}}"
-          class="btn btn-sm btn-warning"
-          title="Update"
-        >
-          <i class="mdi mdi-pencil mouse-pointer"></i>
-        </a>
-        <a
-          href="{{object.get_delete_url}}"
-          class="btn btn-sm btn-danger"
-          title="Delete"
-        >
-          <i class="mdi mdi-delete"></i>
-        </a>
+  <a class="text-decoration-none"
+     data-bs-toggle="collapse"
+     href="#details"
+     aria-expanded="true"
+     aria-controls="apps">
+    <div class="card-header p-3 bg-warning bg-opacity-50">
+      <div class="d-flex justify-content-between px-2">
+        <div class="card-title align-self-center mb-0">{{card_header}}</div>
       </div>
-      {% endif %}
     </div>
-  </div>
+  </a>
   <div class="card-body multi-collapse" id="details">
     <div class="card-text">
+      <p class="text-muted "><i>{{card_subheader}}</i></p>
       <div class="table-responsive">
-        <table class="table table-borderless">
-        {% for field_name, field_value in fields.items %}
-        <tr>
-        <td class="text-muted">{{field_name|title}}</td>
-        <td>{{field_value|safe}}</td>
-        </tr>
-        {% endfor %}
+        <table class="table table-borderless w-auto">
+          {% for field_name, field_value in fields.items %}
+            <tr>
+              <td class="text-muted">{{ field_name|title }}</td>
+              <td>{{ field_value|safe }}</td>
+            </tr>
+          {% endfor %}
         </table>
       </div>
     </div>
   </div>
+</div>
 </div>

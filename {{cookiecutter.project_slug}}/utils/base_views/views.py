@@ -26,7 +26,7 @@ class BaseFormMixin(FormViewMixin, FileUploadMixin):
 			hidden_fields = set(getattr(self, 'hidden_fields', [])).intersection(set(field.name for field in self.model._meta.fields))
 			fields = set(getattr(self, 'fields', []))
 			if self.fields != '__all__':
-				self.fields = (self.fields 
+				self.fields = (self.fields
 					+ list(disabled_fields.difference(fields))
 					+ list(hidden_fields.difference(fields))
 					)
@@ -102,12 +102,18 @@ class BaseFormMixin(FormViewMixin, FileUploadMixin):
 		messages.success(self.request, f"{self.object} has been saved")
 		return JsonResponse({'success_url': self.get_success_url()})
 
+	def form_invalid(self, form):
+		logger.info(vars(form))	
+		logger.info(form.errors)	
+		return super().form_invalid(form)
+	
+
 class BaseMixin:
 	def get_header_buttons(self):
 		"""List of urls that is contained in header button
 
 		Returns:
-			list(dict): ['icon': 'mdi-... 'label': '...', 'href': '#']
+			list[dict]: [{'icon': 'mdi-... 'label': '...', 'href': '#'}]
 		"""
 		if hasattr(self, 'header_buttons'):
 			return self.header_buttons
@@ -122,7 +128,7 @@ class BaseMixin:
 		"""Dict for breadcrumbs
 
 		Returns:
-			dict: ['parent_label':'parent_href', 'child_label':'child_href']
+			list[dict]: [{'parent_label':'parent_href', 'child_label':'child_href'}]
 		"""
 		if hasattr(self, 'breadcrumbs'):
 			return self.breadcrumbs
@@ -137,6 +143,9 @@ class BaseMixin:
 
 class BaseFormCollectionView(BaseMixin, FormCollectionView):
 	template_name = "pages/form.html"
+	# follow form collection get_field format: nested '.'
+	disabled_fields = []
+	hidden_fields = []
 	def disable_field(self, field):
 		field.widget.attrs.update({'disabled':True})
 		return field
@@ -149,19 +158,15 @@ class BaseFormCollectionView(BaseMixin, FormCollectionView):
 	def get_form_collection(self):
 		form_collection = super().get_form_collection()
 		if hasattr(self, 'disabled_fields'):
-			for form_name, d_fields in self.disabled_fields.items():
-				for field_name in d_fields:
-					field = form_collection.get_field(f'{form_name}.{field_name}')
-					self.disable_field(field)
+			for field in self.disabled_fields:
+				self.disable_field(form_collection.get_field(field))
 		if hasattr(self, 'hidden_fields'):
-			for form_name, h_fields in self.hidden_fields.items():
-				for field_name in h_fields:
-					field = form_collection.get_field(f'{form_name}.{field_name}')
-					logger.info(field)
-					self.hide_field(field)
+			for field in self.hidden_fields:
+				self.hide_field(form_collection.get_field(field))
 		return form_collection
 
 	def get_success_url(self):
+		# return None #debug
 		http_meta = self.request.META.get('HTTP_REFERER', None)
 		if success_url := super().get_success_url():
 			logger.info(f"DEFAULTS to {self.__class__.__name__}'s success_url: {self.success_url}")
@@ -192,6 +197,7 @@ class BaseFormCollectionView(BaseMixin, FormCollectionView):
 
 	def form_collection_invalid(self, form_collection):
 		logger.warning(vars(form_collection))
+		logger.warning(form_collection._errors)
 		return super().form_collection_invalid(form_collection)
 
 	def form_collection_valid(self, form_collection):
@@ -201,16 +207,14 @@ class BaseFormCollectionView(BaseMixin, FormCollectionView):
 
 class BaseCreateFormCollectionView(BaseFormCollectionView):
 	def form_collection_valid(self, form_collection):
-		self.object = form_collection.create()
-		return super().form_collection_valid(form_collection)
-
-	def form_collection_valid(self, form_collection):
+		logger.info("valid form collection")
 		self.object = form_collection.create()
 		messages.success(self.request, f"{self.object} has been created")
 		return JsonResponse({'success_url': self.get_success_url()})
 
 class BaseUpdateFormCollectionView(BaseFormCollectionView, SingleObjectMixin):
 	def form_collection_valid(self, form_collection):
+		logger.info("valid form collection")
 		self.object = form_collection.update()
 		messages.success(self.request, f"{self.object} has been updated")
 		return JsonResponse({'success_url': self.get_success_url()})
@@ -241,7 +245,7 @@ class BaseWAjaxDatatableMixin:
 			return json.dumps(_list)
 		else:
 			return json.dumps(None)
-	
+
 	def get_ajax_list_url(self):
 		"""Ajax list url that will be processed in template view
   		"""
@@ -294,7 +298,8 @@ class BaseCreateView(BaseMixin, BaseFormMixin, CreateView):
 
 	def form_valid(self, form):
 		self.object = form.save()
-		messages.success(self.request, f"{self.object} has been created")
+		if not self.success_message:
+			messages.success(self.request, f"{self.object} has been created")
 		return JsonResponse({'success_url': self.get_success_url()})
 
 
@@ -370,8 +375,8 @@ class BaseDeleteView(BaseMixin, DetailWrapperMixin, DeleteView):
 		return context
 
 	def get_success_url(self):
-		return reverse_lazy(f"{':'.join(self.request.resolver_match.namespaces)}:list", kwargs=self.kwargs)
-		
+		return reverse_lazy(f"{':'.join(self.request.resolver_match.namespaces)}:list")
+
 class BaseActionView(RedirectView):
 	pass
 

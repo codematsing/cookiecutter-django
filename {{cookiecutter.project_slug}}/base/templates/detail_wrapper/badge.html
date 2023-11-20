@@ -1,5 +1,6 @@
 <span 
-class="badge" 
+class="badge my-auto" 
+title="{{field.description}}"
 style="
 {% if field.background %}
 background-color:{{field.background}}; 
@@ -11,8 +12,8 @@ color:{{field.foreground}};
 {% else %}
 color: rgba(var(--bs-white-rgb), var(--bs-text-opacity));
 {% endif %}
+font-size: inherit;
 "
-title="{{field.description}}"
 >
 {{field}}
 </span>

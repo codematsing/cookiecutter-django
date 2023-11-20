@@ -1,7 +1,7 @@
 from django.apps import AppConfig
 
 
-class {{cookiecutter.snake_case_app_name}}Config(AppConfig):
+class {{cookiecutter.camel_case_app_name}}Config(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = '{{cookiecutter.app_location}}'
 

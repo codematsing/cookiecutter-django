@@ -53,13 +53,14 @@
   <small class="card-body pt-0">
     <div class="card-text text-muted">
       {% if ACCOUNT_ALLOW_REGISTRATION %}
-        {% blocktranslate trimmed %}
-          <h6>For students with no UP and no site account:</h6>
+          <h6>For students with no UP and no {{cookiecutter.project_name}} account:</h6>
           <div>
-            Kindly <a href="{{ signup_url }}">apply</a> for an account.
+            Kindly <a href="{% url 'user_registration:create' %}">apply</a> for an account.
           </div>
           <i>Applicants are subject to verification. Please monitor your email for approval status.</i>
-        {% endblocktranslate %}
+          <p>
+          <i>Approved applicants may signup using ths <a href="{{ signup_url }}">link</a>.</i>
+          </p>
       {% endif %}
     </div>
   </small>

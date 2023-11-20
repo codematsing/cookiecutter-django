@@ -19,23 +19,18 @@ if os.getenv("READTHEDOCS", default=False) == "True":
     os.environ["DJANGO_READ_DOT_ENV_FILE"] = "True"
     os.environ["USE_DOCKER"] = "no"
 else:
-{%- if cookiecutter.use_docker == 'y' %}
-    sys.path.insert(0, os.path.abspath("/app"))
-{%- else %}
     sys.path.insert(0, os.path.abspath(".."))
-{%- endif %}
+    sys.path.insert(0, os.path.abspath("/app"))
 os.environ["DATABASE_URL"] = "sqlite:///readthedocs.db"
-{%- if cookiecutter.use_celery == 'y' %}
 os.environ["CELERY_BROKER_URL"] = os.getenv("REDIS_URL", "redis://redis:6379")
-{%- endif %}
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.local")
 django.setup()
 
 # -- Project information -----------------------------------------------------
 
-project = "{{ cookiecutter.project_name }}"
-copyright = """{% now 'utc', '%Y' %}, {{ cookiecutter.author_name }}"""
-author = "{{ cookiecutter.author_name }}"
+project = "{{ cookiecutter.project_name.upper() }}"
+copyright = """2023, Sam Solis"""
+author = "Sam Solis"
 
 
 # -- General configuration ---------------------------------------------------
@@ -44,8 +39,10 @@ author = "{{ cookiecutter.author_name }}"
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    "sphinx_rtd_theme",
     "sphinx.ext.autodoc",
     "sphinx.ext.napoleon",
+    'sphinxcontrib.plantuml',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -61,9 +58,14 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = "alabaster"
+html_theme = "sphinx_rtd_theme"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 # html_static_path = ["_static"]
+
+print(os.getcwd())
+
+# https://github.com/sphinx-contrib/plantuml#:~:text=You%20may%20also%20need%20to%20specify%20the%20plantuml%20command%20in%20your%20conf.py%3A
+plantuml = f'java -jar {os.path.join(os.getcwd(), "plantuml.jar")}'

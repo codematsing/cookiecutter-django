@@ -1,0 +1,57 @@
+{% load humanize%}
+  {% include 'portfolio/partials/student_header.html' %}
+<div class="card">
+  <div class="card-header p-3 bg-warning bg-opacity-50">
+    <div class="d-flex justify-content-between px-2">
+      <div class="card-title align-self-center mb-0">Portfolio</div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="card-text">
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <tr>
+            <th>Form</th>
+            <th>Status</th>
+            <th>Last Update</th>
+            <th>Remarks</th>
+            <th>Actions</th>
+          </tr>
+          {% for item in request.user.portfolio_records %}
+            <tr>
+              <td class="py-3">{{ item.title|title }}</td>
+              <td class="py-3">{{ item.status.render_status | safe }}</td>
+              <td class="py-3">{{ item.object.updated_at|naturalday }}</td>
+              <td class="py-3">{{ item.object.comments }}</td>
+              <td class="py-3">
+                {% if item.object %}
+                  <a class="me-2 d-inline text-decoration-none"
+                     href="{{ item.object.get_absolute_url }}"
+                     title="view">
+                    <i class="mdi mdi-eye"></i>
+                  </a>
+                  {% if request.user == item.object.user and item.object.is_editable_by_owner %}
+                    <a class="d-inline text-decoration-none"
+                       href="{{ item.object.get_update_url }}"
+                       title="update">
+                      <i class="mdi mdi-pencil"></i>
+                    </a>
+                  {% else %}
+                    <i class="mdi mdi-pencil-lock"
+                       title="Verified document. Editing Locked."></i>
+                  {% endif %}
+                {% elif request.user.is_student %}
+                  <a class="d-inline text-decoration-none"
+                     href="{% url item.create_url %}"
+                     title="create">
+                    <i class="mdi mdi-pencil"></i>
+                  </a>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

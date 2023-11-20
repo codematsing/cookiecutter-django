@@ -4,19 +4,19 @@
   "description": "Behold My Awesome Project!",
   "author_name": "Sam Solis",
   "domain_name": "codematsing.com",
-  "email": "{{ cookiecutter.author_name.lower()|replace(' ', '-') }}@{{ cookiecutter.domain_name }}",
+  "email": "sam.solis@codematsing.com",
   "version": "0.1.0",
   "open_source_license": [
+    "Not open source",
     "MIT",
     "BSD",
     "GPLv3",
-    "Apache Software License 2.0",
-    "Not open source"
+    "Apache Software License 2.0"
   ],
   "timezone": "UTC",
   "windows": "n",
   "use_pycharm": "n",
-  "use_docker": "n",
+  "use_docker": "y",
   "postgresql_version": [
     "14",
     "13",
@@ -25,41 +25,41 @@
     "10"
   ],
   "cloud_provider": [
+    "None",
     "AWS",
     "GCP",
-    "Azure",
-    "None"
+    "Azure"
   ],
   "mail_service": [
-    "Mailgun",
-    "Amazon SES",
-    "Mailjet",
-    "Mandrill",
-    "Postmark",
-    "Sendgrid",
-    "SendinBlue",
-    "SparkPost",
     "Other SMTP"
   ],
   "use_async": "n",
-  "use_drf": "n",
+  "use_drf": "y",
   "use_elasticsearch": "n",
   "frontend_pipeline": [
-    "None",
     "Django Compressor",
-    "Gulp"
+    "Gulp",
+    "None"
   ],
   "use_celery": "n",
   "use_mailhog": "n",
-  "use_sentry": "n",
-  "use_whitenoise": "n",
+  "use_sentry": "y",
+  "use_whitenoise": "y",
   "use_heroku": "n",
   "ci_tool": [
-    "None",
+    "Github",
     "Travis",
     "Gitlab",
-    "Github"
+    "None"
   ],
   "keep_local_envs_in_vcs": "y",
-  "debug": "n"
+  "debug": "n",
+  "_copy_without_render": [
+    ".local_venv/*",
+    ".prod_venv/*",
+    "base/templates/*",
+    "base/static/*",
+    "utils/cookiecutter-app/*",
+    "utils/**/templates/*"
+  ]
 }

@@ -1,0 +1,20 @@
+<a class="me-2 d-inline text-decoration-none" href="{{record.get_absolute_url}}" title="view">
+  <i class="mdi mdi-eye"></i>
+</a>
+{% if has_update_permission %}
+<div class="dropdown d-inline-block">
+  <a href="#" id="dropdown-table" data-bs-toggle="dropdown" aria-expanded="true">
+  </a>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-table">
+    <li class="dropdown-item">
+      <a class="dropdown-item" href="{{record.get_approve_url}}">Approve</a>
+    </li>
+    <li class="dropdown-item">
+      <a class="dropdown-item" disabled href="{{record.get_reject_url}}">Reject</a>
+    </li>
+  </ul>
+</div>
+<a class="dropdown-item" href="{{record.get_approve_url}}">Approve
+  <i class="mdi mdi-account-check" title="Approve"></i>
+</a>
+{% endif %}

@@ -1,0 +1,11 @@
+{% load account socialaccount %}
+
+<p>Hello <strong>{{ object.first_name }}</strong> - your registration request has been approved.</p>
+
+<ul style="list-style-type: none">
+  <li>Name: <strong>{{ object.first_name }} {{ object.last_name }}</strong></li>
+  <li>Student Number: <strong>{{ object.student_number }}</strong></li>
+  <li>Email: <strong>{{ object.email }}</strong></li>
+</ul>
+
+<p>You may now signup for a {{cookiecutter.project_name}} account</p>

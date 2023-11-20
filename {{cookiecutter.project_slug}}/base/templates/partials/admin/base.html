@@ -4,10 +4,10 @@
 <html lang="{{ LANGUAGE_CODE }}">
   <head>
     <title>
-      {% block title %}CODEMATSING{% endblock %}
+      {% block title %}{{cookiecutter.project_name}}{% endblock %}
     </title>
     {% include 'partials/admin/head.html' %}
-    {% block extra_css %}{% endblock %}
+    <style>{% block extra_css %}{% endblock %}</style>
   </head>
   <body>
     <div class="container-scroller">
@@ -36,32 +36,36 @@
                 <div class="card-title m-0 ">
                   <h2 class="m-0">
                     {% block page_title %}{{ page_title|capfirst }}{% endblock %}
-                    <h2>
-                      <small class="d-block text-muted">
-                        {% if breadcrumbs %}
-                          {% include 'partials/common/breadcrumbs.html' %}
-                        {% endif %}
-                      </small>
-                    </div>
-                    <div class="align-self-start">
-                      {% if header_buttons %}
-                        {% include 'partials/common/header_button.html' %}
-                      {% endif %}
-                    </div>
-                  </div>
+                  </h2>
+                  <small class="d-block text-muted">
+                    {% if breadcrumbs %}
+                      {% include 'partials/common/breadcrumbs.html' %}
+                    {% endif %}
+                  </small>
                 </div>
-                {% block content %}{% endblock %}
+                <div class="align-self-start my-auto">
+									{% block header_right %}
+                  {% if header_buttons %}
+                    {% include 'partials/common/header_button.html' %}
+                  {% endif %}
+									{% endblock %}
+                </div>
               </div>
-              <!-- content-wrapper ends -->
-              <!-- partial:partials/_footer.html -->
-              {% include 'partials/admin/footer.html' %}
-              <!-- partial -->
             </div>
-            <!-- main-panel ends -->
+            {% block supercontent %}{% endblock %}
+            {% block content %}{% endblock %}
+            {% block subcontent %}{% endblock %}
           </div>
-          <!-- page-body-wrapper ends -->
+          <!-- content-wrapper ends -->
+          <!-- partial:partials/_footer.html -->
+          {% include 'partials/admin/footer.html' %}
+          <!-- partial -->
         </div>
-        {% include 'partials/admin/js.html' %}
-        {% block extra_js %}{% endblock %}
-      </body>
-    </html>
+        <!-- main-panel ends -->
+      </div>
+      <!-- page-body-wrapper ends -->
+    </div>
+    {% include 'partials/admin/js.html' %}
+    {% block extra_js %}{% endblock %}
+  </body>
+</html>

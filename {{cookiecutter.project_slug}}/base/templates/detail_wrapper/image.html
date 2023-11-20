@@ -1,1 +1,3 @@
-<img src="{{field.image.url}}"/>
+{% if field %}
+<img src="{{field.url}}"/>
+{% endif %}

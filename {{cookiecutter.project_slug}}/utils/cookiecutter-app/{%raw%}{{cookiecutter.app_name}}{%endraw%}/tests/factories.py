@@ -11,12 +11,12 @@ from factory import (
     LazyAttribute,
 )
 from random import randint, sample
-from {{cookiecutter.app_location}}.models import {{cookiecutter.snake_case_model_name}}
+from {{cookiecutter.app_location}}.models import {{cookiecutter.camel_case_model_name}}
 from users.tests.factories import UserFactory
 
-class {{cookiecutter.snake_case_model_name}}Factory(DjangoModelFactory):
+class {{cookiecutter.camel_case_model_name}}Factory(DjangoModelFactory):
     name = Faker("name")
     updated_by = SubFactory(UserFactory)
 
     class Meta:
-        model = {{cookiecutter.snake_case_model_name}}
+        model = {{cookiecutter.camel_case_model_name}}

@@ -2,7 +2,7 @@ from django import forms
 from django.urls import reverse_lazy
 from django.contrib import messages
 from utils.detail_wrapper.views import DetailView
-from dal import autocomplete
+from django.contrib.auth.mixins import LoginRequiredMixin
 from utils.base_views.views import (
     BaseListView,
     BaseCreateView,
@@ -17,23 +17,23 @@ import logging
 logger = logging.getLogger(__name__)
 
 # Create your views here.
-class AdminListView(BaseListView):
+class AdminListView(BaseListView, LoginRequiredMixin):
 	template_name='pages/admin/list.html'
 
-class AdminCreateView(BaseCreateView):
+class AdminCreateView(BaseCreateView, LoginRequiredMixin):
 	template_name='pages/admin/create.html'
 
-class AdminDetailView(BaseDetailView):
+class AdminDetailView(BaseDetailView, LoginRequiredMixin):
 	template_name='pages/admin/detail.html'
 
-class AdminUpdateView(BaseUpdateView):
+class AdminUpdateView(BaseUpdateView, LoginRequiredMixin):
 	template_name='pages/admin/update.html'
 
-class AdminDeleteView(BaseDeleteView):
+class AdminDeleteView(BaseDeleteView, LoginRequiredMixin):
 	template_name='pages/admin/delete.html'
 
-class AdminCreateFormCollectionView(BaseCreateFormCollectionView):
+class AdminCreateFormCollectionView(BaseCreateFormCollectionView, LoginRequiredMixin):
 	template_name='pages/admin/create.html'
 
-class AdminUpdateFormCollectionView(BaseUpdateFormCollectionView):
+class AdminUpdateFormCollectionView(BaseUpdateFormCollectionView, LoginRequiredMixin):
 	template_name='pages/admin/update.html'

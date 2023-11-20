@@ -18,6 +18,14 @@ class BaseListAjaxView(AjaxDatatableView):
 		{'name':'action', 'searchable':False},
 	]
 
+	def list_autofilter_choices(self, request, column_spec, field, initial_search_value):
+		qs = self.get_initial_queryset(request)
+		if column_spec['name'] in self.model._meta.fields and hasattr(self.model._meta.get_field(column_spec['name']), 'related_model'):
+			return [(str(item), str(item)) for item in qs.values_list(column_spec['name'], flat=True).distinct()]
+		elif foreign_field := column_spec.get('foreign_field', False):
+			return [(str(item), str(item)) for item in qs.values_list(column_spec['foreign_field'], flat=True).distinct()]
+		return super().list_autofilter_choices(request, column_spec, field, initial_search_value)
+
 	def sort_queryset(self, params, qs):
 		if ordering := getattr(self.model._meta, 'ordering'):
 			return qs.order_by(*ordering)
@@ -62,6 +70,20 @@ class BaseListAjaxView(AjaxDatatableView):
 	def customize_row(self, row, obj):
 		row['action'] = render_to_string('tables/action_column.html', {'record':obj, 'has_update_permission':self.get_update_permission()}) 
 		return
+
+class SelectableListAjaxView(BaseListAjaxView):
+
+	def get_column_defs(self, request):
+		column_defs = super().get_column_defs(request)
+		if not any(filter(lambda col: col['name']=='select', column_defs)):
+			column_defs.insert(1, {'name':'select', 'title': 'Select', 'width':'1rem', 'choices':((True, 'Selected'), (False, 'Deselected'))})
+		return column_defs
+
+	def customize_row(self, row, obj):
+		super().customize_row(row, obj)
+		row['select'] = f'<input type="checkbox" class="datatable-checkbox" name="select" width="5rem" value={obj.pk}>'
+		return
+	pass
 
 class BaseCreateAjaxView(View):
 	def get(self, request):

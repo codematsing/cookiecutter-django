@@ -70,3 +70,4 @@ pandas==1.4.4
 django-formset==1.1
 django-comments-xtd==2.9.9
 django-auditlog==2.3.0
+black==22.10.0

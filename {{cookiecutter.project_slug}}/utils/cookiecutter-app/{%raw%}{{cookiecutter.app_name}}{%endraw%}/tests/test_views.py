@@ -9,21 +9,21 @@ from django.http import HttpRequest, HttpResponseRedirect
 from django.test import Client, RequestFactory
 from django.urls import reverse
 from users.tests.factories import UserFactory
-from {{cookiecutter.app_location}}.tests.factories import {{cookiecutter.snake_case_model_name}}Factory
+from {{cookiecutter.app_location}}.tests.factories import {{cookiecutter.camel_case_model_name}}Factory
 from {{cookiecutter.app_location}}.views import (
-    {{cookiecutter.snake_case_model_name}}ListView,
-    {{cookiecutter.snake_case_model_name}}DetailView,
-    {{cookiecutter.snake_case_model_name}}UpdateView,
-    {{cookiecutter.snake_case_model_name}}DeleteView,
+    {{cookiecutter.camel_case_model_name}}ListView,
+    {{cookiecutter.camel_case_model_name}}DetailView,
+    {{cookiecutter.camel_case_model_name}}UpdateView,
+    {{cookiecutter.camel_case_model_name}}DeleteView,
 )
 import logging
 logger = logging.getLogger(__name__)
 
-class {{cookiecutter.snake_case_model_name}}ViewTestCase(TestCase):
+class {{cookiecutter.camel_case_model_name}}ViewTestCase(TestCase):
 
     def setUp(self):
         self.user = UserFactory()
-        self.object = {{cookiecutter.snake_case_model_name}}Factory(updated_by=self.user)
+        self.object = {{cookiecutter.camel_case_model_name}}Factory(updated_by=self.user)
         logger.info(f"{self.object} created")
 
     # def test_list_view(self):

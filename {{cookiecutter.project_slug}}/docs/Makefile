@@ -7,11 +7,7 @@ SPHINXOPTS    ?=
 SPHINXBUILD   ?= sphinx-build
 SOURCEDIR     = .
 BUILDDIR      = ./_build
-{%- if cookiecutter.use_docker == 'y' %}
 APP = /app
-{%- else %}
-APP = ../{{cookiecutter.project_slug}}
-{% endif %}
 
 .PHONY: help livehtml apidocs Makefile
 
@@ -21,10 +17,7 @@ help:
 
 # Build, watch and serve docs with live reload
 livehtml:
-	sphinx-autobuild -b html
-	{%- if cookiecutter.use_docker == 'y' %} --host 0.0.0.0
-	{%- else %} --open-browser
-	{%- endif %} --port 9000 --watch $(APP) -c . $(SOURCEDIR) $(BUILDDIR)/html
+	sphinx-autobuild -b html --host 0.0.0.0 --port 9000 --watch $(APP) -c . $(SOURCEDIR) $(BUILDDIR)/html
 
 # Outputs rst files from django application code
 apidocs:

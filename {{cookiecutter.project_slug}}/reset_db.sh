@@ -18,4 +18,3 @@ createdb -h localhost -p 5432 -U $POSTGRES_USER $POSTGRES_DB
 echo "$POSTGRES_DB recreated"
 
 echo "You may now reload database from fixtures"
-

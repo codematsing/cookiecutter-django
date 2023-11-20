@@ -4,21 +4,41 @@
     <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
         <span class="mdi mdi-chevron-double-left"></span>
     </button>
+    {% comment %} <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
+        <a class="navbar-brand brand-logo-mini" href="{% url 'dashboard' %}"><img src="{% static 'logos/logo_white.png' %}" alt="logo" class="img-fluid"/></a>
+    </div> {% endcomment %}
     <ul class="navbar-nav">
         <a class="navbar-brand brand-logo-mini" href="{% url 'dashboard' %}"><img src="{% static 'logos/logo_white.png' %}" alt="logo" class="img-fluid"/></a>
+        {% comment %} #TODO: messages summary {% endcomment %} 
+        {% comment %}<li class="nav-item dropdown">
+        <a class="nav-link" id="messageDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="mdi mdi-email-outline"></i>
+        </a>
+        <div class="dropdown-menu dropdown-menu-left navbar-dropdown preview-list" aria-labelledby="messageDropdown"></div>
+        </li> {% endcomment %}
+        {% comment %} #TODO: notification of submissions {% endcomment %} 
+        {% comment %} <li class="nav-item dropdown ms-3">
+        <a class="nav-link" id="notificationDropdown" href="#" data-bs-toggle="dropdown">
+            <i class="mdi mdi-bell-outline"></i>
+        </a>
+        <div class="dropdown-menu dropdown-menu-left navbar-dropdown preview-list" aria-labelledby="notificationDropdown"></div>
+        </li> {% endcomment %}
     </ul>
     <ul class="navbar-nav navbar-nav-right">
       <li class="nav-item nav-logout d-none d-lg-block">
+        {% comment %} #TODO: url{% endcomment %}
         <a class="nav-link" href="{% url 'dashboard' %}">
           <i class="mdi mdi-view-quilt" title="Go back to dashboard"></i>
         </a>
       </li>
       <li class="nav-item nav-logout d-none d-lg-block">
+        {% comment %} #TODO: url{% endcomment %}
         <a class="nav-link" href="{% url 'home' %}">
           <i class="mdi mdi-home" title="Go back to posts"></i>
         </a>
       </li>
       <li class="nav-item nav-logout d-none d-lg-block">
+        {% comment %} #TODO: url{% endcomment %}
         <a class="nav-link" href="{% url 'account_logout' %}">
           <i class="mdi mdi-logout" title="Logout"></i> Logout
         </a>

@@ -20,7 +20,7 @@ if READ_DOT_ENV_FILE:
 # GENERAL
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#debug
-DEBUG = env.bool("DJANGO_DEBUG", False)
+DEBUG = os.environ.get("DEBUG", "False") == "True"
 # Local time zone. Choices are
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # though not all of them may be available with every OS.
@@ -31,7 +31,7 @@ TIME_ZONE = "Asia/Manila"
 # https://docs.djangoproject.com/en/dev/ref/settings/#language-code
 LANGUAGE_CODE = "en-us"
 # https://docs.djangoproject.com/en/dev/ref/settings/#site-id
-SITE_ID = 1
+SITE_ID = int(os.environ.get("SITE_ID", 1))
 # https://docs.djangoproject.com/en/dev/ref/settings/#use-i18n
 USE_I18N = True
 # https://docs.djangoproject.com/en/dev/ref/settings/#use-tz
@@ -40,6 +40,7 @@ USE_TZ = True
 LOCALE_PATHS = [str(ROOT_DIR / "locale")]
 # Dateformat
 DATE_INPUT_FORMATS = ['%m-%d-%Y']
+ALLOWED_HOSTS=os.environ.get("DJANGO_ALLOWED_HOSTS").split(",")
 
 # DATABASES
 # ------------------------------------------------------------------------------
@@ -52,20 +53,18 @@ DATE_INPUT_FORMATS = ['%m-%d-%Y']
     # }
 # }
 
-user=env("POSTGRES_USER")
-pw=env("POSTGRES_PASSWORD")
-host=env("POSTGRES_HOST")
-port=env("POSTGRES_PORT")
-db=env("POSTGRES_DB")
-default_db_url = "postgres://%s:%s@%s:%s/%s" % (user, pw, host, port, db)
-
 DATABASES = {
-    "default": env.db(
-        "DATABASE_URL",
-        default=default_db_url,
-    ),
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.environ.get("POSTGRES_DB"),
+        'USER': os.environ.get("POSTGRES_USER"),
+        'PASSWORD': os.environ.get("POSTGRES_PASSWORD"),
+        'HOST': os.environ.get("POSTGRES_HOST"),
+        'PORT': os.environ.get("POSTGRES_PORT"),
+    }
 }
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
+DATABASES["default"]["DISABLE_SERVER_SIDE_CURSORS"] = True
 # https://docs.djangoproject.com/en/stable/ref/settings/#std:setting-DEFAULT_AUTO_FIELD
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
@@ -90,17 +89,10 @@ DJANGO_APPS = [
     "django.forms",
 ]
 THIRD_PARTY_APPS = [
-    # select2 fields
-    "dal",
-    "dal_select2",
-    "dal_queryset_sequence",
     # models
     "colorfield",
-    "martor",
     "mptt",
     # forms
-    "crispy_forms",
-    "crispy_bootstrap5",
     "formtools",
     # auth
     "allauth",
@@ -131,15 +123,20 @@ THIRD_PARTY_APPS = [
     "formset",
     # datatable
     "ajax_datatable",
+    'django_tables2',
 ]
 
 UTIL_APPS = [
-    "base.mock_data" #dummy generator
+    "base.mock_data", #dummy generator
+    "base.test_email" #test email
 ]
 
 LOCAL_APPS = [
     "users",
     "file_management",
+    "user_registration",
+    "posts",
+    "tags",
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -204,6 +201,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.common.BrokenLinkEmailsMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "auditlog.middleware.AuditlogMiddleware",
 ]
 
 # STATIC
@@ -256,7 +254,7 @@ TEMPLATES = [
                 "users.context_processors.allauth_settings",
             ],
             "libraries": {
-                "util_tags": "utils.tags.tags",
+                "util_tags": "utils.template_tags",
                 "detail_tags": "utils.detail_wrapper.tags",
                 "hijack_tags": "utils.hijack_wrapper.tags",
                 }
@@ -266,10 +264,6 @@ TEMPLATES = [
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#form-renderer
 FORM_RENDERER = "django.forms.renderers.TemplatesSetting"
-
-# http://django-crispy-forms.readthedocs.io/en/latest/install.html#template-packs
-CRISPY_TEMPLATE_PACK = "bootstrap5"
-CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 
 # FIXTURES
 # ------------------------------------------------------------------------------

@@ -9,7 +9,7 @@ import os
 #     return f"{instance.name}_v{instance.version_no}_{timestamp}{ext}" 
 
 # Create your models here.
-class {{cookiecutter.snake_case_model_name}}(models.Model):
+class {{cookiecutter.camel_case_model_name}}(models.Model):
     name = models.CharField(
         max_length=128, 
         blank=True, 

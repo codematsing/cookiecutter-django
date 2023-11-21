@@ -7,12 +7,12 @@
            aria-controls="apps">
             <div class="card-header p-3 bg-warning bg-opacity-50">
                 <div class="d-flex px-2">
-                    <div class="card-title align-self-center mb-0"><a href="{% url 'file:pdf' %}?file={{object.attachment.url}}">{{ field.metadata }}</a></div>
+                    <div class="card-title align-self-center mb-0"><a href="{% url 'file:pdf' %}?file={{field.url}}">{{ object.metadata }}</a></div>
                 </div>
             </div>
         </a>
         <div class="card-body multi-collapse" id="document-{{ object.pk }}">
-            <iframe src="{% url 'file:pdf' %}?file={{ object.attachment.url }}"
+            <iframe src="{% url 'file:pdf' %}?file={{ field.url }}"
                     width="100%"
                     height="800px">
             </iframe>

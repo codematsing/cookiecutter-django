@@ -48,8 +48,8 @@ class DetailWrapperMixin:
         elif isinstance(field_obj, models.ImageField):
             return render_to_string('detail_wrapper/image.html', {'field':_field_value})
         elif isinstance(field_obj, models.FileField):
-            if re.fullmatch(r".*\.pdf", _field_value):
-                return render_to_string('detail_wrapper/pdf.html', {'field':_field_value})
+            if re.fullmatch(r".*\.pdf", str(_field_value)):
+                return render_to_string('detail_wrapper/pdf.html', {'object': obj, 'field':_field_value})
             else:
                 return render_to_string('detail_wrapper/file.html', {'field':_field_value})
         elif isinstance(field_obj, models.URLField):

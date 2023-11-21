@@ -52,7 +52,6 @@
                 {% if moderate_user_registration %}
                   <a class="button secondaryAction ms-3"
                      href="{% url 'user_registration:create' %}">Apply for an account</a>
-                {% endif %}
                 {% get_settings_value 'ACCOUNT_ALLOW_REGISTRATION' as account_allow_registration %}
                 {% elif account_allow_registration %}
                   <a class="button secondaryAction ms-3" href="{% url 'account_signup' %}">Register</a>

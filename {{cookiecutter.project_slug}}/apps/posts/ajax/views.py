@@ -18,8 +18,7 @@ class PostListAjaxView(BaseListAjaxView):
 	column_defs = [
 		{'name':'pk', 'visible':False},
 		{'name':'title'},
-		{'name':'updated_at', 'searchable':False},
-		{'name':'updated_by', 'foreign_field':'updated_by__username'},
+		{'name':'updated_at', 'foreign_field': 'history__timestamp','title':'Updated At', 'searchable':False},
 		{'name':'is_published', 'choices':[[True, 'Published'], [False, 'Draft']]},
 		{'name':'action', 'searchable':False},
 	]

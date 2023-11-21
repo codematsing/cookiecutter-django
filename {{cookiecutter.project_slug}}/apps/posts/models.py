@@ -48,3 +48,5 @@ class Post(AbstractAuditedModel):
             )
 
     class Meta:
+        ordering = ['-history__timestamp', 'is_published']
+        get_latest_by = 'history__timestamp'

@@ -1,6 +1,7 @@
 from django.urls import path, include
 from .views import (
     PostListView,
+    PostManagementListView,
     PostCreateView,
     PostDetailView,
     PostUpdateView,
@@ -15,6 +16,11 @@ urlpatterns = [
         "",
         PostListView.as_view(),
         name="list"
+    ),
+    path(
+        "manage/",
+        PostManagementListView.as_view(),
+        name="managed_list"
     ),
     # create
     path(

@@ -9,8 +9,7 @@ class PostForm(BaseModelForm):
 
     class Meta:
         model = Post
-        exclude = ['created_at', 'updated_at']
+        exclude = ['history_remarks']
         widgets = {
             'thumbnail': UploadedFileInput(),
-            'updated_by': forms.HiddenInput(),
         }

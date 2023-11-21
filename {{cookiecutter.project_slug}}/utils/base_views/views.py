@@ -132,7 +132,7 @@ class BaseMixin:
 		"""
 		if hasattr(self, 'breadcrumbs'):
 			return self.breadcrumbs
-		return {}
+		return {"Fallback", "#"}
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
@@ -296,12 +296,16 @@ class BaseCreateView(BaseMixin, BaseFormMixin, CreateView):
 			context["page_title"] = f"{self.model._meta.verbose_name} Create Form"
 		return context
 
+	def form_invalid(self, form):
+		logger.info(vars(form))	
+		logger.info(form.errors)	
+		return super().form_invalid(form)
+
 	def form_valid(self, form):
 		self.object = form.save()
-		if not self.success_message:
+		if not getattr(self, 'success_message', ""):
 			messages.success(self.request, f"{self.object} has been created")
 		return JsonResponse({'success_url': self.get_success_url()})
-
 
 class BaseDetailView(BaseMixin, DetailView):
 	template_name='pages/detail.html'

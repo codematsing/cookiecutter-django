@@ -1,5 +1,7 @@
+# How to create custom template tags and filters
 from django import template
 from django.contrib.auth import get_user_model
+from django.conf import settings
 
 register = template.Library()
 
@@ -31,3 +33,15 @@ def active_namespace(request, namespace):
 @register.simple_tag
 def get_all_users():
     return get_user_model().objects.filter()
+
+@register.simple_tag
+def get_settings_value(name):
+    """Returns a value from settings.py
+
+    Args:
+        name (_type_): str
+
+    Returns:
+        value
+    """
+    return getattr(settings, name, None)

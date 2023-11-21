@@ -93,6 +93,8 @@ THIRD_PARTY_APPS = [
     "colorfield",
     "mptt",
     # forms
+    "crispy_forms",
+    "crispy_bootstrap5",
     "formtools",
     # auth
     "allauth",
@@ -254,7 +256,7 @@ TEMPLATES = [
                 "users.context_processors.allauth_settings",
             ],
             "libraries": {
-                "util_tags": "utils.template_tags",
+                "util_tags": "utils.template_helpers.tags",
                 "detail_tags": "utils.detail_wrapper.tags",
                 "hijack_tags": "utils.hijack_wrapper.tags",
                 }
@@ -356,6 +358,11 @@ CELERY_WORKER_SEND_TASK_EVENTS = True
 CELERY_TASK_SEND_SENT_EVENT = True
 
 {%- endif %}
+# custom-accounts flags
+ALLOW_SOCIAL_AUTH_LOGIN = env.bool("ALLOW_SOCIAL_AUTH_LOGIN", True)
+ALLOW_NATIVE_LOGIN = env.bool("ALLOW_NATIVE_LOGIN", True)
+MODERATE_USER_REGISTRATION = env.bool("MODERATE_USER_REGISTRATION", True)
+
 # django-allauth
 # ------------------------------------------------------------------------------
 ACCOUNT_ALLOW_REGISTRATION = env.bool("DJANGO_ACCOUNT_ALLOW_REGISTRATION", True)

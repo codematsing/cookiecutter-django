@@ -18,6 +18,7 @@ from django.utils import timezone
 
 from posts.forms import PostForm
 from posts.models import Post
+from django.urls import reverse_lazy
 
 import logging
 logger = logging.getLogger(__name__)
@@ -34,6 +35,9 @@ class PostListView(PublicListView):
 class PostCreateView(AdminCreateView):
     model = Post
     form_class = PostForm
+
+class PostManagementListView(AdminListView):
+    model = Post
 
 class PostDetailView(PublicDetailView):
     model = Post

@@ -25,8 +25,8 @@ urlpatterns = [
     # Posts
     path("posts/", include("posts.urls", namespace="posts")),
     # User management
-    path("users/", include("users.urls", namespace="users")),
     path("users/registrations/", include("user_registration.urls", namespace="user_registration")),
+    path("users/", include("users.urls", namespace="users")),
     path("accounts/", include("allauth.urls")),
     # FileManagement
     path("", include("file_management.urls", namespace="file")),

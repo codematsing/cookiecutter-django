@@ -87,6 +87,10 @@ DJANGO_APPS = [
     "django.forms",
 ]
 THIRD_PARTY_APPS = [
+    # select2 fields
+    "dal",
+    "dal_select2",
+    "dal_queryset_sequence",
     # models
     "colorfield",
     "mptt",

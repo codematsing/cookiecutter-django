@@ -35,7 +35,7 @@ def current_year():
 
 def rename_upload(instance, filename):
     _, extension = os.path.splitext(filename)
-    timestamp = instance.updated_at.strftime('%Y%m%d%H%M%S')
+    timestamp = timezone.now().strftime('%Y%m%d%H%M%S')
     return f"{uuid.uuid4().hex}_timestamp{extension}" 
 
 def image_upload(instance, filename):

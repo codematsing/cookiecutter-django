@@ -26,8 +26,6 @@ DEBUG = os.environ.get("DEBUG", "False") == "True"
 # though not all of them may be available with every OS.
 # In Windows, this must be set to your system time zone.
 TIME_ZONE = "{{ cookiecutter.timezone }}"
-# reset to manil timezone
-TIME_ZONE = "Asia/Manila"
 # https://docs.djangoproject.com/en/dev/ref/settings/#language-code
 LANGUAGE_CODE = "en-us"
 # https://docs.djangoproject.com/en/dev/ref/settings/#site-id

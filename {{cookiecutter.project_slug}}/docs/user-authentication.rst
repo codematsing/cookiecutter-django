@@ -8,6 +8,7 @@ Logic flow as follows in 'account/login.html'
 
 .. code-block:: html
 
+    {% raw %}
     {% if get_settings_value ALLOW_SOCIAL_AUTH_LOGIN %}
         # show social auth providers login
         # by default google
@@ -24,3 +25,4 @@ Logic flow as follows in 'account/login.html'
             {% endif %}
         {% endif %}
     {% endif %}
+    {% endraw %}

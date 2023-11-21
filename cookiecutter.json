@@ -13,7 +13,7 @@
     "GPLv3",
     "Apache Software License 2.0"
   ],
-  "timezone": "UTC",
+  "timezone": "Asia/Manila",
   "windows": "n",
   "use_pycharm": "n",
   "use_docker": "y",

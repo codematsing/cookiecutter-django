@@ -3,3 +3,5 @@ export $(grep -v '^#' $ROOT_DIR/.envs/.production/.django | xargs)
 export $(grep -v '^#' $ROOT_DIR/.envs/.production/.postgres | xargs)
 export $(grep -v '^#' $ROOT_DIR/.envs/.production/.tokens | xargs)
 DATABASE_URL=postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST:$POSTGRES_PORT/$POSTGRES_DB
+echo "DB Connected:"
+echo $POSTGRES_DB

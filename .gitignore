@@ -216,3 +216,4 @@ tags
 
 .pytest_cache/
 **/*Zone.Identifier
+!apps/tags/

@@ -48,7 +48,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV=$(dirname "$(dirname "$(realpath "$0")")")
+VIRTUAL_ENV=$(dirname "$(dirname "$(realpath "$BASH_SOURCE")")")
 if ([ "$OSTYPE" = "cygwin" ] || [ "$OSTYPE" = "msys" ]) && $(command -v cygpath &> /dev/null) ; then
     VIRTUAL_ENV=$(cygpath -u "$VIRTUAL_ENV")
 fi

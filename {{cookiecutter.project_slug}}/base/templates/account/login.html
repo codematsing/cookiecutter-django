@@ -17,7 +17,7 @@
       </div>
     </div>
     <div class="card-body">
-      {% get_settings_value 'ALLOW_SOCIAL_AUTH_LOGIN' as allow_social_auth_login %}
+      {% get_settings_attr 'ALLOW_SOCIAL_AUTH_LOGIN' as allow_social_auth_login %}
       {% if allow_social_auth_login %}
         <div class="card-text">
           <h6>For users with UP email</h6>
@@ -32,7 +32,7 @@
           {% endif %}
         </div>
       {% endif %}
-      {% get_settings_value 'ALLOW_NATIVE_LOGIN' as allow_native_login %}
+      {% get_settings_attr 'ALLOW_NATIVE_LOGIN' as allow_native_login %}
       {% if allow_native_login %}
         <div class="py-3">
           <div class="card-text">
@@ -48,11 +48,11 @@
               <div class="d-flex justify-content-between">
                 <a class="button secondaryAction"
                    href="{% url 'account_reset_password' %}">{% translate "Forgot Password?" %}</a>
-                {% get_settings_value 'MODERATE_USER_REGISTRATION' as moderate_user_registration %}
+                {% get_settings_attr 'MODERATE_USER_REGISTRATION' as moderate_user_registration %}
                 {% if moderate_user_registration %}
                   <a class="button secondaryAction ms-3"
                      href="{% url 'user_registration:create' %}">Apply for an account</a>
-                {% get_settings_value 'ACCOUNT_ALLOW_REGISTRATION' as account_allow_registration %}
+                {% get_settings_attr 'ACCOUNT_ALLOW_REGISTRATION' as account_allow_registration %}
                 {% elif account_allow_registration %}
                   <a class="button secondaryAction ms-3" href="{% url 'account_signup' %}">Register</a>
                 {% endif %}

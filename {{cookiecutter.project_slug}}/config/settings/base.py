@@ -82,7 +82,7 @@ DJANGO_APPS = [
     "django.contrib.sites",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # "django.contrib.humanize", # Handy template tags
+    "django.contrib.humanize", # Handy template tags
     "django.contrib.admin",
     "django.forms",
 ]
@@ -258,9 +258,9 @@ TEMPLATES = [
                 "users.context_processors.allauth_settings",
             ],
             "libraries": {
-                "util_tags": "utils.template_helpers.tags",
-                "detail_tags": "utils.detail_wrapper.tags",
-                "hijack_tags": "utils.hijack_wrapper.tags",
+                "util_tags": "utils.template_helpers.templatetags",
+                "detail_tags": "utils.detail_wrapper.templatetags",
+                "hijack_tags": "utils.hijack_wrapper.templatetags",
                 }
         },
     }

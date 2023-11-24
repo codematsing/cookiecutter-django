@@ -13,7 +13,6 @@ from utils.base_views.views import (
 	BaseAddObjectView,
 	BaseRemoveObjectView,
 	BaseActionObjectView,
-	BaseAutocompleteView,
 )
 {% if cookiecutter.view_prefix=="Admin" %}
 from utils.base_views.admin_views import (

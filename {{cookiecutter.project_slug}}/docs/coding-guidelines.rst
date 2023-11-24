@@ -25,7 +25,13 @@ Naming Conventions
         * Private methods: prefixed with ``_`` (i.e. ``_get_item``)
     * Functions: include typing
     * Datatypes:
-        * Boolean: prefixed with ``is_`` (i.e. ``is_active``)
+        * Boolean: 
+            * prepend with ``is_``
+                * object identity (i.e. is_active)
+                * present tense action (i.e. is_graduating)
+            * prepend with ``has_``
+                * possessive (i.e. has_children)
+                * past_tense_action (i.e. has_graduated)
 
 * Python Applications
     * Directory: plural, snake case
@@ -44,6 +50,10 @@ Naming Conventions
                 Related names are what the model is called as foreign key
 
         * Boolean Field: include choices
+        * Audit terms: if needed to include auditlog (See :ref:`third-party-libraries`)
+            * history - auditlog foreign key
+            * <created/updated/uploaded/etc>_at - timestamp
+            * <created/updated/uploaded/etc>_by - user
     * Urls
         * route - dash as separators (due to SEO readability)
         * name - snakecase (python convention)
@@ -65,6 +75,81 @@ Naming Conventions
             * Form - form or model form
             * FormCollection - multiple forms grouped together
             * Formset - multiple instance of a singular form
+    * Model methods
+        * Generic model method classifications:
+            * urls - `get_<view>_url()`
+            * breadcrumbs = `get_<view>_breadcrumbs(as_html)`
+            * ui accessors = `as_<type>`, `field_as_<type>`
+            * derived fields
+            * related model accessors
+            * functions = `<action>_<return_value>_from_<params>(*params)`
+        * Add methods as needed for ease of and consistent element rendering
+        * Instance object transformation or type casting - use `as_<type>` i.e. (as_df, as_html)
+
+        # TODO add this in base_model
+
+        .. code-block:: python
+
+            # UI method helpers
+            @property
+            def as_html(self):
+                # rendering object as html element. Similar functionality as __str__ but with html wrapping
+                return render_to_string('detail_wrapper/<element>.html', object)
+
+            @property
+            def fields_dict(self):
+                # render fields as dictionary
+                return {field.name:getattr(self, field.name) for field in self._meta.fields}
+
+            @property
+            def <field>_as_html(self):
+                # render a local field as an html element
+                # similar to get_status_display but with html wrapping
+                return {field.name:getattr(self, field.name) for field in self._meta.fields}
+
+            def as_card(self, fields='__all__'):
+                # render object as a card
+                # for a more custom card, place template in model template with title detail_card.html
+                return render_to_string('detail_wrapper/table.html', self)
+
+            # UI access helpers
+            @property
+            def <related related_model>(self):
+                # for indirect related models you can add bypass accessors
+                # i.e. Model A || -- || Model B ||--|| Model C
+                return self.b.c
+
+            # Derived Functions
+            @property
+            def total_income(self):
+                # consider as property method with intended name
+                return self.income.sum()
+
+            # Generic Functions
+            def <action>_<return_value>_from_<params>(self, *params):
+                return return_value
+
+            def calculate_annual_salary_from_family_members(self):
+                return sum(self.family_members.values_list('salary', flat=True))
+
+    Note: please also be guided with django coding conventions for generic coding guidelines 
+    https://docs.djangoproject.com/en/dev/internals/contributing/writing-code/coding-style/
+
+        * for multiple models complex models, might be best to create a directory of models.
+        or might be best to create nested applications
+        * Nested applications - ensure you change config.py to adjust location of app_name
+        * Additional Files:
+            * context_processors.py - passing variables to templates
+            * templatetags.py - operational functions in templates
+            * validators.py - validation for model and form fields
+            * tables.py - djangotables2
+            * filters.py - djangofilters
+            * mixins.py - mixins are used to add functionality to views, forms, and models, allowing developers to reuse code and improve the efficiency of their applications 
+            * signals.py
+            * forms.py
+            * serializers.py - DRF
+
+
 
 .. _overriding-sequence:
 

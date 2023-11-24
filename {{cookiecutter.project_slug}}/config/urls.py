@@ -12,16 +12,19 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework.authtoken.views import obtain_auth_token
 {%- endif %}
 from commons.views import DashboardView
+from commons.admin import user_admin_site
 
 urlpatterns = [
     path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
     path(
         "about/", TemplateView.as_view(template_name="pages/about.html"), name="about"
     ),
+    # User admin
+    path('admin/u/', user_admin_site.urls, name="user_admin"),
     # Django Admin, use {% raw %}{% url 'admin:index' %}{% endraw %}
     path(settings.ADMIN_URL, admin.site.urls),
     # Notifications
-    path('inbox/notifications', include("notifications.urls", namespace='notifications')),
+    path('inbox/notifications/', include("notifications.urls", namespace='notifications')),
     # Posts
     path("posts/", include("posts.urls", namespace="posts")),
     # User management

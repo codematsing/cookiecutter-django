@@ -8,7 +8,7 @@ from django.contrib.sessions.middleware import SessionMiddleware
 from django.http import HttpRequest, HttpResponseRedirect
 from django.test import Client, RequestFactory
 from django.urls import reverse
-from {{ cookiecutter.project_slug }}.users.tests.factories import UserFactory
+from users.tests.factories import UserFactory
 from {{cookiecutter.app_location}}.tests.factories import {{cookiecutter.camel_case_model_name}}Factory
 from {{cookiecutter.app_location}}.views import (
     {{cookiecutter.camel_case_model_name}}ListView,

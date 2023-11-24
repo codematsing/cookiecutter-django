@@ -35,7 +35,7 @@ def get_all_users():
     return get_user_model().objects.filter()
 
 @register.simple_tag
-def get_settings_value(name):
+def get_settings_attr(name):
     """Returns a value from settings.py
 
     Args:
@@ -45,3 +45,9 @@ def get_settings_value(name):
         value
     """
     return getattr(settings, name, None)
+
+@register.simple_tag
+def get_object_attr(object, attribute):
+    """Gets an attribute of an object dynamically from a string name"""
+
+    return getattr(object, attribute, None)

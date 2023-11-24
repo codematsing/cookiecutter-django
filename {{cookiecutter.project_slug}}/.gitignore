@@ -346,3 +346,4 @@ project.min.css
 vendors.js
 *.min.js
 {%- endif %}
+!apps/tags/

@@ -11,7 +11,8 @@ from django.http import JsonResponse
 from formset.views import FormViewMixin, FileUploadMixin, FormCollectionView
 from formset.widgets import UploadedFileInput
 from django.forms.fields import FileField, ImageField
-from django.urls import reverse, reverse_lazy
+from django.contrib.messages.views import SuccessMessageMixin
+from django.urls import reverse, reverse_lazy, resolve
 from django.contrib import messages
 from utils.detail_wrapper.views import DetailView, DetailWrapperMixin
 import json
@@ -19,7 +20,7 @@ import json
 import logging
 logger = logging.getLogger(__name__)
 
-class BaseFormMixin(FormViewMixin, FileUploadMixin):
+class BaseFormMixin(SuccessMessageMixin, FormViewMixin, FileUploadMixin):
 	def __init__(self, *args, **kwargs):
 		if self.form_class == None:
 			disabled_fields = set(getattr(self, 'disabled_fields', [])).intersection(set(field.name for field in self.model._meta.fields))
@@ -125,14 +126,30 @@ class BaseMixin:
 		return self.model._meta.verbose_name_plural
 
 	def get_breadcrumbs(self):
-		"""Dict for breadcrumbs
+		def get_next_breadcrumb(route_list):
+			route_path = f"/{'/'.join(route_list)}/"
+			try:
+				match = resolve(route_path)
+				label = match.func.view_class.model._meta.verbose_name_plural.title()
+				if match.url_name=="detail":
+					label=str(match.func.view_class.model.objects.get(pk=route_list[-1]))
+				elif match.url_name=="create":
+					label="Create"
+				elif match.url_name=="update":
+					label="Edit"
+				return {label:route_path}
+			except Exception as e:
+				print(f"\n no resolve for {route_path}\n")
+				return {}
 
-		Returns:
-			list[dict]: [{'parent_label':'parent_href', 'child_label':'child_href'}]
-		"""
-		if hasattr(self, 'breadcrumbs'):
-			return self.breadcrumbs
-		return {"Fallback", "#"}
+		if not getattr(self, 'breadcrumbs', None):
+			route = self.request.get_full_path().strip("/").split("/")
+			breadcrumbs = {}
+			for index in range(len(route)):
+				breadcrumbs.update(get_next_breadcrumb(route[:index+1]))
+			self.breadcrumbs = breadcrumbs
+		return self.breadcrumbs
+
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
@@ -141,7 +158,7 @@ class BaseMixin:
 		context["header_buttons"] = self.get_header_buttons()
 		return context
 
-class BaseFormCollectionView(BaseMixin, FormCollectionView):
+class BaseFormCollectionView(SuccessMessageMixin, BaseMixin, FormCollectionView):
 	template_name = "pages/form.html"
 	# follow form collection get_field format: nested '.'
 	disabled_fields = []
@@ -202,21 +219,24 @@ class BaseFormCollectionView(BaseMixin, FormCollectionView):
 
 	def form_collection_valid(self, form_collection):
 		self.object = form_collection.save()
-		messages.success(self.request, f"{self.object} has been saved")
+		self.success_message = self.get_success_message(form_collection.cleened_data) or f"{self.object} has been saved"
+		messages.success(self.request, self.success_message)
 		return JsonResponse({'success_url': self.get_success_url()})
 
 class BaseCreateFormCollectionView(BaseFormCollectionView):
 	def form_collection_valid(self, form_collection):
 		logger.info("valid form collection")
 		self.object = form_collection.create()
-		messages.success(self.request, f"{self.object} has been created")
+		self.success_message = self.get_success_message(form_collection.cleaned_data) or f"{self.object} has been created"
+		messages.success(self.request, self.success_message)
 		return JsonResponse({'success_url': self.get_success_url()})
 
 class BaseUpdateFormCollectionView(BaseFormCollectionView, SingleObjectMixin):
 	def form_collection_valid(self, form_collection):
 		logger.info("valid form collection")
 		self.object = form_collection.update()
-		messages.success(self.request, f"{self.object} has been updated")
+		self.success_message = self.get_success_message(form_collection.cleaned_data) or f"{self.object} has been updated"
+		messages.success(self.request, self.success_message)
 		return JsonResponse({'success_url': self.get_success_url()})
 
 	def get_context_data(self, **kwargs):
@@ -263,10 +283,6 @@ class BaseWAjaxDatatableMixin:
 class BaseListView(BaseWAjaxDatatableMixin, BaseMixin, ListView):
 	template_name='pages/list.html'
 
-	def get_breadcrumbs(self):
-		self.breadcrumbs = {self.get_page_title(): self.request.path}
-		return super().get_breadcrumbs()
-
 	def get_header_buttons(self):
 		add_url = reverse_lazy(
 			":".join(self.request.resolver_match.namespaces)+":create", kwargs=self.kwargs
@@ -280,32 +296,18 @@ class BaseCreateView(BaseMixin, BaseFormMixin, CreateView):
 	fields = '__all__'
 	disabled_fields=['updated_by']
 
-	def get_breadcrumbs(self):
-		list_url = reverse_lazy(
-			":".join(self.request.resolver_match.namespaces)+":list", kwargs=self.kwargs
-		)
-		self.breadcrumbs = {
-			self.get_page_title(): list_url,
-			'Create': self.request.path,
-		}
-		return super().get_breadcrumbs()
-
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
 		if 'page_title' not in context.keys():
 			context["page_title"] = f"{self.model._meta.verbose_name} Create Form"
 		return context
 
-	def form_invalid(self, form):
-		logger.info(vars(form))	
-		logger.info(form.errors)	
-		return super().form_invalid(form)
-
 	def form_valid(self, form):
 		self.object = form.save()
-		if not getattr(self, 'success_message', ""):
-			messages.success(self.request, f"{self.object} has been created")
+		self.success_message = self.get_success_message(form.cleaned_data) or f"{self.object} has been updated"
+		messages.success(self.request, self.success_message)
 		return JsonResponse({'success_url': self.get_success_url()})
+
 
 class BaseDetailView(BaseMixin, DetailView):
 	template_name='pages/detail.html'
@@ -320,16 +322,6 @@ class BaseDetailView(BaseMixin, DetailView):
 			{'label':'Edit', 'icon':'mdi-pencil', 'href':update_url}
 		]
 
-	def get_breadcrumbs(self):
-		_object = self.get_object()
-		model_name = self.model._meta.verbose_name_plural
-		namespace = ":".join(self.request.resolver_match.namespaces)
-		self.breadcrumbs = {
-			model_name:reverse_lazy(f'{namespace}:list'),
-			f'{_object}':reverse_lazy(f'{namespace}:detail', kwargs=self.kwargs),
-		}
-		return super().get_breadcrumbs()
-
 	def get_page_title(self):
 		return str(self.get_object())
 
@@ -342,17 +334,6 @@ class BaseUpdateView(BaseMixin, BaseFormMixin, UpdateView):
 	fields = '__all__'
 	disabled_fields=['updated_by']
 
-	def get_breadcrumbs(self):
-		_object = self.get_object()
-		model_name = self.model._meta.verbose_name_plural
-		namespace = ":".join(self.request.resolver_match.namespaces)
-		self.get_breadcrumbs = {
-			model_name:f'{namespace}:list',
-			f'{_object}':reverse_lazy('posts:detail', kwargs=self.kwargs),
-			'Edit':reverse_lazy('posts:update', kwargs=self.kwargs),
-		}
-		return super().get_breadcrumbs()
-
 	def get_page_title(self):
 		return str(self.get_object())
 
@@ -362,7 +343,8 @@ class BaseUpdateView(BaseMixin, BaseFormMixin, UpdateView):
 
 	def form_valid(self, form):
 		self.object = form.save()
-		messages.success(self.request, f"{self.object} has been updated")
+		self.success_message = self.get_success_message(form.cleaned_data) or f"{self.object} has been updated"
+		messages.success(self.request, self.success_message)
 		return JsonResponse({'success_url': self.get_success_url()})
 
 class BaseDeleteView(BaseMixin, DetailWrapperMixin, DeleteView):

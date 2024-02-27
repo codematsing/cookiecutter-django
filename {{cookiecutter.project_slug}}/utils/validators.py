@@ -1,7 +1,8 @@
-from django.core.validators import EmailValidator, RegexValidator
-from django.core.exceptions import ValidationError
-from django.db import models
 from django.conf import settings
+from django.core.exceptions import ValidationError
+from django.core.validators import EmailValidator, RegexValidator
+from django.db import models
+from django.utils.regex_helper import _lazy_re_compile
 from utils.lambdas import current_year
 import re
 import logging
@@ -10,8 +11,8 @@ logger = logging.getLogger(__name__)
 class EmailValidator(EmailValidator):
     allowlist = settings.ALLOWED_LOGIN_DOMAINS
 
-class UPEmailValidator(RegexValidator):
-    regex = r'.*@up.*\.edu.ph'
+class UPEmailValidator(EmailValidator):
+    domain_regex = _lazy_re_compile(r'up.*\.edu.ph', re.IGNORECASE)
     message = "Must be valid UP email"
 
 def validate_academic_year_range(value):

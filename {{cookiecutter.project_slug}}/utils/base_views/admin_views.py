@@ -17,23 +17,23 @@ import logging
 logger = logging.getLogger(__name__)
 
 # Create your views here.
-class AdminListView(BaseListView, LoginRequiredMixin):
+class AdminListView(LoginRequiredMixin, BaseListView):
 	template_name='pages/admin/list.html'
 
-class AdminCreateView(BaseCreateView, LoginRequiredMixin):
+class AdminCreateView(LoginRequiredMixin, BaseCreateView):
 	template_name='pages/admin/create.html'
 
-class AdminDetailView(BaseDetailView, LoginRequiredMixin):
+class AdminDetailView(LoginRequiredMixin, BaseDetailView):
 	template_name='pages/admin/detail.html'
 
-class AdminUpdateView(BaseUpdateView, LoginRequiredMixin):
+class AdminUpdateView(LoginRequiredMixin, BaseUpdateView):
 	template_name='pages/admin/update.html'
 
-class AdminDeleteView(BaseDeleteView, LoginRequiredMixin):
+class AdminDeleteView(LoginRequiredMixin, BaseDeleteView):
 	template_name='pages/admin/delete.html'
 
-class AdminCreateFormCollectionView(BaseCreateFormCollectionView, LoginRequiredMixin):
+class AdminCreateFormCollectionView(LoginRequiredMixin, BaseCreateFormCollectionView):
 	template_name='pages/admin/create.html'
 
-class AdminUpdateFormCollectionView(BaseUpdateFormCollectionView, LoginRequiredMixin):
+class AdminUpdateFormCollectionView(LoginRequiredMixin, BaseUpdateFormCollectionView):
 	template_name='pages/admin/update.html'

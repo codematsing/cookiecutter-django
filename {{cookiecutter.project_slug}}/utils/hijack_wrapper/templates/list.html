@@ -1,21 +1,7 @@
-{% load hijack %}
-{% if debug %}
-<div class="my-3 my-auto navbar-menu-wrapper d-flex align-items-center justify-content-center">
-  <a href="#" class="btn btn-warning" id="hijack-dropdown" data-bs-toggle="dropdown" aria-expanded="true">
-    Login as
-    <i class="mdi mdi-chevron-down"></i>
+{% if request.user.is_superuser and debug %}
+<div class="my-2 d-flex align-items-center justify-content-center">
+  <a href="{% url 'admin:users_user_changelist' %}" class="btn btn-warning">
+    Hijack
   </a>
-  <div class="dropdown-menu navbar-dropdown" aria-labelledby="hijack-dropdown" data-bs-popper="none">
-    {% for user in users %}
-    <a class="dropdown-item" href="#">
-      <form action="{% url 'hijack:acquire' %}" method="POST">
-        {% csrf_token %}
-        <input type="hidden" name="user_pk" value="{{user.pk}}" />
-        <button type="submit">{{user.username}} <{{user.email}}></button>
-        <input type="hidden" name="next" value="{{ request.path }}" />
-      </form>
-    </a>
-    {% endfor %}
-  </div>
 </div>
 {% endif %}

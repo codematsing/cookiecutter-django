@@ -239,8 +239,6 @@ TEMPLATES = [
         # https://docs.djangoproject.com/en/dev/ref/settings/#dirs
         "DIRS": [
             str(BASE_DIR / "templates"), 
-            str(ROOT_DIR / "utils" / "detail_wrapper" / "templates"), 
-            str(ROOT_DIR / "utils" / "hijack_wrapper" / "templates"), 
             ],
         # https://docs.djangoproject.com/en/dev/ref/settings/#app-dirs
         "APP_DIRS": True,
@@ -256,11 +254,10 @@ TEMPLATES = [
                 "django.template.context_processors.tz",
                 "django.contrib.messages.context_processors.messages",
                 "users.context_processors.allauth_settings",
+                "utils.template_helpers.context_processors.current_domain",
             ],
             "libraries": {
                 "util_tags": "utils.template_helpers.templatetags",
-                "detail_tags": "utils.detail_wrapper.templatetags",
-                "hijack_tags": "utils.hijack_wrapper.templatetags",
                 }
         },
     }
@@ -292,6 +289,10 @@ EMAIL_BACKEND = env(
     "DJANGO_EMAIL_BACKEND",
     default="django.core.mail.backends.smtp.EmailBackend",
 )
+# EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+# EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
+EMAIL_FILE_PATH = BASE_DIR / "logs" / "emails" # change this to a proper location
+
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-timeout
 EMAIL_TIMEOUT = 5
 

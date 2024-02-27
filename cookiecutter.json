@@ -4,6 +4,7 @@
   "description": "Behold My Awesome Project!",
   "author_name": "Sam Solis",
   "domain_name": "codematsing.com",
+  "test_domain_name": "{{cookiecutter.project_slug}}.codematsing.com",
   "email": "sam.solis@codematsing.com",
   "version": "0.1.0",
   "open_source_license": [

@@ -108,6 +108,14 @@ class BaseFormMixin(SuccessMessageMixin, FormViewMixin, FileUploadMixin):
 		logger.info(form.errors)	
 		return super().form_invalid(form)
 	
+	def get_form_header(self):
+		default = f"{self.model._meta.verbose_name} Form"
+		return getattr(self, 'form_header', default)
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context["form_header"] = self.get_form_header()
+		return context
 
 class BaseMixin:
 	def get_header_buttons(self):

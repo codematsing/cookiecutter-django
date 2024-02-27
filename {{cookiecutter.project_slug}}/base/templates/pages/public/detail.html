@@ -1,8 +1,5 @@
 {% extends 'partials/public/base.html' %}
-{% load detail_tags %}
 
 {% block content %}
-<div class="mx-3">
-{% render_detail %}
-</div>
+{{object.as_card | safe}}
 {% endblock %}

@@ -2,50 +2,7 @@
 {% load formsetify %}
 
 {% block content %}
-<div class="card p-0">
-  <div class="card-header p-3 bg-warning bg-opacity-50">
-    <div class="d-flex justify-content-between px-2">
-      <div class="card-title align-self-center mb-0">{{page_title}}</div>
-      {% if show_action_buttons %}
-      <div class="text-muted">
-        <a href="{{object.get_update_url}}" class="btn btn-sm btn-warning" title="Update">
-          <i class="mdi mdi-pencil mouse-pointer"></i>
-        </a>
-        <a href="{{object.get_delete_url}}" class="btn btn-sm btn-danger" title="Delete">
-          <i class="mdi mdi-delete"></i>
-        </a>
-      </div>
-      {% endif %}
-    </div>
+  <div class="row grid-margin">
+    {% include 'partials/common/form.html' %}    
   </div>
-  <div class="card-body">
-    <div class="card-text">
-      <django-formset endpoint="{{ request.path }}" csrf-token="{{ csrf_token }}">
-        {% block form_content %}
-          {% if form_collection %}
-            {{ form_collection }}
-          {% elif form %}
-            {% render_form form %}
-          {% endif %}
-          {% block form_collection_buttons %}
-          <div class="d-flex align-items-center justify-content-md-end">
-            <a class="btn btn-secondary me-3" href="{{request.META.HTTP_REFERER}}">
-              Cancel
-            </a>
-
-            <button class="primaryAction btn btn-primary" df-click="disable -> submit -> proceed !~ scrollToError">Save</button>
-          </div>
-          {% endblock %}
-        {% endblock %}
-      </django-formset>
-    </div>
-  </div>
-</div>
-
-{% if form_collection %}
-{{form_collection.media}}
-{% elif form  %}
-{{form.media}}
-{% endif %}
-
 {% endblock %}

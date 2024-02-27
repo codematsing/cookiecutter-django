@@ -3,6 +3,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.validators import validate_email as super_validate_email
 from django.utils import timezone
+from django.contrib.sites.models import Site
 import datetime
 import logging
 import os
@@ -45,3 +46,10 @@ def image_upload(instance, filename):
 
 YN_BOOLEAN_CHOICES = ((False, 'No'), (True, 'Yes'))
 TF_BOOLEAN_CHOICES = ((False, 'False'), (True, 'True'))
+
+def get_current_domain(with_protocol=True):
+    protocol = ""
+    if with_protocol:
+        protocol = "https://" if settings.SECURE_SSL_REDIRECT else "http://"
+    current_domain = Site.objects.get_current().domain
+    return f"{protocol}{current_domain}"

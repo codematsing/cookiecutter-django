@@ -1,12 +1,11 @@
 {% extends 'partials/admin/base.html' %}
-{% load detail_tags %}
 {% block content %}
   <div class="row grid-margin">
     <div class="alert alert-danger" role="alert">
       <b>Warning:</b> Approving user application for {{ object }}. Are you sure you want to approve this user?
     </div>
   </div>
-  {% render_detail %}
+  {{object.as_card | safe}}
   <div class="d-flex align-items-center justify-content-md-end my-4">
     <form action="" method="post">
       {% csrf_token %}

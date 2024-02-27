@@ -1,7 +1,0 @@
-{% if request.user.is_superuser and debug %}
-<div class="my-2 d-flex align-items-center justify-content-center">
-  <a href="{% url 'admin:users_user_changelist' %}" class="btn btn-warning">
-    Hijack
-  </a>
-</div>
-{% endif %}

@@ -13,6 +13,9 @@ from .views import (
 
 app_name = "{{cookiecutter.app_name}}"
 
+# Make sure you add urls to model.spy
+# add get_<name>_url() method
+
 urlpatterns = [
     # list
     path(

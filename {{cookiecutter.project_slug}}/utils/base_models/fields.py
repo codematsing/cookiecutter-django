@@ -6,54 +6,44 @@ WHY DO THIS?
 Reference: https://stackoverflow.com/questions/28497119/change-default-widgets-of-django-to-custom-ones
 """
 from django.db import models
-from formset.widgets import Selectize, DatePicker, UploadedFileInput
-from formset.richtext.widgets import RichTextarea
-from django import forms
+from utils.base_forms import fields
 
 # custom date field
-class DateFormField(forms.DateField):
-    widget = DatePicker
-
-class DatePickerField(DateFormField):
+class DatePickerField(models.DateField):
     def formfield(self, **kwargs):
-        defaults = {'form_class': DateFormField}
+        defaults = {'form_class': fields.DateFormField}
         defaults.update(kwargs)
         return super(models.DateField, self).formfield(**defaults)
 
 # custom richtextarea
-class RichTextareaFormField(forms.Textarea):
-    widget = RichTextarea
-
-class RichTextareaField(RichTextareaFormField):
+class RichTextareaField(models.TextField):
     def formfield(self, **kwargs):
-        defaults = {'form_class': RichTextareaFormField}
+        defaults = {'form_class': fields.RichTextareaFormField}
         defaults.update(kwargs)
         return super(models.TextField, self).formfield(**defaults)
 
 # custom file field
-class FileFormField(forms.FileField):
-    widget = UploadedFileInput
-
-class FileField(FileFormField):
+class FileField(models.FileField):
     def formfield(self, **kwargs):
-        defaults = {'form_class': FileFormField}
+        defaults = {'form_class': fields.FileFormField}
         defaults.update(kwargs)
         return super(models.FileField, self).formfield(**defaults)
 
 # custom file field
-class ImageFormField(forms.ImageField):
-    widget = UploadedFileInput
-
-class ImageField(ImageFormField):
+class ImageField(models.ImageField):
     def formfield(self, **kwargs):
-        defaults = {'form_class': ImageFormField}
+        defaults = {'form_class': fields.ImageFormField}
         defaults.update(kwargs)
         return super(models.ImageField, self).formfield(**defaults)
-    
-# in models.py
-# import utils.base_models import fields
-# class Model(models.Model)
-#     date = fields.DatePickerField()
-#     content = fields.RichTextareaField()
-#     attachment = fields.FileField()
-#     image = fields.ImageField()
+
+class ForeignKey(models.ForeignKey):
+    def formfield(self, **kwargs):
+        defaults = {'form_class': fields.ModelChoiceFormField}
+        defaults.update(kwargs)
+        return super(models.ForeignKey, self).formfield(**defaults)
+
+class ManyToManyField(models.ManyToManyField):
+    def formfield(self, **kwargs):
+        defaults = {'form_class': fields.ModelMultipleChoiceFormField}
+        defaults.update(kwargs)
+        return super(models.ManyToManyField, self).formfield(**defaults)

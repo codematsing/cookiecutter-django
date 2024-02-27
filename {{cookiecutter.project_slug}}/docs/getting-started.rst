@@ -42,6 +42,38 @@ This section is focused on preparing for local development
 
         ./manage.py runserver && xdg-open http://localhost:8000
 
+* Install postgresql and setup postgresql user
+    
+    .. code-block:: shell
+        #tl;dr: 
+        # Reference for interactive user creation: https://www.digitalocean.com/community/tutorials/how-to-use-roles-and-manage-grant-permissions-in-postgresql-on-a-vps-2
+        sudo -i -u postgres
+        createuser --interactive # quick creation with settings
+        # Reference in setting up postgresql user: https://medium.com/coding-blocks/creating-user-database-and-adding-access-on-postgresql-8bfcd2f4a91e
+        sudo -u postgres psql # running psql console as user postgres
+        postgres=# CREATE USER <username> WITH encrypted password '<password>'; # creating non-root user
+        # or
+        postgres=# ALTER USER <username> WITH encrypted password '<password>'; # creating non-root user
+        postgres=# GRANT ALL PRIVILEGES on DATABASE <dbname> TO <username> ;
+
+    .. code-block:: shell
+        # for production environment
+        # create a readaccess privileged user to restrict direct access to postgresql
+        sudo -u postgres psql
+        CREATE ROLE readaccess;
+
+        -- Grant access to existing tables
+        GRANT CONNECT ON DATABASE <dbname> TO readaccess;
+        GRANT USAGE ON SCHEMA public TO readaccess;
+        GRANT SELECT ON ALL TABLES IN SCHEMA public TO readaccess;
+
+        -- Grant access to future tables
+        ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO readaccess;
+
+        -- Create a final user with password
+        CREATE USER read_user WITH PASSWORD '<read_password>';
+        GRANT readaccess TO read_user;
+
 * Setting up initial database
 
     .. code-block:: shell

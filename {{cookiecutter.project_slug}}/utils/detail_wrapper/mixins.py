@@ -83,11 +83,17 @@ class DetailWrapperMixin:
         return list(filter(lambda field: field not in exclude, fields))
 
 class DetailCard(DetailWrapperMixin):
-    def __init__(self, object, fields, card_header="Details", card_subheader=""):
+    def __init__(
+            self, object, fields, 
+            card_header="Details", 
+            card_subheader="", 
+            template="detail_wrapper/detail_card.html"
+        ):
         self.object = object
         self.fields = fields
         self.card_header = card_header
         self.card_subheader = card_subheader
+        self.template = template
         self.model = self.object._meta.model
 
     def get_object(self):
@@ -95,4 +101,4 @@ class DetailCard(DetailWrapperMixin):
 
     @property
     def card(self):
-        return render_to_string('detail_wrapper/detail.html', context={'fields':self.get_rendered_fields_items(), 'card_header':self.card_header, 'card_subheader':self.card_subheader})
+        return render_to_string(self.template, context={'fields':self.get_rendered_fields_items(), 'card_header':self.card_header, 'card_subheader':self.card_subheader})

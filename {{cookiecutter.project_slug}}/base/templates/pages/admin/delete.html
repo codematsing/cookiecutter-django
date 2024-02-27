@@ -1,5 +1,4 @@
 {% extends 'partials/admin/base.html' %}
-{% load detail_tags %}
 
 {% block content %}
 <div class="row">
@@ -9,9 +8,7 @@
       Are you sure you want to delete this?
     </div>
 
-    {% if fields %}
-    {% render_detail object.fields %}
-    {% endif %}
+    {{object.as_card | safe}}
 
     <div class="d-flex align-items-center justify-content-md-end my-4">
       <form action="" method="post">

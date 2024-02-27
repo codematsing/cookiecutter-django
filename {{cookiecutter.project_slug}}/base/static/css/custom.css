@@ -126,3 +126,13 @@ django-form-collection > legend {
   border-bottom: initial;
   margin-bottom: initial;
 }
+
+ul.dj-errorlist {
+    list-style-type: none;
+}
+
+.alert-error {
+ padding-bottom: 0px !important;
+ padding-top: 0px !important; 
+ margin-bottom: 0px !important;
+}

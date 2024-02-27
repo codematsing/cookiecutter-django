@@ -23,11 +23,14 @@ import logging
 logger = logging.getLogger(__name__)
 
 # Create your views here.
-class RegistrationListView(SuccessMessageMixin, AdminListView):
+class RegistrationListView(AdminListView):
     model = Registration
     template_name='registrations/list.html'
 
-class RegistrationCreateView(SuccessMessageMixin, PublicCreateView):
+    def get_header_buttons(self):
+        return {}
+
+class RegistrationCreateView(PublicCreateView):
     model = Registration
     success_message = _("Registration request created. Please check your email for updates")
     hidden_fields = ['is_approved']
@@ -39,16 +42,16 @@ class RegistrationCreateView(SuccessMessageMixin, PublicCreateView):
             "user_registration:list",
         )
 
-class RegistrationDetailView(SuccessMessageMixin, AdminDetailView):
+class RegistrationDetailView(AdminDetailView):
     model = Registration
 
-class RegistrationUpdateView(SuccessMessageMixin, AdminUpdateView):
+class RegistrationUpdateView(AdminUpdateView):
     model = Registration
 
-class RegistrationDeleteView(SuccessMessageMixin, AdminDeleteView):
+class RegistrationDeleteView(AdminDeleteView):
     model = Registration
 
-class RegistrationApproveView(SuccessMessageMixin, AdminDeleteView):
+class RegistrationApproveView(AdminDeleteView):
     model = Registration
     template_name='registrations/approve.html'
     success_message = _("User has been approved.")
@@ -59,7 +62,7 @@ class RegistrationApproveView(SuccessMessageMixin, AdminDeleteView):
         self.object.save()
         return redirect(self.get_success_url())
 
-class RegistrationRejectView(SuccessMessageMixin, AdminDeleteView):
+class RegistrationRejectView(AdminDeleteView):
     model = Registration
     template_name='registrations/reject.html'
     success_message = _("User has been rejected.")

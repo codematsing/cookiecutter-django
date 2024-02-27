@@ -27,7 +27,7 @@ This section is focused on preparing for local development
 
     .. code-block:: shell
 
-        ./setup_venvs.sh #helper script to create virtualenvs
+        python setup_venvs.py
         source .local_env/bin/activate
         pip install -r requirements/local.txt
 

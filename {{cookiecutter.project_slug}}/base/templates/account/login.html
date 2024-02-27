@@ -3,13 +3,12 @@
 {% load account socialaccount %}
 {% load socialaccount %}
 {% load crispy_forms_tags %}
-{% load util_tags %}
 {% block head_title %}
   {% translate "Sign In" %}
 {% endblock %}
 {% block inner %}
-  <div class="card p-0 mb-3">
-    <div class="card-header p-3 bg-warning bg-opacity-50">
+  <div class="card p-0">
+    <div class="card-header p-3 bg-primary bg-opacity-50">
       <div class="d-flex justify-content-between px-2">
         <div class="card-title align-self-center mb-0">
           <h3>{% translate "Sign In" %}</h3>
@@ -17,51 +16,52 @@
       </div>
     </div>
     <div class="card-body">
-      {% get_settings_attr 'ALLOW_SOCIAL_AUTH_LOGIN' as allow_social_auth_login %}
-      {% if allow_social_auth_login %}
-        <div class="card-text">
-          <h6>For users with UP email</h6>
-          {% get_providers as socialaccount_providers %}
-          {% if socialaccount_providers %}
-            <div class="socialaccount_ballot">
-              <a class="btn btn-social-icon-text btn-google"
-                 href="{% provider_login_url 'google' %}">
-                <i class="mdi mdi-google-plus"></i>UP Email
-              </a>
-            </div>
-          {% endif %}
+      <div class="card-text">
+        <h6>
+        For users with UP email
+      </h6>
+      {% get_providers as socialaccount_providers %}
+      {% if socialaccount_providers %}
+        <div class="socialaccount_ballot">
+          <a class="btn btn-social-icon-text btn-google"
+             href="{% provider_login_url 'google' %}token">
+            <i class="mdi mdi-google-plus"></i>UP Email
+          </a>
         </div>
       {% endif %}
-      {% get_settings_attr 'ALLOW_NATIVE_LOGIN' as allow_native_login %}
-      {% if allow_native_login %}
-        <div class="py-3">
-          <div class="card-text">
-            <h6>For users with no UP email</h6>
-            <form class="login" method="POST" action="{% url 'account_login' %}">
-              {% csrf_token %} 
-              {{ form | crispy }}
-              {% if redirect_field_value %}
-                <input type="hidden"
-                       name="{{ redirect_field_name }}"
-                       value="{{ redirect_field_value }}" />
-              {% endif %}
-              <div class="d-flex justify-content-between">
-                <a class="button secondaryAction"
-                   href="{% url 'account_reset_password' %}">{% translate "Forgot Password?" %}</a>
-                {% get_settings_attr 'MODERATE_USER_REGISTRATION' as moderate_user_registration %}
-                {% if moderate_user_registration %}
-                  <a class="button secondaryAction ms-3"
-                     href="{% url 'user_registration:create' %}">Apply for an account</a>
-                {% get_settings_attr 'ACCOUNT_ALLOW_REGISTRATION' as account_allow_registration %}
-                {% elif account_allow_registration %}
-                  <a class="button secondaryAction ms-3" href="{% url 'account_signup' %}">Register</a>
-                {% endif %}
-                <button class="primaryAction btn btn-primary" type="submit">{% translate "Sign In" %}</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    {% endif %}
+    </div>
   </div>
+  <div class="card-body pt-0">
+    <div class="card-text">
+      <h6>For users with no UP email but registered for {{cookiecutter.project_name | upper}} account</h6>
+      <form class="login" method="POST" action="{% url 'account_login' %}">
+        {% csrf_token %}
+        {{ form|crispy }}
+        {% if redirect_field_value %}
+          <input type="hidden"
+                 name="{{ redirect_field_name }}"
+                 value="{{ redirect_field_value }}" />
+        {% endif %}
+        <div class="d-flex justify-content-between">
+          <a class="button secondaryAction"
+             href="{% url 'account_reset_password' %}">{% translate "Forgot Password?" %}</a>
+          <button class="primaryAction btn btn-primary" type="submit">{% translate "Sign In" %}</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <small class="card-body pt-0">
+    <div class="card-text text-muted">
+      {% if ACCOUNT_ALLOW_REGISTRATION %}
+          <h6>For users with no UP email and no {{cookiecutter.project_name | upper}} account:</h6>
+          <div>
+            Kindly <a href="{% url 'user_registration:create' %}">apply</a> for an account.
+          </div>
+          <i>Applicants are subject to verification. Please monitor your email for approval status.</i>
+          <p>
+          <i>Approved applicants may signup using ths <a href="{{ signup_url }}">link</a>.</i>
+          </p>
+      {% endif %}
+    </div>
+  </small>
 {% endblock %}

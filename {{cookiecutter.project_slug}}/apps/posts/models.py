@@ -1,8 +1,6 @@
 from django.db import models
 from django.urls import reverse
-from django.contrib.auth import get_user_model
-from django.utils.text import slugify
-from django.utils import timezone
+from django.template.loader import render_to_string
 from utils import lambdas
 from utils.base_models.models import AbstractAuditedModel
 
@@ -29,6 +27,15 @@ class Post(AbstractAuditedModel):
     def is_drafted(self):
         return not self.is_published
 
+    @property
+    def is_published_as_badge(self):
+        field_item = {
+            'name': "Published" if self.is_published else "Drafted",
+            'background': "#184425" if self.is_published else "#a0a0a0",
+            'foreground': "#FFFFFF" if self.is_published else "#FFFFFF",
+        }
+        return render_to_string('detail_wrapper/badge.html', {'field':field_item})
+
     def get_absolute_url(self):
         return reverse(
             "posts:detail",
@@ -48,5 +55,5 @@ class Post(AbstractAuditedModel):
             )
 
     class Meta:
-        ordering = ['-history__timestamp', 'is_published']
-        get_latest_by = 'history__timestamp'
+        ordering = ['updated_at', 'is_published']
+        get_latest_by = 'updated_at'

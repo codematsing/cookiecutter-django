@@ -1,45 +1,17 @@
 {% extends 'admin/base.html' %}
 {% load static%}
+
 {% block extrahead %}
 {{ block.super }}
 <link href="{% static 'css/admin.css' %}" rel="stylesheet">
+{% endblock  %}
+
+{% block extrastyle %}
 <style>
-    #user-tools, #user-tools * {
-        color: #000000 !important;
-    }
-    caption, .breadcrumbs {
-        --bs-bg-opacity: 1;
-        background-color: rgba(var(--bs-primary-rgb), var(--bs-bg-opacity)) !important;
-        color: #ffffff !important;
-    }
-    caption a, .breadcrumbs a {
-        color: #ffffff !important;
-    }
-    a {
-        color: var(--bs-gray-900) !important;
-        text-decoration: underline !important;
-    }
-    .current-model {
-        background-color: rgba(var(--bs-warning-rgb), var(--bs-bg-opacity)) !important;
-    }
-    .object-tools a {
-        background-color: rgba(var(--bs-warning-rgb), var(--bs-bg-opacity)) !important;
-    }
-    .current-model {
-        background-color: rgba(var(--bs-warning-rgb), 0.5) !important;
-    }
-    .selector-chosen h2 {
-        background-color: rgba(var(--bs-warning-rgb), var(--bs-bg-opacity)) !important;
-    }
-    input[type="submit"].default {
-        background-color: rgba(var(--bs-primary-rgb), var(--bs-bg-opacity)) !important;
-    }
-    input[type="submit"] {
-        background-color: rgba(var(--bs-warning-rgb), var(--bs-bg-opacity)) !important;
-    }
-    table {
-        caption-side: top !important;
-    }
+table {
+    caption-side: top !important;
+    border-collapse: collapse;
+}
 </style>
 {% endblock  %}
 

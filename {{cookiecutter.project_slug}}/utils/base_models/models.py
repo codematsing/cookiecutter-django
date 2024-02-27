@@ -7,25 +7,6 @@ from utils.detail_wrapper.mixins import DetailCard
 import pandas as pd
 
 # Create your models here.
-class AbstractAuditedModel(models.Model):
-    comments = models.TextField(null=True, blank=True, help_text="Provide supporting notes to your submission for both student and officers to see")
-    history_remarks = models.CharField(
-        max_length=1024, 
-        verbose_name="Diary log or reason for changes in record",
-        blank=True, 
-        null=True
-    )
-    history = AuditlogHistoryField()
-
-    def render_status(self):
-        if self.status:
-            return self.status
-        else:
-            return 'Unknown Status'
-    
-    class Meta:
-        abstract=True
-
 class HistoryMixin:
     def get_history_df(self, columns = ["updated_by", "status", "comments"]):
         history_df = pd.DataFrame()
@@ -47,7 +28,7 @@ class HistoryMixin:
         history_table = self.get_history_df().to_html(index=False, render_links=True, classes="table table-striped", justify="left", escape=False)
         return render_to_string('partials/common/history.html', {'object':self, 'history_table':history_table})
 
-class BaseModel(models.Model):
+class BaseModelMixin:
     def field_dict(self):
         return {field.name:getattr(self, field.name) for field in self._meta.fields}
 
@@ -55,8 +36,9 @@ class BaseModel(models.Model):
     def as_anchor_tag(self):
         return f"<a href='{self.get_absolute_url()}'>{self}</a>"
 
-    def as_card(self, fields='__all__'):
-        return DetailCard(self, fields)
+    @property
+    def as_card(self):
+        return DetailCard(self).card
 
     @classmethod
     def get_list_url(self):
@@ -91,11 +73,10 @@ class BaseModel(models.Model):
     def __str__(self):
         return self.name
 
-class AbstractTrackedSubmission(HistoryMixin, BaseModel):
+class AbstractAuditedModel(BaseModelMixin, HistoryMixin, models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     updated_by = models.ForeignKey(get_user_model(), null=True, blank=True, on_delete=models.SET_NULL, related_name='%(app_label)s_%(class)s_verified_by')
-    comments = models.TextField(null=True, blank=True, verbose_name="Submission Notes", help_text="Provide supporting notes to your submission for both student and officers to see")
     history = AuditlogHistoryField()
 
     def render_status(self):
@@ -104,20 +85,5 @@ class AbstractTrackedSubmission(HistoryMixin, BaseModel):
         else:
             return 'Unknown Status'
     
-    @property
-    def history_as_table(self):
-        return render_to_string('partials/common/history.html', {'history_list':self.get_history_df()})
-
     class Meta:
         abstract=True
-        app_label="auxiliaries"
-
-class AbstractTrackedRecord(HistoryMixin, BaseModel):
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    updated_by = models.ForeignKey(get_user_model(), null=True, blank=True, on_delete=models.SET_NULL, related_name='%(app_label)s_%(class)s_updated_by')
-    comments = models.TextField(null=True, blank=True, verbose_name="Submission Notes", help_text="Provide supporting notes to your submission for officers, applicants, and scholars to see")
-    history = AuditlogHistoryField()
-    class Meta:
-        abstract=True
-        app_label="auxiliaries"

@@ -87,10 +87,6 @@ DJANGO_APPS = [
     "django.forms",
 ]
 THIRD_PARTY_APPS = [
-    # select2 fields
-    "dal",
-    "dal_select2",
-    "dal_queryset_sequence",
     # models
     "colorfield",
     "mptt",
@@ -149,7 +145,7 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + UTIL_APPS + LOCAL_APPS
 # MIGRATIONS
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#migration-modules
-#MIGRATION_MODULES = {"sites": "base.contrib.sites.migrations"}
+MIGRATION_MODULES = {"sites": "base.contrib.sites.migrations"}
 
 # AUTHENTICATION
 # ------------------------------------------------------------------------------
@@ -162,7 +158,7 @@ AUTHENTICATION_BACKENDS = [
 # https://docs.djangoproject.com/en/dev/ref/settings/#auth-user-model
 AUTH_USER_MODEL = "users.User"
 # https://docs.djangoproject.com/en/dev/ref/settings/#login-redirect-url
-LOGIN_REDIRECT_URL = "users:redirect"
+LOGIN_REDIRECT_URL = "dashboard"
 # https://docs.djangoproject.com/en/dev/ref/settings/#login-url
 LOGIN_URL = "account_login"
 
@@ -487,3 +483,5 @@ DJANGO_TABLE2_TEMPLATE = "partials/table.html"
 
 # Your stuff...
 # ------------------------------------------------------------------------------
+# crispy form tags still required due to cookiecutter dependency
+CRISPY_TEMPLATE_PACK = 'bootstrap5'

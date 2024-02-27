@@ -40,14 +40,14 @@ def update_site_forward(apps, schema_editor):
     _update_or_create_site_with_sequence(
         Site,
         schema_editor.connection,
-        "{{ cookiecutter.domain_name }}",
-        "{{ cookiecutter.project_name[:50] }}",
+        "localhost:8000",
+        "localhost:8000",
     )
     _update_or_create_site_with_sequence(
         Site,
         schema_editor.connection,
-        "localhost:8000",
-        "localhost:8000",
+        "{{ cookiecutter.domain_name }}",
+        "{{ cookiecutter.project_name[:50] }}",
     )
     _update_or_create_site_with_sequence(
         Site,

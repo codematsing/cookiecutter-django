@@ -1,5 +1,4 @@
 {% load static %}
-{% load hijack_tags %}
 <!-- partial:partials/_sidebar.html -->
 <nav class="sidebar sidebar-offcanvas" id="sidebar">
   <ul class="nav">
@@ -19,7 +18,7 @@
               <span class="badge badge-light">No new notifications</span>
             {% endwith %}
           </div>
-          {% render_hijacks %}
+          {% include 'partials/common/hijack.html' %}
         </a>
       </li>
       {% comment %} #TODO sidebar search {% endcomment %}

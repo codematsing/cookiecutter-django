@@ -1,4 +1,3 @@
-ROOT_DIR=$(dirname "$(dirname "$(dirname "$(realpath "$0")")")")
-unset $(grep -v '^#' $ROOT_DIR/.envs/.production/.django | sed -E 's/(.*)=.*/\1/' | xargs)
-unset $(grep -v '^#' $ROOT_DIR/.envs/.production/.postgres | sed -E 's/(.*)=.*/\1/' | xargs)
-unset $(grep -v '^#' $ROOT_DIR/.envs/.production/.tokens | sed -E 's/(.*)=.*/\1/' | xargs)
+unset $(grep -v '^#' $(pwd)/.envs/.production/.django | sed -E 's/(.*)=.*/\1/' | xargs)
+unset $(grep -v '^#' $(pwd)/.envs/.production/.postgres | sed -E 's/(.*)=.*/\1/' | xargs)
+unset $(grep -v '^#' $(pwd)/.envs/.production/.tokens | sed -E 's/(.*)=.*/\1/' | xargs)

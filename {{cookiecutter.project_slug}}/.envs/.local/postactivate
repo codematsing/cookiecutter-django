@@ -1,7 +1,5 @@
-ROOT_DIR=$(dirname "$(dirname "$(dirname "$(realpath "$0")")")")
-export $(grep -v '^#' $ROOT_DIR/.envs/.local/.django | xargs)
-export $(grep -v '^#' $ROOT_DIR/.envs/.local/.postgres | xargs)
-export $(grep -v '^#' $ROOT_DIR/.envs/.local/.tokens | xargs)
+sudo service postgresql restart
+export $(grep -v '^#' $(pwd)/.envs/.local/.django | xargs)
+export $(grep -v '^#' $(pwd)/.envs/.local/.postgres | xargs)
+export $(grep -v '^#' $(pwd)/.envs/.local/.tokens | xargs)
 DATABASE_URL=postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST:$POSTGRES_PORT/$POSTGRES_DB
-echo "DB Connected:"
-echo $POSTGRES_DB

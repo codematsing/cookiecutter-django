@@ -82,9 +82,9 @@ class BaseModel(models.Model):
             kwargs={"pk": self.pk}
             )
 
-    def get_delete_url(self):
+    def get_update_url(self):
         return reverse(
-            "{{cookiecutter.app_name}}:delete", 
+            f"{self._meta.app_label}:delete",
             kwargs={"pk": self.pk}
             )
 

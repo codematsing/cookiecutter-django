@@ -36,6 +36,18 @@
         autoWidth: false,
         full_row_select: false,
         scrollX: false,
+        dom: 'TBlfrtip',
+        buttons: [
+            {
+              extend:'copy',
+              className:'bg-warning mb-2'
+            },
+            {
+              extend:'csv',
+              filename:'{{page_title}}',
+              className:'bg-warning mb-2'
+            }
+          ],
       },
       {
         {% if request.GET.urlencode %}

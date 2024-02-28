@@ -21,7 +21,6 @@ class RegistrationListAjaxView(BaseListAjaxView):
     model = Registration
     column_defs = [
         {'name':'pk', 'visible':False},
-        {'name':'student_number'},
         {'name':'last_name'},
         {'name':'first_name'},
         {'name':'email'},

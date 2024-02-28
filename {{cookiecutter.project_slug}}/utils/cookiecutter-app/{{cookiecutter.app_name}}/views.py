@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import {{cookiecutter.camel_case_model_name}}
+from .models import {{cookiecutter.model_name_camel_case}}
 from utils.base_views.views import (
 	{% if cookiecutter.view_prefix =="Base" %}
 	BaseListView,
@@ -36,32 +36,32 @@ import logging
 logger = logging.getLogger(__name__)
 
 # Create your views here.
-class {{cookiecutter.camel_case_model_name}}ListView({{cookiecutter.view_prefix}}ListView):
-	model = {{cookiecutter.camel_case_model_name}}
+class {{cookiecutter.model_name_camel_case}}ListView({{cookiecutter.view_prefix}}ListView):
+	model = {{cookiecutter.model_name_camel_case}}
 
-class {{cookiecutter.camel_case_model_name}}CreateView({{cookiecutter.view_prefix}}CreateView):
-	model = {{cookiecutter.camel_case_model_name}}
+class {{cookiecutter.model_name_camel_case}}CreateView({{cookiecutter.view_prefix}}CreateView):
+	model = {{cookiecutter.model_name_camel_case}}
 
-class {{cookiecutter.camel_case_model_name}}DetailView({{cookiecutter.view_prefix}}DetailView):
-	model = {{cookiecutter.camel_case_model_name}}
+class {{cookiecutter.model_name_camel_case}}DetailView({{cookiecutter.view_prefix}}DetailView):
+	model = {{cookiecutter.model_name_camel_case}}
 
-class {{cookiecutter.camel_case_model_name}}UpdateView({{cookiecutter.view_prefix}}UpdateView):
-	model = {{cookiecutter.camel_case_model_name}}
+class {{cookiecutter.model_name_camel_case}}UpdateView({{cookiecutter.view_prefix}}UpdateView):
+	model = {{cookiecutter.model_name_camel_case}}
 
-class {{cookiecutter.camel_case_model_name}}DeleteView({{cookiecutter.view_prefix}}DeleteView):
-	model = {{cookiecutter.camel_case_model_name}}
+class {{cookiecutter.model_name_camel_case}}DeleteView({{cookiecutter.view_prefix}}DeleteView):
+	model = {{cookiecutter.model_name_camel_case}}
 
-class {{cookiecutter.camel_case_model_name}}AutocompleteView(BaseAutocompleteView):
-	model = {{cookiecutter.camel_case_model_name}}
+class {{cookiecutter.model_name_camel_case}}AutocompleteView(BaseAutocompleteView):
+	model = {{cookiecutter.model_name_camel_case}}
 
-# class {{cookiecutter.camel_case_model_name}}<snake_case_action>View(BaseActionView):
-# 	model= {{cookiecutter.camel_case_model_name}}
+# class {{cookiecutter.model_name_camel_case}}<snake_case_action>View(BaseActionView):
+# 	model= {{cookiecutter.model_name_camel_case}}
 
-# class {{cookiecutter.camel_case_model_name}}Add<camel_case_model_name_fk>View(BaseAddObjectView):
-# 	model= {{cookiecutter.camel_case_model_name}}
+# class {{cookiecutter.model_name_camel_case}}Add<model_name_camel_case_fk>View(BaseAddObjectView):
+# 	model= {{cookiecutter.model_name_camel_case}}
 
-# class {{cookiecutter.camel_case_model_name}}Remove<camel_case_model_name_fk>View(BaseRemoveObjectView):
-# 	model= {{cookiecutter.camel_case_model_name}}
+# class {{cookiecutter.model_name_camel_case}}Remove<model_name_camel_case_fk>View(BaseRemoveObjectView):
+# 	model= {{cookiecutter.model_name_camel_case}}
 
-# class {{cookiecutter.camel_case_model_name}}<snake_case_action><camel_case_model_name_fk>View(BaseActionObjectView):
-# 	model= {{cookiecutter.camel_case_model_name}}
+# class {{cookiecutter.model_name_camel_case}}<snake_case_action><model_name_camel_case_fk>View(BaseActionObjectView):
+# 	model= {{cookiecutter.model_name_camel_case}}

@@ -38,7 +38,7 @@ USE_TZ = True
 LOCALE_PATHS = [str(ROOT_DIR / "locale")]
 # Dateformat
 DATE_INPUT_FORMATS = ['%m-%d-%Y']
-ALLOWED_HOSTS=os.environ.get("DJANGO_ALLOWED_HOSTS").split(",")
+ALLOWED_HOSTS=os.environ.get("DJANGO_ALLOWED_HOSTS", '127.0.0.1,localhost').split(",")
 
 # DATABASES
 # ------------------------------------------------------------------------------

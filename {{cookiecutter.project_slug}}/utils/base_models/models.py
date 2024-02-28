@@ -3,6 +3,7 @@ from django.urls import reverse
 from auditlog.models import AuditlogHistoryField
 from django.template.loader import render_to_string
 from django.contrib.auth import get_user_model
+from utils.lambdas import get_current_domain
 from utils.detail_wrapper.mixins import DetailCard
 import pandas as pd
 
@@ -41,15 +42,15 @@ class BaseModelMixin:
         return DetailCard(self).card
 
     @classmethod
-    def get_list_url(self):
+    def get_list_url(cls):
         return reverse(
-            f"{self._meta.app_label}:list",
+            f"{cls._meta.app_label}:list",
             )
 
     @classmethod
-    def get_create_url(self):
+    def get_create_url(cls):
         return reverse(
-            f"{self._meta.app_label}:create",
+            f"{cls._meta.app_label}:create",
             )
 
     def get_absolute_url(self):
@@ -64,11 +65,28 @@ class BaseModelMixin:
             kwargs={"pk": self.pk}
             )
 
-    def get_update_url(self):
+    def get_delete_url(self):
         return reverse(
             f"{self._meta.app_label}:delete",
             kwargs={"pk": self.pk}
             )
+
+    @classmethod
+    def get_list_url(cls):
+        return f"{get_current_domain()}{cls.get_list_url()}"
+
+    @classmethod
+    def get_full_create_url(cls):
+        return f"{get_current_domain()}{cls.get_create_url()}"
+
+    def get_full_absolute_url(self):
+        return f"{get_current_domain()}{self.get_absolute_url()}"
+
+    def get_full_update_url(self):
+        return f"{get_current_domain()}{self.get_update_url()}"
+
+    def get_full_delete_url(self):
+        return f"{get_current_domain()}{self.get_delete_url()}"
 
     def __str__(self):
         return self.name

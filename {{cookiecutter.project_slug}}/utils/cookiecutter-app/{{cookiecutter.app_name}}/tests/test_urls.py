@@ -2,14 +2,14 @@ from django.urls import resolve, reverse
 from django.test import TestCase
 from django.test import Client
 from users.tests.factories import UserFactory
-from {{cookiecutter.app_location}}.tests.factories import {{cookiecutter.camel_case_model_name}}Factory
+from {{cookiecutter.app_location_dot_notation}}.tests.factories import {{cookiecutter.model_name_camel_case}}Factory
 import logging
 logger = logging.getLogger(__name__)
 
-class {{cookiecutter.camel_case_model_name}}UrlsTestCase(TestCase):
+class {{cookiecutter.model_name_camel_case}}UrlsTestCase(TestCase):
 
     def setUp(self):
-        self.object = {{cookiecutter.camel_case_model_name}}Factory()
+        self.object = {{cookiecutter.model_name_camel_case}}Factory()
         logger.info(f"{self.object} created")
         self.client = Client()
 

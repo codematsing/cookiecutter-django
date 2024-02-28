@@ -1,14 +1,9 @@
 from django.db import models
 from django.urls import reverse
-from django.contrib.auth import get_user_model
-from django.core.validators import RegexValidator
 from utils import lambdas
-
-import os
-
+from utils.base_models import fields
 
 # Create your models here.
-
 class Registration(models.Model):
     first_name = models.CharField(
         max_length = 128
@@ -28,9 +23,9 @@ class Registration(models.Model):
         max_length=1024,
     )
 
-    is_approved = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-    attachment = models.FileField(upload_to=lambdas.rename_upload)
+    is_approved = models.BooleanField(default=None, null=True, blank=True, choices=((None, "Unknown"), (True, "Approved"), (False, "Declined")))
+    created_at = fields.DateTimeField(auto_now_add=True)
+    attachment = fields.FileField(upload_to=lambdas.rename_upload)
 
 
     def __str__(self):

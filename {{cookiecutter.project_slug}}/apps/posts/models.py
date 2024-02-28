@@ -3,6 +3,7 @@ from django.urls import reverse
 from django.template.loader import render_to_string
 from utils import lambdas
 from utils.base_models.models import AbstractAuditedModel
+from utils.base_models import fields
 
 import os
 
@@ -13,11 +14,10 @@ class Post(AbstractAuditedModel):
         unique=True
     )
     body = models.TextField(null=True, blank=True)
-    thumbnail = models.ImageField(upload_to=lambdas.image_upload, blank=True, null=True)
-    is_published = models.BooleanField(
+    thumbnail = fields.ImageField(upload_to=lambdas.image_upload, blank=True, null=True)
+    is_published = fields.BooleanField(
         default=False, 
         verbose_name="Publish post", 
-        choices=((False, 'Save as draft'), (True, 'Publish Post'))
         )
 
     def __str__(self):
@@ -55,5 +55,5 @@ class Post(AbstractAuditedModel):
             )
 
     class Meta:
-        ordering = ['updated_at', 'is_published']
-        get_latest_by = 'updated_at'
+        ordering = ['-history__timestamp', 'is_published']
+        get_latest_by = 'history__timestamp'

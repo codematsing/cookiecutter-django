@@ -4,7 +4,7 @@
 USE_DOCKER=yes
 IPYTHONDIR=/app/.ipython
 DJANGO_ALLOWED_HOSTS='127.0.0.1,localhost,0.0.0.0,{{ cookiecutter.test_domain_name }}'
-DJANGO_EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+DJANGO_EMAIL_BACKEND="django.core.mail.backends.console.EmailBackend"
 # toggle site ID based on local (2) or test server domain (3)
 SITE_ID=1
 #SITE_ID=3

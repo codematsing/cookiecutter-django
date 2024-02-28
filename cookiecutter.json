@@ -61,6 +61,7 @@
     "base/templates/*",
     "base/static/*",
     "utils/cookiecutter-app/*",
-    "utils/**/templates/*"
+    "utils/**/templates/*",
+    "docs/*"
   ]
 }

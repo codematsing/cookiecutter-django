@@ -22,7 +22,6 @@ Naming Conventions
 * Python
     * Files: snake case
     * Classes: upper camel case
-        * Private methods: prefixed with ``_`` (i.e. ``_get_item``)
     * Functions: include typing
     * Datatypes:
         * Boolean: 
@@ -32,113 +31,15 @@ Naming Conventions
             * prepend with ``has_``
                 * possessive (i.e. has_children)
                 * past_tense_action (i.e. has_graduated)
+        * Integer:
+            * if integer is a count, use ``num_`` instead of ``no_`` (this is because ``no`` can be used as prefix for boolean fields i.e. ``has_no_value``)
 
-* Python Applications
-    * Directory: plural, snake case
-    * Model Class: singular, upper camel case
-        * \* Field: include help_text, nullity convention, verbose name
-
-            .. note::
-
-                Providing these information will reduce the need to repeat 
-                settings in forms if and when created. See also :ref:`overriding-sequence`
-
-        * Foreign Field: include related name
-
-            .. hint::
-
-                Related names are what the model is called as foreign key
-
-        * Boolean Field: include choices
-        * Audit terms: if needed to include auditlog (See :ref:`third-party-libraries`)
-            * history - auditlog foreign key
-            * <created/updated/uploaded/etc>_at - timestamp
-            * <created/updated/uploaded/etc>_by - user
-    * Urls
-        * route - dash as separators (due to SEO readability)
-        * name - snakecase (python convention)
-
-    .. code-block::
-
-        # example
-        path(
-            route='contact-us', 
-            view=Contact.as_view(), 
-            name="contact_us"
-        )
-    * Classes
-        * Views.py
-            * <Model><CRUD>View
-        * Ajax Views.py
-            * <Model>Ajax<Action>View
-        * Forms.py
-            * Form - form or model form
-            * FormCollection - multiple forms grouped together
-            * Formset - multiple instance of a singular form
-    * Model methods
-        * Generic model method classifications:
-            * urls - `get_<view>_url()`
-            * breadcrumbs = `get_<view>_breadcrumbs(as_html)`
-            * ui accessors = `as_<type>`, `field_as_<type>`
-            * derived fields
-            * related model accessors
-            * functions = `<action>_<return_value>_from_<params>(*params)`
-        * Add methods as needed for ease of and consistent element rendering
-        * Instance object transformation or type casting - use `as_<type>` i.e. (as_df, as_html)
-
-        # TODO add this in base_model
-
-        .. code-block:: python
-
-            # UI method helpers
-            @property
-            def as_html(self):
-                # rendering object as html element. Similar functionality as __str__ but with html wrapping
-                return render_to_string('detail_wrapper/<element>.html', object)
-
-            @property
-            def fields_dict(self):
-                # render fields as dictionary
-                return {field.name:getattr(self, field.name) for field in self._meta.fields}
-
-            @property
-            def <field>_as_html(self):
-                # render a local field as an html element
-                # similar to get_status_display but with html wrapping
-                return {field.name:getattr(self, field.name) for field in self._meta.fields}
-
-            def as_card(self, fields='__all__'):
-                # render object as a card
-                # for a more custom card, place template in model template with title detail_card.html
-                return render_to_string('detail_wrapper/table.html', self)
-
-            # UI access helpers
-            @property
-            def <related related_model>(self):
-                # for indirect related models you can add bypass accessors
-                # i.e. Model A || -- || Model B ||--|| Model C
-                return self.b.c
-
-            # Derived Functions
-            @property
-            def total_income(self):
-                # consider as property method with intended name
-                return self.income.sum()
-
-            # Generic Functions
-            def <action>_<return_value>_from_<params>(self, *params):
-                return return_value
-
-            def calculate_annual_salary_from_family_members(self):
-                return sum(self.family_members.values_list('salary', flat=True))
-
-    Note: please also be guided with django coding conventions for generic coding guidelines 
-    https://docs.djangoproject.com/en/dev/internals/contributing/writing-code/coding-style/
-
-        * for multiple models complex models, might be best to create a directory of models.
-        or might be best to create nested applications
-        * Nested applications - ensure you change config.py to adjust location of app_name
-        * Additional Files:
+* Django
+    * Directories
+        * directories follow plural, snake case syntax
+        * for multiple models complex models, might be best to create a directory of models.  or might be best to create nested applications
+        * for nested applications, please ensure you adjust config.py to adjust location of app_name
+        * Usual Application Files:
             * context_processors.py - passing variables to templates
             * templatetags.py - operational functions in templates
             * validators.py - validation for model and form fields
@@ -148,6 +49,132 @@ Naming Conventions
             * signals.py
             * forms.py
             * serializers.py - DRF
+
+    * Urls
+        * route - dash as separators (due to SEO readability)
+        * name - snakecase (python convention)
+
+        .. code-block::
+
+            # urls.py
+            path(
+                route='contact-us', 
+                view=Contact.as_view(), 
+                name="contact_us"
+            )
+
+    * Views.py
+
+        .. code-block:: python
+
+            from models import ModelA
+
+            class ModelA<CRUD>View:...
+            class ModelA<Action><Object>View:...
+            # sample
+            class ModelAUpdateStatusView:...
+
+    * Ajax Views.py
+
+        .. code-block:: python
+
+            #ajax/views.py
+            from models import ModelA
+
+            class ModelAAjax<CRUD>View:...
+            class ModelAAjax<Action><Object>View:...
+
+    * Forms.py
+
+        .. code-block:: python
+
+            #ajax/views.py
+            from models import ModelA
+            
+            # for generic form or model form
+            class ModelAForm(ModelForm):...
+
+            # for forms grouped together
+            class ModelAFormCollection(FormCollection):...
+
+            # for multiple instance of a singular form
+            class ModelAFormset(FormCollection):...
+
+    * Models.py
+        * Model Class: singular, upper camel case
+        * All Model Fields: include help_text, nullity convention, verbose name
+
+            .. note::
+
+                Providing these information will reduce the need to repeat 
+                settings in forms if and when created. See also :ref:`overriding-sequence`
+
+        * Foreign Field: include related name
+
+            .. note::
+
+                using ``cookiecutter-app`` also provides ``default_related_name`` for a model
+
+        .. code-block:: python
+
+            # Boolean fields: include choices
+            is_bool = BooleanField(choices=[[None, "Pending"], [True, "Approve"], [False, "Reject"]])
+
+            # Many to Many fields
+            subjects = ManyToMany(Subject)
+
+            # property methods
+            def _private_method(self):
+                pass
+
+            # UI method helpers
+            @property
+            def as_html(self):
+                # rendering object as html element. Similar functionality as __str__ but with html wrapping
+                return render_to_string('detail_wrapper/<element>.html', object)
+
+            @property
+            def <field>_as_html(self):
+                # render a local field as an html element
+                # similar to get_status_display but with html wrapping
+                return {field.name:getattr(self, field.name) for field in self._meta.fields}
+
+            @property
+            def as_card(self):
+                # render object as a card
+                # for a more custom card, place template in model template with title detail_card.html
+                return render_to_string('detail_wrapper/table.html', self)
+
+            # URL access helpers
+            def get_<view>_url(self):
+                pass
+
+            # UI access helpers
+            @property
+            def c(self):
+                # for indirect related models you can add bypass accessors
+                # i.e. Model A || -- || Model B ||--|| Model C
+                return self.b.c
+
+            # Derived Fields
+            @property
+            def count_subjects(self):
+                # consider as property method with intended name
+                return self.subjects.count()
+
+            @property
+            def total_units(self):
+                # consider as property method with intended name
+                return self.subjects.num_units.sum()
+
+            # Generic Functions
+            def <action>_<return_value>_from_<params>(self, *params):
+                return return_value
+
+    .. note::
+
+        Note: please also be guided with django coding conventions for generic coding guidelines 
+        https://docs.djangoproject.com/en/dev/internals/contributing/writing-code/coding-style/
 
 
 
@@ -162,7 +189,7 @@ Django projects follow the following overriding sequence.
 Understanding this sequence will help developers know when to override 
 and **WHERE** it is appropriate to place overriding mechanisms.
 
-.. uml::
+.. plantuml::
 
     skinparam monochrome true
     skinparam shadowing false
@@ -175,10 +202,11 @@ and **WHERE** it is appropriate to place overriding mechanisms.
     rectangle Forms as forms
     rectangle Views as views
 
-    models <-- forms : ""
-    forms <-- views : ""
+    models <- forms : "forms will modify models defaults"
+    forms <- views : "views may change form customizations"
+    models <-- views : "views may change default model form customizations"
 
-By convention, global defaults of forms should be placed in ``models.py``, as oppose to ``forms.py``.
+By convention, global defaults should be placed in ``models.py``, as oppose to ``forms.py``.
 
 Thus models are expected to be **explicit and precise** in order practice the *DRY principle*.
 See :ref:`recommended mandatory model field options <overriding-sequence-models>` as a guide to excercising this rule.
@@ -189,36 +217,83 @@ See :ref:`recommended mandatory model field options <overriding-sequence-models>
     But it should be noted, that again, this serves as the root of any invocation in our project.
 
     Setting up as much information here would reduce the need to reset most information in forms and views,
-    and even, eliminate the need to preset create ``forms.py``.
+    and even, eliminate the need to do modifications in ``forms.py`` and ``views.py``
 
-    To cite example, for cases where you have a two views such as:
+    .. code-block:: python
 
-    * View A: does not use a predefined form
-    * View B: uses a predefined form
+        from models import Model
+        from forms import ModelForm
 
-    If you plan on placing default form settings in forms.py instead of in models.py,
-    then View A will not reflect these settings
+        class ViewA:
+            model = Model
+            # let model have default boolean widget=checkbox
 
-After models, ``forms.py`` becomes the basis for setting up form fields. 
-As a practice, deviations from field settings in ``models.py`` are placed here.  
-Usually, reasons for creating a ``forms.py`` on top of presets in ``models.py`` are for the following functions:
+        class ViewB:
+            model = Model
+            form_class = ModelForm
+            # let form modify widget=radioselect
 
-* Overriding default field widget. (i.e. Selectize, Date, File Widgets)
-* Overriding saving functionalities
-* Custom Formsets / Form Collections (see https://github.com/jrief/django-formset)
-* Reusability of forms to multiple views
+        class ViewC:
+            model = Model
+            form_class = ModelForm
 
-Finally, ``views.py`` provides the final catch for any customizations for forms for a particular view.
-Usually, customizations relating to forms are modified only in the following methods:
+            def get_form_class(self, form):
+                #widget=select
+                return form
 
-* fields
-    * when a form is not necessary, and particular fields are only needed to be shown in fields. 
-    The simplest approach is to enumerate only the necessary fields
-* exclude
-    * if enumerating fields would be too tedious such that ``len(fields) >> len(exclude)``,
-    it is adviseable to just provide excluded fields instead
-* form
-    * defined if a preset form is used to override `models.py` settings
+        # insights on this impl:
+        # ViewA will rely on default customizations in models.py
+            # ViewA will render widget=Checkbox
+        # ViewB and ViewC will refer to modifications made by `ModelForm` on `Model`
+            # ViewB and ViewC is initially set to render widget=checkbox
+            # but due to modifications in ModelForm, widget=RadioSelect
+        # View C will have additional modifications to its form that only View C will be affected
+            # ViewC is the only view that will show widget=Select
+
+.. note::
+
+    After models, ``forms.py`` becomes the basis for setting up form fields. 
+    As a practice, deviations from field settings in ``models.py`` are placed here.  
+    Usually, reasons for creating a ``forms.py`` on top of presets in ``models.py`` are for the following functions:
+
+    * Overriding default field widget. (i.e. Selectize, Date, File Widgets)
+    * Overriding saving functionalities
+    * Custom Formsets / Form Collections (see https://github.com/jrief/django-formset)
+    * Reusability of forms to multiple views
+
+    Finally, ``views.py`` provides the final catch for any customizations for forms for a particular view.
+    Usually, customizations relating to forms are modified only in the following methods:
+
+.. important::
+
+    If your only sole purpose to create a form is to limit the number of fields that will be modified,
+    Use fields / exclude instead in ``views.py``
+
+    .. code-block::
+
+        # scenario: we want a view that will only allow updating of
+        # status and comment
+
+        # models.py
+        class Model:
+            status = ...
+            comment = ...
+            detail1 = ...
+            detail2 = ...
+
+        # DONT USE forms.py
+        # INSTEAD:
+
+        # views.py
+        class View:
+            model = Model
+            fields = ['status', 'comment']
+            # or
+            exclude = ['detail1', 'detail2']
+
+Views Field Setups
+++++++++++++++++++
+
 * get_initial
     * presetting initial values
     
@@ -241,39 +316,97 @@ Usually, customizations relating to forms are modified only in the following met
     
 .. _overriding-sequence-models:
 
-Models
-++++++
+Model Declarations
+++++++++++++++++++
 
 As a guide, it would be best to provide the following information of **ANY** field:
 
 * null
 * blank
-* default
 * verbose_name
+    * will also be the default form field label
+* default
+    * default value. Best to include especially when databases are growing, migrations will be easier to handle
 * help_text
+    * support field that will also be shown in forms
 * validators
+    * restrict values that will be captured
 * choices
+    * restrict values that will be captured if applicable
 * unique
+    * restricts values that will be captured
+
+.. important::
+    For `OneToOneField` and `ForeignKey`, it is adviseable to also add related name for is of access for related models
+
+    .. code-block:: python
+
+        # for OneToOneFields
+        class Parent(models.Model):
+            pass
+
+        class Child(models.Model):
+            # for one to one
+            parent = OneToOneField(relate_name="child") # user verbose_name of child class
+            # for foreign key or many to one
+            parent = ForeignKey(relate_name="children") #use verbose_name_plural of child class
+            class Meta:
+                verbose_name="child"
+                verbose_name_plural="children"
+
+    Why do we want to want to be intentional in the setup of related_names?
+
+    .. code-block:: python
+
+        # for ease of access and quick understanding of relationship
+        parent = Parent.objects.first()
+        print(parent.children) 
+        #we know that Parent model has a relationship with Childe model
+        #we know that Parend instance can have multiple children
+
+        print(parent.child)
+        #we know that Parent model has a relationship with Childe model
+        #we know that Parent instance has a one to one relationship with Child model
 
 Furthermore, it would be best to provide the following information to the **Meta** class of a model:
 
 * ordering
+    * presets ordering of lists
+    * best analogy is sorting of posts based on latest to oldest records
 * get_latest_by
+    * similar to ordering but specifically for `<model>.objects.last()`
 * unique_together
 * app_label
+    * grouping of models
+    * is seen when looking at admin page
 * verbose_name
+    * is often accessed to refer to model instance
 * verbose_name_plural
+    * is often accessed to refer to model list
 * permissions
 
-.. tip::
+.. note::
 
     Though not mandated, it is optionally recommended to include ``db_table_comment`` in a model's **Meta** class.
     It will provide developers a brief explanation of the purpose of the table without viewing the 
     project documentation
 
-Finally, as mentioned earlier, while widgets are normally set in forms, if we have multiple fields throughout our project
-that will require consistent replacement of widget, we can instead create our custom field as referenced in: 
+Finally, as mentioned earlier, while widgets are normally set in forms, if we have multiple forms and formsets throughout our project
+that will require consistent use of custom widget, we can instead create our custom field as referenced in: 
 `Django Documentation <https://docs.djangoproject.com/en/4.2/howto/custom-model-fields/#specifying-the-form-field-for-a-model-field:~:text=the%20correct%20value.-,Specifying%20the%20form%20field%20for%20a%20model%20field,-%C2%B6>`_
+
+.. important::
+
+    Please refer to `utils.base_model.fields` for already preset custom model fields that use better widgets than
+    that in vanilla django
+
+    .. code-block:: python
+
+        # since we are using jrief/django-formset library to handle file and image fields
+        # rather than needing to create custom forms each time, instead use the impl below:
+        from utils.base_models import fields, models
+        class Document(models.AbstactBaseModel):
+            attachment = fields.FileField(verbose_name=..., help_text=...)
 
 .. _adding_custom_virtualenv:
 
@@ -332,30 +465,34 @@ The following steps must be followed when creating virtual envs:
 
     # /path/to/virtualenv/bin/postactivate
     sudo service postgresql restart
-    ROOT_DIR=$(dirname "$(dirname "$(dirname "$(realpath "$0")")")")
-    export $(grep -v '^#' $ROOT_DIR/.envs/.vars/.commons | xargs)
-    export $(grep -v '^#' $ROOT_DIR/.envs/.local/.django | xargs)
-    export $(grep -v '^#' $ROOT_DIR/.envs/.local/.postgres | xargs)
-    export $(grep -v '^#' $ROOT_DIR/.envs/.local/.tokens | xargs)
+    export $(grep -v '^#' $(pwd)/.envs/.local/.django | xargs)
+    export $(grep -v '^#' $(pwd)/.envs/.local/.postgres | xargs)
+    export $(grep -v '^#' $(pwd)/.envs/.local/.tokens | xargs)
+    DATABASE_URL=postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST:$POSTGRES_PORT/$POSTGRES_DB
 
 * a predeactivate file is placed inside virtualenv to ensure env variables are unset when virtualenv is not used
 
 .. code-block:: shell
 
-    # /path/to/virtualenv/bin/postactivate
-    ROOT_DIR=$(dirname "$(dirname "$(dirname "$(realpath "$0")")")")
-    unset $(grep -v '^#' $ROOT_DIR/.envs/.local/.django | sed -E 's/(.*)=.*/\1/' | xargs)
-    unset $(grep -v '^#' $ROOT_DIR/.envs/.local/.postgres | sed -E 's/(.*)=.*/\1/' | xargs)
-    unset $(grep -v '^#' $ROOT_DIR/.envs/.local/.tokens | sed -E 's/(.*)=.*/\1/' | xargs)
-
-.. tip:: 
-
-    Best to copy existing copy of environment in .envs (i.e. .local) and change values
-    including postactivate and predeactivate scripts to new directory
-
-.. tip:: 
-
-    Run console command ``echo $POSTGRES_DB`` or other env variables 
-    to see if activation/deactivation was successful
+    # /path/to/virtualenv/bin/predeactivate
+    unset $(grep -v '^#' $(pwd)/.envs/.local/.django | sed -E 's/(.*)=.*/\1/' | xargs)
+    unset $(grep -v '^#' $(pwd)/.envs/.local/.postgres | sed -E 's/(.*)=.*/\1/' | xargs)
+    unset $(grep -v '^#' $(pwd)/.envs/.local/.tokens | sed -E 's/(.*)=.*/\1/' | xargs)
 
 
+.. tip::
+
+    .. code-block:: shell
+
+        cp -r .envs/.local .envs/.<virtualenv_name>
+        # setup custom flags for new environment
+        vim .envs/.<virtualenv_name>/.<file>
+        # replace paths to .envs/.local .envs/.<virtualenv_name>
+        vim .envs/.<virtualenv_name>/activate
+        vim .envs/.<virtualenv_name>/predeactivate
+        virtualenv .<virtualenv_name>
+        cp .envs/<virtualenv_name>/* .<virtualenv_name>/bin/activate
+
+        # validation
+        .<virtualenv_name>/bin/activate
+        echo $POSTGRES_DB # or other env variables that have been changed

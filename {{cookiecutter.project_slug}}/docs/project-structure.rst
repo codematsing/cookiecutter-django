@@ -3,16 +3,28 @@ Project Structure
 
 .. _project_structure_env_files:
 
-* {{cookiecutter.project_name}} (base)
+* base
+    * templates - html and email templates
     * static - placement for static assets
     * media - location for uploaded media
-    * templates - html and email templates
-    * logs - logs
+    * fixtures - dump for fixtures
+    * logs - log files
+    * contrib - dump for initial site migrations
     * <commands> - location for django-admin commands
         * mock_data - ``./manage.py load_data`` script location. See `Factories <https://factoryboy.readthedocs.io/en/stable/>`_.
         * test_email - ``./manage.py test_email`` script location to test email credentials.
+
+    .. hint::
+
+        Base folder is the "Python package for your project"
+
+        Usually it is the placeholder for management and orchestration of the project.
+        
+        Due to django-cookiecutter template, some of the files are offloaded to config directory
 * config
     * settings - placement of settings files
+    * api.py, asgi.py, wsgi.py - placement of deployment files
+    * urls.py - url declarations; a “table of contents” (root level) of site
 * utils - see :ref:`util_modules`
 * apps - see :ref:`app_modules`
 * requirements - requirements.txt
@@ -24,7 +36,7 @@ Environment Files
 
 There are directories placed under ``.env``
 
-* .vars - base copy of environment variables to be used
+* .tokens - credentials and tokens from external applications
 * .local - environment variables used during development and testing
 * .production - environment variables used during production
 
@@ -38,6 +50,6 @@ There are directories placed under ``.env``
 
 .. tip::
 
-    Variables can both be set in ``.vars`` and another env directory 
-    as both directories will be loaded and sequentially.
-    Thus, any variable set twice, will follow env directory value
+    If you have override custom declarations of settings or prefer to create another file
+    set of environ variables, change reference in :file:`._env/bin/postactivate`
+    to point to new environment files

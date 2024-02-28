@@ -15,10 +15,10 @@ Welcome to Codematsing documentation!
    coding-guidelines
    version-control
    dev-tools
-   deployment-settings
-   utils-modules
-   app-modules
+   modifications
    handbook
+   third-party-libraries
+   deployment-settings
 
 
 Indices and tables

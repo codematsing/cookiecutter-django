@@ -5,7 +5,7 @@ Dev Tools
 
 Tips and Tricks setup for developers during development of project
 
-.. note::
+.. important::
 
     All scripts are expected to be run in root directory of the project
 
@@ -17,9 +17,13 @@ you may run the code below and access the documentation at http://localhost:9000
 
 .. code-block:: shell
 
-    make -C docs livehtml
+    # in root directory
+    # for auto-refresh
+    sphinx-autobuild docs docs/_build/html --port 9000
+    # or for static doccumentation
+    make -C docs/. livehtml
 
-.. note::
+.. caution::
 
     A prerequisite to the documentation is plantuml.
     To ensure documentation is running properly, plantuml.jar is required in docs directory.
@@ -60,12 +64,6 @@ You can run a notebook with the command below, and it will run similar to django
     and is ensured that they will not clutter root directory.
     Further settings can be seen at ``./config/settings/local.py``
 
-.. tip::
-
-    If you are running jupyter notebook in vscode, setting notebook python interpreter to:
-    ``/path/to/project/.local_env/bin/python`` will not require running a jupyter server
-
-
 DB Reset
 -------------
 
@@ -88,3 +86,28 @@ To simplify this instruction, a script is provided in the base folder
 
     **NEVER** run in production server. 
     This will remove your database without any backup.
+
+    Developers **MUST** remove reset_db.sh in production server
+
+Setup Initial Environment
+-------------
+
+During initial development, syncing environment based on the needs of the project can be a hassle.
+Thus, we have created a script to initially setup environments. 
+The benefit of such setup is that it also introduces files:
+    * postactivate - loads environment variables based on mode of setup
+    * predeactivate - unsets loaded environment variables
+
+.. code-block:: shell
+
+    $ python setup_venvs.py
+
+Hijack
+-------------------------------
+
+An added library to immediately change user that is logged in
+
+.. note::
+
+    Only users with is_superuser=True can use the hijack functionality
+    and is only accessible during DEBUG=True setting

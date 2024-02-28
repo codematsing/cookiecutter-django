@@ -26,7 +26,7 @@ CHANGELOG.md
 
 .. important::
 
-    Changelog must be logged for every release changes
+    Changelog must be logged for every major release changes based on phase commitments
 
 Feature and Issues tracking
 ---------------------------

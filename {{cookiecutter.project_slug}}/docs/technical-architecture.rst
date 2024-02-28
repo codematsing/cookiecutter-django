@@ -2,15 +2,19 @@
 Technical Architecture
 ======================
 
-### Tech Stack
+Tech Stack
+----------
 
 A tech stack is the combination of technologies a company uses to build and run an application or project. Sometimes called a "solutions stack," a tech stack typically consists of programming languages, frameworks, a database, front-end tools, back-end tools, and applications connected via APIs.
 
-### Project File Structure
+Project File Structure
+----------------------
 
-### Mockup
+Mockup
+------
 
-### Class Diagram
+Class Diagram
+-------------
 
 A Class Diagram represents the classes, objects, and their relationships in a system. It provides a blueprint of the classes and their attributes, operations, and relationships with other classes.
 
@@ -23,7 +27,8 @@ A class diagram consists of several elements, including:
 
 Class diagrams are useful for understanding the structure of a system and for illustrating the relationships between classes.
 
-### Object Diagram
+Object Diagram
+--------------
 
 An Object Diagram represent a snapshot of a system at a specific point in time, showing the objects and their relationships in the system. It provides a detailed view of the structure and behavior of the system, focusing on the objects and their interactions.
 
@@ -42,13 +47,13 @@ Diving deeper, there are three main types of relationship  between classes or ob
 * Extension is an inheritance relationship, where a derived class adds or modifies behavior from a base class. 
 * Aggregation is a weak ownership relationship, where a class contains objects of another class that can exist independently.
 
-![](2023-02-22-11-16-47.png)
-
 In summary, the main differences between these three types of relationships are related to the degree of dependence and ownership between the classes. Composition implies strong ownership and dependence, extension implies inheritance and modification of behavior, and aggregation implies weak ownership and dependence.
 
-#### User Object Diagram
+User Object Diagram
+-------------------
 
-### Deployment Diagram
+Deployment Diagram
+-------------------
 
 A Deployment Diagram represent the physical deployment of software components and hardware components in a system. It provides a visual representation of the mapping of software components to hardware components, such as servers, databases, and clients.
 
@@ -61,6 +66,7 @@ A deployment diagram consists of several elements, including:
 
 Deployment diagrams are useful for understanding the physical deployment of software components and hardware components in a system. They can be used in a variety of domains, including software development, system design, and architecture.
 
-## References
+References
+-------------------
 
 Links to process forms, etc

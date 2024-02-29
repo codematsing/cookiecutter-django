@@ -5,3 +5,9 @@ production-ready Django projects quickly.
 
 -   Documentation: <https://cookiecutter-django.readthedocs.io/en/latest/>
 -   See [Troubleshooting](https://cookiecutter-django.readthedocs.io/en/latest/troubleshooting.html) for common errors and obstacles
+
+# Usage
+
+``` shell
+$ cookiecutter https://github.com/codematsing/cookiecutter-django
+```

@@ -33,4 +33,10 @@ License: {{cookiecutter.open_source_license}}
 
 ## Documentation
 * Refer to [Sphinx Documentation](./docs/getting-started.rst) for getting started guidelines
-
+* Getting started guidelines tackle:
+  * How to clone repository
+  * Proper virtualenv setup
+  * Installation of dependencies
+  * Creation of database
+  * Running of site; and,
+  * Running of documentation (side-by-side with system)

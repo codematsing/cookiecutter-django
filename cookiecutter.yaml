@@ -1,0 +1,29 @@
+---
+project_name: ""
+project_slug: ""
+description: ""
+author_name: Sam Solis
+domain_name: ""
+test_domain_name: "codematsing.com"
+email: sam.solis@codematsing.com
+version: 0.1.0
+open_source_license: Not open source
+timezone: Asia/Manila
+windows: "n"
+use_pycharm: "n"
+use_docker: "y"
+postgresql_version: '14'
+cloud_provider: None
+mail_service: Other SMTP
+use_async: "n"
+use_drf: "y"
+use_elasticsearch: "n"
+frontend_pipeline: Django Compressor
+use_celery: "n"
+use_mailhog: "n"
+use_sentry: "y"
+use_whitenoise: "y"
+use_heroku: "n"
+ci_tool: Github
+keep_local_envs_in_vcs: "y"
+debug: "n"

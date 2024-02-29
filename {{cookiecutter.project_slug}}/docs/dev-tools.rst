@@ -95,8 +95,9 @@ Setup Initial Environment
 During initial development, syncing environment based on the needs of the project can be a hassle.
 Thus, we have created a script to initially setup environments. 
 The benefit of such setup is that it also introduces files:
-    * postactivate - loads environment variables based on mode of setup
-    * predeactivate - unsets loaded environment variables
+
+* postactivate - loads environment variables based on mode of setup
+* predeactivate - unsets loaded environment variables
 
 .. code-block:: shell
 

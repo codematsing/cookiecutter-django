@@ -51,9 +51,6 @@ class {{cookiecutter.model_name_camel_case}}UpdateView({{cookiecutter.view_prefi
 class {{cookiecutter.model_name_camel_case}}DeleteView({{cookiecutter.view_prefix}}DeleteView):
 	model = {{cookiecutter.model_name_camel_case}}
 
-class {{cookiecutter.model_name_camel_case}}AutocompleteView(BaseAutocompleteView):
-	model = {{cookiecutter.model_name_camel_case}}
-
 # class {{cookiecutter.model_name_camel_case}}<snake_case_action>View(BaseActionView):
 # 	model= {{cookiecutter.model_name_camel_case}}
 

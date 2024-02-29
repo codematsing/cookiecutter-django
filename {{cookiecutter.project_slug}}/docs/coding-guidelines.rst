@@ -189,7 +189,7 @@ Django projects follow the following overriding sequence.
 Understanding this sequence will help developers know when to override 
 and **WHERE** it is appropriate to place overriding mechanisms.
 
-.. plantuml::
+.. uml::
 
     skinparam monochrome true
     skinparam shadowing false

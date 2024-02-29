@@ -103,13 +103,6 @@ input[type="checkbox"] {
   color: #fff !important;
 }
 
-.dj-form, .collection-siblings:last-child {
-  background-color: white !important;
-  padding-bottom: 5vh;
-  margin-bottom: 5vh;
-  border-bottom: 1px solid gray;
-}
-
 .collection-siblings > * > .dj-form {
   border-bottom: 0px !important;
   padding-bottom: initial;
@@ -117,7 +110,31 @@ input[type="checkbox"] {
 }
 
 django-form-collection > legend {
-  background-color: rgba(246, 183, 88, 0.5) !important;
+  font-family: "Open Sans", sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  border-bottom: 3px solid rgba(115, 26, 25, 0.5) !important;
+  border-top: 3px solid rgba(115, 26, 25, 0.5) !important;
+  margin: 5vh 0 1vh 0 !important;
+  padding: 5px 0 !important;
+}
+
+div[role="group"]:not(:last-of-type) {
+  margin-bottom: 15px !important;
+}
+
+django-form-collection > django-form-collection > legend {
+  background-color: #eaeaea !important;
+}
+
+fieldset > legend {
+  font-family: "Open Sans", sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  border-bottom: 3px solid rgba(115, 26, 25, 0.5) !important;
+  border-top: 3px solid rgba(115, 26, 25, 0.5) !important;
+  margin: 5vh 0 1vh 0 !important;
+  padding: 5px 0 !important;
 }
 
 #filter-collapse > div > div > div > django-formset > div.dj-form.row {
@@ -127,12 +144,32 @@ django-form-collection > legend {
   margin-bottom: initial;
 }
 
-ul.dj-errorlist {
-    list-style-type: none;
+.jumbotron {
+    background: url("https://4.bp.blogspot.com/-aEreVTm8AQo/TbZs_NJxmNI/AAAAAAAARAM/84_OPMPmW7M/w1200-h630-p-k-no-nu/DSC_0188.jpg") no-repeat center center fixed;
+    background-size: cover;
+    height: 30rem;
+    position: relative;
 }
 
-.alert-error {
- padding-bottom: 0px !important;
- padding-top: 0px !important; 
- margin-bottom: 0px !important;
+.jumbotron .container{
+    top: 10rem;
+    position: relative;
+    align-content: baseline;
+}
+
+.form-check.form-check-inline {
+  display: inline-block !important;
+}
+
+.dj-calendar {
+    z-index: 99;
+}
+
+.dj-required > label::after {
+  content: ' *';
+  color: #731a19 !important;
+}
+
+.dataTables_wrapper tr.selected {
+  background-color: rgba(246, 183, 88, 0.25);
 }

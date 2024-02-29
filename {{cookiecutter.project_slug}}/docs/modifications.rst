@@ -8,6 +8,7 @@ I have done some modifications that are more tailor fit to the usual use cases e
 Furthermore, some of these improvements are to prepare and automate some processes that are also normally tediously corrected or fixed
 
 .. _cookiecutter_app:
+
 Cookiecutter-app
 -------------------------------
 
@@ -40,7 +41,7 @@ in the app
 
 * app_name: serves as the app directory name
     * app_name_snake_case_plural
-    * app_name_snake_case_plural_camel_case
+    * app_name_verbose_name
 * model_name: serves as the model name attributed to the app_name
     * model_name_camel_case
     * model_name_snake_case_plural
@@ -96,7 +97,7 @@ login using organization email.
 .. hint::
 
     We setup :code:`RESTRICT_LOGIN_DOMAINS` and :code:`ALLOWED_LOGIN_DOMAINS` 
-    in :file:`settings/base.py` and :file:`.envs/.django to toggle this condition
+    in :file:`settings/base.py` and :file:`.envs/.django to toggle this condition`
 
     For example:
         * We want to accept google emails as valid login
@@ -246,14 +247,14 @@ Most times systems require a blog posting mechanism for announcements that are v
 This model provides the basic implementation for a blog post.
 
 User Registration
-^^^^^
+^^^^^^^^^^^^^^^^^
 
 Most times user login is restricted if not only by email authentication, but also by credentials.
 
 Providing credential logins are also required to be restricted through moderation of user reqgistration requests.
 This module provides that functionality.
 
-.. plantuml::
+.. uml::
 
     User -> System : Registers
     Moderator -> System : Checks user registrations

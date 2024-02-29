@@ -1,12 +1,12 @@
 {
   "app_name_snake_case_plural": "pluralized_app_name_snake_case_plural",
-  "app_name_snake_case_plural_camel_case" :  "{{ cookiecutter.app_name_snake_case_plural[:-1]|replace('_', ' ')|title|replace(' ', '')|trim()}}",
-  "model_name_camel_case" :  "{{cookiecutter.app_name_snake_case_plural_camel_case}}",
+  "app_name_verbose_name" :  "{{ cookiecutter.app_name_snake_case_plural[:-1]|replace('_', ' ')|title|replace(' ', '')|trim()}}",
+  "model_name_camel_case" :  "{{cookiecutter.app_name_verbose_name}}",
   "model_name_snake_case_plural" :  "{{cookiecutter.app_name_snake_case_plural}}",
   "model_name_verbose_name_plural" : "{{ cookiecutter.model_name_snake_case_plural | replace('_', ' ') | title }}",
   "model_name_snake_case" :  "{{cookiecutter.app_name_snake_case_plural[:-1]}}",
   "model_name_verbose_name" :  "{{ cookiecutter.model_name_snake_case | replace('_', ' ') | title }}",
   "view_prefix" :  ["Admin", "Public", "Base"],
   "app_location_dot_notation" :  "{{cookiecutter.app_name_snake_case_plural}}",
-  "db_table_comment" :  "Brief description about {{cokieccuter.app_name_snake_case_plural}}"
+  "db_table_comment" :  "Brief description about {{cookiecutter.app_name_snake_case_plural}}"
 }

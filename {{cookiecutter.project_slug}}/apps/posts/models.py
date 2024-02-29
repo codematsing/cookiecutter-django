@@ -15,9 +15,10 @@ class Post(AbstractAuditedModel):
     )
     body = models.TextField(null=True, blank=True)
     thumbnail = fields.ImageField(upload_to=lambdas.image_upload, blank=True, null=True)
-    is_published = fields.BooleanField(
+    is_published = models.BooleanField(
         default=False, 
-        verbose_name="Publish post", 
+        verbose_name="Publish post",
+        choices=[[True, "Publish"], [False, "Save As Draft"]]
         )
 
     def __str__(self):

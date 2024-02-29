@@ -11,7 +11,7 @@ from .views import (
 # {{cookiecutter.model_name_camel_case}}<snake_case_action><model_name_camel_case_fk>View,
 )
 
-app_name_snake_case_plural = "{{cookiecutter.app_name_snake_case_plural}}"
+app_name = "{{cookiecutter.app_name_snake_case_plural}}"
 
 # Make sure you add urls to model.spy
 # add get_<name>_url() method

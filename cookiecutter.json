@@ -56,12 +56,10 @@
   "keep_local_envs_in_vcs": "y",
   "debug": "n",
   "_copy_without_render": [
-    ".local_venv/*",
-    ".prod_venv/*",
     "base/templates/*",
     "base/static/*",
     "utils/cookiecutter-app/*",
     "utils/**/templates/*",
-    "docs/*"
+    "docs/*.rst"
   ]
 }

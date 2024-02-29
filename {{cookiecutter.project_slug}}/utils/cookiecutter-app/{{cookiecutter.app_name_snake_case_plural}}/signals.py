@@ -5,7 +5,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 # @receiver(post_save, sender={{cookiecutter.model_name_camel_case}})
-# def {{cookiecutter.model_name[:-1]}}_post_save(sender, instance, created, **kwargs):
+# def {{cookiecutter.model_name_snake_case}}_post_save(sender, instance, created, **kwargs):
 #     logger.info(f"{type(instance)} POST SAVE")
 #     logger.info(f"params:\nsender={sender}\ninstance={instance}\ncreated={created}\nkwargs={kwargs}")
 #     if created:
@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 #         pass
 
 # @receiver(pre_delete, sender={{cookiecutter.model_name_camel_case}})
-# def {{cookiecutter.model_name[:-1]}}_post_save(sender, instance, **kwargs):
+# def {{cookiecutter.model_name_snake_case}}_post_save(sender, instance, **kwargs):
 #     logger.info(f"{type(instance)} PRE SAVE")
 #     logger.info(f"params:\nsender={sender}\ninstance={instance}\nkwargs={kwargs}")
 #     if instance.pk == None: #for creation
@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 #         pass
 
 # @receiver(m2m_changed, sender={{cookiecutter.model_name_camel_case}}.<model_fk>.through)
-# def {{cookiecutter.model_name[:-1]}}_<model_fk>_changed(sender, instance, action, reverse, model, pk_set, using):
+# def {{cookiecutter.model_name_snake_case}}_<model_fk>_changed(sender, instance, action, reverse, model, pk_set, using):
 #     logger.info(f"{type(instance)} Document M2M CHANGED")
 #     logger.info(f"params:\nsender={sender}\ninstance={instance}\naction={action}\nreverse={reverse}\nmodel={model}\npk_set={pk_set}\nkwargs={kwargs}")
 #     if action=='post_add':

@@ -8,6 +8,14 @@ production-ready Django projects quickly.
 
 # Usage
 
+* Interactive Approach
 ``` shell
 $ cookiecutter https://github.com/codematsing/cookiecutter-django
+```
+
+* Config File Approach
+``` shell
+$ wget -O cookiecutter_config.yaml https://raw.githubusercontent.com/codematsing/cookiecutter-django/master/cookiecutter.yaml
+$ vim cookiecutter_config.yaml # change values
+$ cookiecutter https://github.com/codematsing/cookiecutter-django --no-input --config-file api_cookiecutter.yaml
 ```

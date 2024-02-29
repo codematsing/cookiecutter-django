@@ -10,25 +10,77 @@ This section is focused on preparing for local development
     * cookiecutter
     * virtualenv
     * git
+    * postgresql (optional: pgadmin)
 
-* Starting a project with custom cookicutter
+* Starting project
 
-    .. code-block:: shell
+    * From scratch
 
-        coookiecutter https://github.com/codematsing/cookiecutter-django
+        .. code-block:: shell
 
-* If repository exists, clone the project instead
+            coookiecutter https://github.com/codematsing/cookiecutter-django
 
-    .. code-block:: shell
+    * If repository exists, clone the project instead
 
-        git clone /path/to/repository
+        .. code-block:: shell
 
-* Loading virtualenv
+            git clone /path/to/repository
+
+* Setup Database
+
+    * If no user and password
+
+        .. code-block:: shell
+
+            #tl;dr: 
+            # Reference for interactive user creation: 
+            # Create superuser for your rdbms
+            # https://www.digitalocean.com/community/tutorials/how-to-use-roles-and-manage-grant-permissions-in-postgresql-on-a-vps-2
+            sudo -i -u postgres
+            createuser --interactive # quick creation with settings
+
+            # Reference in setting up postgresql user: https://medium.com/coding-blocks/creating-user-database-and-adding-access-on-postgresql-8bfcd2f4a91e
+            sudo -u postgres psql # running psql console as user postgres
+            postgres=# CREATE DATABASE <dbname>; # refer to .envs/.local_env/.postgres POSTGRES_DB
+            postgres=# ALTER USER <username> WITH encrypted password '<password>'; # creating non-root user
+            postgres=# GRANT ALL PRIVILEGES on DATABASE <dbname> TO <username> ;
+
+    * Update environment variables and create db
+
+        .. code-block:: shell
+
+            vim .envs/.local/.postgres #update database variables based on set credentials
+            createdb <dbname> #based on POSTGRES_DB in file
+
+    * (production): create a readaccess user
+
+        .. code-block:: shell
+
+            # for production environment
+            # create a readaccess privileged user to restrict direct access to postgresql
+            sudo -u postgres psql
+            CREATE ROLE readaccess;
+
+            -- Grant access to existing tables
+            GRANT CONNECT ON DATABASE <dbname> TO readaccess;
+            GRANT USAGE ON SCHEMA public TO readaccess;
+            GRANT SELECT ON ALL TABLES IN SCHEMA public TO readaccess;
+
+            -- Grant access to future tables
+            ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO readaccess;
+
+            -- Create a final user with password
+            CREATE USER read_user WITH PASSWORD '<read_password>';
+            GRANT readaccess TO read_user;
+
+* Loading virtualenv and setting up dependencies
 
     .. code-block:: shell
 
         python setup_venvs #helper script to create virtualenvs
         source .local_env/bin/activate
+        # validate if local_env reflects set variables
+        echo $POSTGRES_DB
         pip install -r requirements/local.txt
 
     .. note::
@@ -36,49 +88,7 @@ This section is focused on preparing for local development
         ``.local_env`` is a preloaded virtualenv that follows the rules in
         :ref:`adding_custom_virtualenv`
 
-* Testing project
-
-    .. code-block:: shell
-
-        ./manage.py runserver && xdg-open http://localhost:8000
-
-* Install postgresql and setup postgresql user
-    
-    .. code-block:: shell
-
-        #tl;dr: 
-        # Reference for interactive user creation: 
-        # https://www.digitalocean.com/community/tutorials/how-to-use-roles-and-manage-grant-permissions-in-postgresql-on-a-vps-2
-        sudo -i -u postgres
-        createuser --interactive # quick creation with settings
-
-        # Reference in setting up postgresql user: https://medium.com/coding-blocks/creating-user-database-and-adding-access-on-postgresql-8bfcd2f4a91e
-        sudo -u postgres psql # running psql console as user postgres
-        postgres=# CREATE USER <username> WITH encrypted password '<password>'; # creating non-root user
-
-        # or
-        postgres=# ALTER USER <username> WITH encrypted password '<password>'; # creating non-root user
-        postgres=# GRANT ALL PRIVILEGES on DATABASE <dbname> TO <username> ;
-
-    .. code-block:: shell
-        # for production environment
-        # create a readaccess privileged user to restrict direct access to postgresql
-        sudo -u postgres psql
-        CREATE ROLE readaccess;
-
-        -- Grant access to existing tables
-        GRANT CONNECT ON DATABASE <dbname> TO readaccess;
-        GRANT USAGE ON SCHEMA public TO readaccess;
-        GRANT SELECT ON ALL TABLES IN SCHEMA public TO readaccess;
-
-        -- Grant access to future tables
-        ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO readaccess;
-
-        -- Create a final user with password
-        CREATE USER read_user WITH PASSWORD '<read_password>';
-        GRANT readaccess TO read_user;
-
-* Setting up initial database
+* Populate database
 
     .. code-block:: shell
 
@@ -91,6 +101,12 @@ This section is focused on preparing for local development
         # email: admin@example.com
         # password: qwer!@#$
 
+* Testing project
+
+    .. code-block:: shell
+
+        ./manage.py runserver && xdg-open http://localhost:8000
+
 * Starting sphinx documentation
 
     .. code-block:: shell
@@ -101,7 +117,7 @@ This section is focused on preparing for local development
         # or for static doccumentation
         make -C docs/. livehtml
 
-* Starting applications using Cookicutter-app
+* Create application using Cookicutter-app (not django-admin startapp)
 
     Improvement to ``django-admin startapp``.
     Includes tests and factories in generation of app.
@@ -115,4 +131,4 @@ This section is focused on preparing for local development
 
 .. tip::
 
-    Please be guided with :ref:`coding_guidelines` moving forward
+    Please be guided with :ref:`coding_guidelines` and :ref:`modifications` moving forward

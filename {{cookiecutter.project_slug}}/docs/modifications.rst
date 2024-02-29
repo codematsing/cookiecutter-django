@@ -1,4 +1,4 @@
-.. _cookiecutter_modifications:
+.. _modifications:
 
 Modifications
 ======================================================================

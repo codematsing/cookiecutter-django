@@ -3,7 +3,7 @@
 Testing
 ========
 
-We encourage users to build application tests. As best practice, this should be done immediately after documentation of the application being built, before starting on any coding.
+From django-cookiecutter
 
 Pytest
 ------
@@ -54,3 +54,63 @@ Once the tests are complete, in order to see the code coverage, run the followin
 .. _customize: https://docs.pytest.org/en/latest/customize.html
 .. _unittest: https://docs.python.org/3/library/unittest.html#module-unittest
 .. _configuring: https://coverage.readthedocs.io/en/v4.5.x/config.html
+
+Factories
+----------
+
+Factories are key in doing unit testing as they generate mock data for testing.
+Adjust factory setup in ``<app_name>/tests/factories.py``.
+
+.. tip:: 
+    
+    You can register factories in conftest.py to easily access factories in different tests.
+
+.. hint::
+
+    Refer to ``FactoryBoy`` and ``Faker`` for proper setup of model factories.
+
+Unit Testing
+----------
+
+There are already initial set of test files that are pregenerated when using ``cookiecutter-app``.
+
+If developers plan to integrate unit testing to site, consider the matter of sequence of importance and implementation for the following files:
+
+* test_models
+    * check appropriate implementation of custom model methods
+* test_signals
+    * check affectation of saving one model to another model based on signal implementation
+    * check routing notifications triggered by signals
+* test_forms
+    * check custom form validation and saving
+    * if there is no custom model form but we would want to test different use cases for models, we can invoke ``get_errors`` from ``utils/validators``:
+
+        .. code-block:: python
+
+            # test_forms.py
+            from app_name.models import Model
+            from utils.validators import get_errors
+            class ModelFormsTestCase(TestCase):
+                def setUp(self):
+                    self.object = ModelFactory()
+
+                def test_model_full_clean(self):
+                    instance = Model() 
+                    # instantiate variables
+                    instance.var1 =... 
+                    instance.var2 =... 
+                    self.assertTrue(get_errors(instance)=={})
+
+
+* test_urls
+    * simulate permissions and error codes to be received by logged user
+* test_views
+    * test appropriate templates used when invoking traversal to a specific url
+
+UI Testing
+----------
+
+Best approach to do unit testing is to first declare factories per model that have been created. 
+After factories have been set, adjust script in ``base/mock_data/management/commands/load_dummy.py``.
+
+This will populate the site with dummy data to properly test UI.

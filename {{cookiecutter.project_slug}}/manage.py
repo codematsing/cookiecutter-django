@@ -25,6 +25,6 @@ if __name__ == "__main__":
 
     # This allows easy placement of apps within the interior
     current_path = Path(__file__).parent.resolve()
-    sys.path.append(str(current_path / "base"))
+    sys.path.append(str(current_path / "apps"))
 
     execute_from_command_line(sys.argv)

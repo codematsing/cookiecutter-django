@@ -9,7 +9,6 @@ import os
 
 ROOT_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 BASE_DIR = ROOT_DIR / "base" #used to be apps dir. for purpose of generalized template, changed to base
-sys.path.append(str(ROOT_DIR / "apps"))
 env = environ.Env()
 
 READ_DOT_ENV_FILE = env.bool("DJANGO_READ_DOT_ENV_FILE", default=False)

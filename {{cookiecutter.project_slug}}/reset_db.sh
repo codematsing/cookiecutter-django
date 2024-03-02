@@ -3,7 +3,7 @@
 # To check: ./manage.py showmigrations
 #find . \( -path '*/\.*' -prune \) -o \( -path "*/migrations/*.py" -not -name "__init__.py" -print -delete \) -o \( -path "*/migrations/*.pyc" -print -delete \)
 # exclude contrib/sites due to cookiecutter automation in sites
-find . \( -path '*/\.*' -o -path '**/contrib/*' \) -o \( -path "*/migrations/*.py" -not -name "__init__.py" -print -delete \) -o \( -path "*/migrations/*.pyc" -print -delete \)
+find . \( -path '*/\.*' -o -path '**/contrib/*' \) -o \( -path "*/migrations/*.py*" -not -name "__init__.py" -print -delete \) -o \( -path "*/migrations/*.pyc" -print -delete \)
 if [ -f db.sqlite3 ]; then
     rm db.sqlite3
     echo "db.sqlite3 deleted"

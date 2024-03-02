@@ -16,6 +16,7 @@ def _update_or_create_site_with_sequence(site_model, connection, domain, name):
             "name": name,
         },
     )
+    print(f"{site.domain} with SITE_ID={site.pk}")
     if created:
         # We provided the ID explicitly when creating the Site entry, therefore the DB
         # sequence to auto-generate them wasn't used and is now out of sync. If we

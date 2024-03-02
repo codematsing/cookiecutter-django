@@ -5,14 +5,18 @@ http://cookiecutter-django.readthedocs.io/en/latest/faq.html#why-is-there-a-djan
 """
 from django.conf import settings
 from django.db import migrations
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def _update_or_create_site_with_sequence(site_model, connection, domain, name):
     """Update or create the site with default ID and keep the DB sequence in sync."""
     site, created = site_model.objects.update_or_create(
-            domain=domain, name=name
+        domain=domain, name=name,
     )
-    print(f"\n{site.domain} with SITE_ID={site.pk}")
+    print("\n")
+    logger.critical(f"created site {site.domain} with SITE_ID={site.pk}")
     if created:
         # We provided the ID explicitly when creating the Site entry, therefore the DB
         # sequence to auto-generate them wasn't used and is now out of sync. If we

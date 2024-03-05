@@ -32,7 +32,7 @@ class {{cookiecutter.model_name_camel_case}}ViewTestCase(TestCase):
     #     url = reverse(url_name)
     #     response = self.client.get(url)
     #     self.assertTemplateUsed(response, 'pages/list.html')
-    #     self.assertEqual(response.context['objects'], self.user.get_{{cookiecutter.model_name}})
+    #     self.assertEqual(response.context['objects'], self.user.get_{{cookiecutter.model_name_snake_case_plural}})
 
     # def test_detail_view(self):
     #     self.client.login(username=self.user.username, password=self.user.password)
@@ -40,7 +40,7 @@ class {{cookiecutter.model_name_camel_case}}ViewTestCase(TestCase):
     #     url = reverse(url_name, kwargs={'pk': self.mymodel.pk})
     #     response = self.client.get(url)
     #     self.assertTemplateUsed(response, 'pages/detail.html')
-    #     self.assertEqual(response.context['object'], self.user.get_{{cookiecutter.model_name}})
+    #     self.assertEqual(response.context['object'], self.user.get_{{cookiecutter.model_name_snake_case_plural}})
 
     def tearDown(self):
         pass

@@ -12,6 +12,12 @@ This section is focused on preparing for local development
     * git
     * postgresql (optional: pgadmin)
 
+    .. caution::
+
+        Please be guided that the following scripts assumes that that the
+        device is a linux os. Adviseable to install WSL for windows. For mac,
+        please research accordingly the changes in installation using ``brew``
+
 * Starting project
 
     * From scratch
@@ -41,7 +47,7 @@ This section is focused on preparing for local development
 
             # Reference in setting up postgresql user: https://medium.com/coding-blocks/creating-user-database-and-adding-access-on-postgresql-8bfcd2f4a91e
             sudo -u postgres psql # running psql console as user postgres
-            postgres=# CREATE DATABASE <dbname>; # refer to .envs/.local_env/.postgres POSTGRES_DB
+            postgres=# CREATE DATABASE <dbname>; # refer to .envs/.local_venv/.postgres POSTGRES_DB
             postgres=# ALTER USER <username> WITH encrypted password '<password>'; # creating non-root user
             postgres=# GRANT ALL PRIVILEGES on DATABASE <dbname> TO <username> ;
 
@@ -77,16 +83,21 @@ This section is focused on preparing for local development
 
     .. code-block:: shell
 
-        python setup_venvs #helper script to create virtualenvs
-        source .local_env/bin/activate
-        # validate if local_env reflects set variables
+        python setup_venvs.py #helper script to create virtualenvs
+        source .local_venv/bin/activate
+        # validate if.local_venv reflects set variables
         echo $POSTGRES_DB
         pip install -r requirements/local.txt
 
     .. note::
     
-        ``.local_env`` is a preloaded virtualenv that follows the rules in
+        ``.local_venv`` is a preloaded virtualenv that follows the rules in
         :ref:`adding_custom_virtualenv`
+
+    .. caution::
+
+        If you are using mac os, you might need change ``.local_venv/bin/postactivate``
+        for operations in restarting the database
 
 * Populate database
 

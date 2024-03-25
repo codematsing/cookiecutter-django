@@ -395,7 +395,7 @@ Finally, as mentioned earlier, while widgets are normally set in forms, if we ha
 that will require consistent use of custom widget, we can instead create our custom field as referenced in: 
 `Django Documentation <https://docs.djangoproject.com/en/4.2/howto/custom-model-fields/#specifying-the-form-field-for-a-model-field:~:text=the%20correct%20value.-,Specifying%20the%20form%20field%20for%20a%20model%20field,-%C2%B6>`_
 
-.. important::
+.. note:: 
 
     Please refer to `utils.base_model.fields` for already preset custom model fields that use better widgets than
     that in vanilla django
@@ -407,6 +407,13 @@ that will require consistent use of custom widget, we can instead create our cus
         from utils.base_models import fields, models
         class Document(models.AbstactBaseModel):
             attachment = fields.FileField(verbose_name=..., help_text=...)
+
+    .. danger::
+
+        **This implementation is still buggy**. Incorporating this to your system may
+        cause issues with django admin pages.
+
+        This is because templates for django admin pages do not support new widgets
 
 .. _adding_custom_virtualenv:
 

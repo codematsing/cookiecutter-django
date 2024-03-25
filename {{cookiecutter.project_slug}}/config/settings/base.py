@@ -11,10 +11,14 @@ ROOT_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 BASE_DIR = ROOT_DIR / "base" #used to be apps dir. for purpose of generalized template, changed to base
 env = environ.Env()
 
-READ_DOT_ENV_FILE = env.bool("DJANGO_READ_DOT_ENV_FILE", default=False)
-if READ_DOT_ENV_FILE:
-    # OS environment variables take precedence over variables from .env
-    env.read_env(str(ROOT_DIR / ".env"))
+# Approach to force read hidden env files for python project
+DOT_ENV_FILEPATH = os.environ.get("DOT_ENV_FILEPATH", "")
+if DOT_ENV_FILEPATH:
+    if os.path.isdir(DOT_ENV_FILEPATH):
+        for env_file in list(filter(lambda env_file: env_file.startswith("."), os.listdir(DOT_ENV_FILEPATH))):
+            env.read_env(f"{DOT_ENV_FILEPATH}/{env_file}")
+    elif os.path.exists(DOT_ENV_FILEPATH):
+        env.read_env(DOT_ENV_FILEPATH)
 
 # GENERAL
 # ------------------------------------------------------------------------------

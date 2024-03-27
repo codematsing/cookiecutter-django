@@ -11,14 +11,14 @@ ROOT_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 BASE_DIR = ROOT_DIR / "base" #used to be apps dir. for purpose of generalized template, changed to base
 env = environ.Env()
 
-# Approach to force read hidden env files for python project
-DOT_ENV_FILEPATH = os.environ.get("DOT_ENV_FILEPATH", "")
-if DOT_ENV_FILEPATH:
-    if os.path.isdir(DOT_ENV_FILEPATH):
-        for env_file in list(filter(lambda env_file: env_file.startswith("."), os.listdir(DOT_ENV_FILEPATH))):
-            env.read_env(f"{DOT_ENV_FILEPATH}/{env_file}")
-    elif os.path.exists(DOT_ENV_FILEPATH):
-        env.read_env(DOT_ENV_FILEPATH)
+# Reading environment file
+ENV_FILE_DIR = os.environ.get("ENV_FILE_DIR", ".envs/.local")
+if ENV_FILE_DIR:
+    if os.path.isdir(ENV_FILE_DIR):
+        for env_file in list(filter(lambda env_file: env_file.startswith("."), os.listdir(ENV_FILE_DIR))):
+            env.read_env(f"{ENV_FILE_DIR}/{env_file}")
+    elif os.path.exists(ENV_FILE_DIR):
+        env.read_env(ENV_FILE_DIR)
 
 # GENERAL
 # ------------------------------------------------------------------------------

@@ -27,7 +27,6 @@ Deployment Settings
     }
     partition "Setup network routing" {
         :nginx app routing;
-        :media files;
         :ssl certification;
     }
 
@@ -77,6 +76,13 @@ Google Oauth
 
             GOOGLE_CLIENT_ID=<client_id>
             GOOGLE_SECRET_KEY=<client_secret>
+
+    * Create sites for each domain where Oauth will be used
+        * Create sites (by default ```base/contrib/sites/migrations``` will create sites during migrations)
+            * You may add more sites using django admin or shell
+
+        * Select sites that will use Oauth
+        .. image:: media/socialauth.png
 
 Setup SMTP
 ++++++++++++
@@ -135,17 +141,12 @@ Set up Application for Production
 
     * `Full django-gunicorn-nginx integration tutorial with debugging hints <https://www.digitalocean.com/community/tutorials/how-to-set-up-django-with-postgres-nginx-and-gunicorn-on-ubuntu#step-10-configure-nginx-to-proxy-pass-to-gunicorn>`_
     * `Running multiple web apps <https://caterinadmitrieva.medium.com/serving-multiple-django-apps-on-second-level-domains-with-gunicorn-and-nginx-a4a14804174c>`_
+    * `Incorporation of ssl certification <https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-ubuntu-20-04>`_
 
 Configure Environment Variables
 +++++++++++++++++++++++++++++++
 
-Guideline for loading variables should **NOT** be from accessing and reading environment files, 
-but rather through reading the server's running environment. This is to ensure security and maintaining
-anonimity of source file of env variables.
-
-Systems are currently in place to ensure that environment variables are directly read through ``os.environ``
-
-Following rules are set in reading environment variables to the project:
+By default, environment variables 
 
 * Reading via os.environ:
   * This ensures that we are reading env variables exported in os system
@@ -159,6 +160,17 @@ Sample that reflects all these rules are shown below
     # in settings.py
     DEBUG = os.environ.get("DEBUG", "False") == "True"
 
+.. important::
+
+    Some **critical** values to be set in environment variables are:
+
+    * SITE_ID 
+        * Refer to Site list in django admin or query in shell
+        * This is important for Oauth to also identify current site IP being used
+        * Also important in utils/lambda functions: get_current_domain()
+    * POSTGRES_*
+        * This is dependency integrate postgresql server
+
 .. note::
 
     If additional variables are needed to be added, just place them in .env files.
@@ -166,7 +178,7 @@ Sample that reflects all these rules are shown below
 
 .. hint:: 
 
-    See :ref:`adding_custom_virtualenv` to see how environment variables are loaded to the system
+    See :ref:`_setup_environment_variables` to see how environment variables are read in the system
 
 Handle Static Files
 +++++++++++++++++++
@@ -239,10 +251,7 @@ Bind Gunicorn WSGI Configuration
     User=root
     Group=www-data
     WorkingDirectory=/path/to/working_directory
-    # forces DJANGO_SETTING_MODULE to production
-    Environment="DJANGO_SETTING_MODULE=config.settings.production"
-    # see settings/base.py. This will read env variables from files
-    Environment="DOT_ENV_FILEPATH=/path/to/app/.envs/.production" #absolute_path
+    Environment="ENV_FILE_DIR=/path/to/app/.envs/.production" #absolute_path
     ExecStart=/path/to/venv/bin/gunicorn \
         --workers 3  \
         --bind unix:/run/<app_name>.sock config.wsgi:application \ 
@@ -259,6 +268,9 @@ Bind Gunicorn WSGI Configuration
     sudo systemctl start <app_name>.socket
     sudo systemctl enable <app_name>.socket
     sudo systemctl start <app_name>.service #run app
+
+    # check if sock file was created
+    file /run/gunicorn.sock
 
     # to check status
     sudo systemctl status <app_name>.socket
@@ -285,10 +297,6 @@ Create and nginx conf for your system at: ```/etc/nginx/sites-enabled/<domain_na
 
 .. code-block:: shell
 
-    sudo touch /run/<app_name>.sock
-
-.. code-block:: shell
-
     server {
         # routing
         server_name <domain_name>;
@@ -311,8 +319,11 @@ Create and nginx conf for your system at: ```/etc/nginx/sites-enabled/<domain_na
         location / {
             autoindex on;
             include proxy_params;
+            # PRODUCTION
             # this will pass all traffic to appname socket
             proxy_pass http://unix:/run/<app_name>.sock;
+
+            # TESTING / DEBUGGING
             #proxy_pass http://127.0.0.1:8000;
             #proxy_set_header Host $host;
             #proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -320,6 +331,7 @@ Create and nginx conf for your system at: ```/etc/nginx/sites-enabled/<domain_na
             #proxy_redirect http://127.0.0.1:8000 http://foo.com;
         }
 
+        # LET's ENCRYPT INTEGRATION
         # listen 443 ssl; # managed by Certbot
         # ssl_certificate /etc/letsencrypt/live/<domain_name>/fullchain.pem; # managed by Certbot
         # ssl_certificate_key /etc/letsencrypt/live/<domain_name>/privkey.pem; # managed by Certbot
@@ -331,7 +343,10 @@ Create and nginx conf for your system at: ```/etc/nginx/sites-enabled/<domain_na
     }
 
 .. code-block:: shell
-    
+
+    # port allowance
+    sudo ufw allow 'Nginx Full'
+
     # to restart nginx
     sudo service nginx restart
 
@@ -344,8 +359,16 @@ Create and nginx conf for your system at: ```/etc/nginx/sites-enabled/<domain_na
     # to check running configuration files and append include files
     nginx -T
 
-Media Files
-+++++++++++
-
 SSL Certification
 +++++++++++++++++
+
+.. code-block:: shell
+
+    # installation dependencies
+    sudo apt install certbot python3-certbot-nginx
+
+    # obtaining ssl certification
+    sudo certbot --nginx -d example.com -d www.example.com
+
+    # for multiple 
+    sudo certbot-auto -d one.example.com -d two.example.com -d three.example.com -d example.org

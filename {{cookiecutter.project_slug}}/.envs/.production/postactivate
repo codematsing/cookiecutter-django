@@ -1,5 +1,0 @@
-sudo service postgresql restart
-export $(grep -v '^#' $(pwd)/.envs/.production/.django | xargs)
-export $(grep -v '^#' $(pwd)/.envs/.production/.postgres | xargs)
-export $(grep -v '^#' $(pwd)/.envs/.production/.tokens | xargs)
-DATABASE_URL=postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST:$POSTGRES_PORT/$POSTGRES_DB

@@ -89,19 +89,42 @@ To simplify this instruction, a script is provided in the base folder
 
     Developers **MUST** remove reset_db.sh in production server
 
-Setup Initial Environment
+ .. _setup_environment_variables:
+
+Setup Environment Variables
 -------------
 
-During initial development, syncing environment based on the needs of the project can be a hassle.
-Thus, we have created a script to initially setup environments. 
-The benefit of such setup is that it also introduces files:
+Environment variables can vary in diffent machines.
+In our development, we prefer to have multiple environment files for different functions as the files can 
+become overbearing and difficult to maintain if all configurations are set in one file.
 
-* postactivate - loads environment variables based on mode of setup
-* predeactivate - unsets loaded environment variables
+By default and as a sample, our environment directory for local development is set inside ```.envs/.local```.
+Any developer is allowed to set their distinct setup environment variables in this directory
+provided that they don't include this in feature commits.
 
-.. code-block:: shell
+We can check the directory and see multiple files already placed:
 
-    $ python setup_venvs.py
+* Django flags / configuration
+* Postgres credentials
+* Third-party tokens / credentials
+
+For our app to read our environment files, we have provided a code snippet
+located in ```config/settings/base.py```.
+
+It can be seen from the code snippet that our environment variables are found
+when an ```ENV_FILE_DIR``` variable is set. But by default we are setting it to
+.envs/.local. It can also be seen that ENV_FILE_DIR can also accept a single file.
+
+.. code-block:: python
+
+    # Reading environment file
+    ENV_FILE_DIR = os.environ.get("ENV_FILE_DIR", ".envs/.local")
+    if ENV_FILE_DIR:
+        if os.path.isdir(ENV_FILE_DIR):
+            for env_file in list(filter(lambda env_file: env_file.startswith("."), os.listdir(ENV_FILE_DIR))):
+                env.read_env(f"{ENV_FILE_DIR}/{env_file}")
+        elif os.path.exists(ENV_FILE_DIR):
+            env.read_env(ENV_FILE_DIR)
 
 Hijack
 -------------------------------

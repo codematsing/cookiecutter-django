@@ -1,26 +1,40 @@
-.. _gettingstarted:
+.. _getting_started:
 
 Getting Started
 ======================================================================
 
 This section is focused on preparing for local development
 
+.. warning::
+
+    Getting started assumes that you have an **ubuntu linux OS**. 
+    This is because servers are deployed in ubuntu servers.
+
+    Replicating production server environments are best approach for development
+    to avoid incompatibilities between local and production environment.
+
+    .. tip::
+
+        For windows users, suggest is to install windows subsystem for linux (WSL2)
+        for development projects and follow instructions as follows
+
+        For mac users, mac users can be natively support the development projects.
+        Just research the brew installation counterpart for apt packages installations
+
+
 * Base Requirements prior to starting a project
-    * python
-    * cookiecutter
-    * virtualenv
-    * git
-    * postgresql (optional: pgadmin)
-
-    .. caution::
-
-        Please be guided that the following scripts assumes that that the
-        device is a linux os. Adviseable to install WSL for windows. For mac,
-        please research accordingly the changes in installation using ``brew``
+    * Through ubuntu apt package manager
+        * `python <https://www.digitalocean.com/community/tutorials/how-to-install-python-3-and-set-up-a-programming-environment-on-an-ubuntu-20-04-server>`_
+            * virtualenv
+        * git
+        * postgresql 
+        * nginx (for production)
+    * Through site
+        * `pgadmin <https://www.pgadmin.org/download/>`_
 
 * Starting project
 
-    * From scratch
+    * If we are creating a repository from scratch (optional)
 
         .. code-block:: shell
 
@@ -34,31 +48,47 @@ This section is focused on preparing for local development
 
 * Setup Database
 
-    * If no user and password
+    .. caution::
+
+        Prerequisite for this is that postgresql is running
 
         .. code-block:: shell
+
+            # to check nginx conf
+            sudo service postgresql status
+            # note the port number where postgresql is exposed
+
+            # to start postgresql
+            sudo service postgresql start
+
+    * If you have a fresh install of postgresql with no user and password setup
+
+        .. code-block:: shell
+
+            # Refer to db and postgres user details to create
+            cat .envs/.local_env/.postgres
 
             #tl;dr: 
             # Reference for interactive user creation: 
             # Create superuser for your rdbms
             # https://www.digitalocean.com/community/tutorials/how-to-use-roles-and-manage-grant-permissions-in-postgresql-on-a-vps-2
             sudo -i -u postgres
-            createuser --interactive # quick creation with settings
+            createuser --interactive # quick creation with settings. create a superuser
 
             # Reference in setting up postgresql user: https://medium.com/coding-blocks/creating-user-database-and-adding-access-on-postgresql-8bfcd2f4a91e
             sudo -u postgres psql # running psql console as user postgres
-            postgres=# CREATE DATABASE <dbname>; # refer to .envs/.local_venv/.postgres POSTGRES_DB
+            postgres=# CREATE DATABASE <dbname>;
             postgres=# ALTER USER <username> WITH encrypted password '<password>'; # creating non-root user
             postgres=# GRANT ALL PRIVILEGES on DATABASE <dbname> TO <username> ;
 
-    * Update environment variables and create db
+    * If you have an existing postgresql user and you don't want to create another user. Just update environment variables instead and create db
 
         .. code-block:: shell
 
-            vim .envs/.local/.postgres #update database variables based on set credentials
+            vim .envs/.local/.postgres # update database variables based on set credentials
             createdb <dbname> #based on POSTGRES_DB in file
 
-    * (production): create a readaccess user
+    * **For production**: create a readaccess user
 
         .. code-block:: shell
 
@@ -79,20 +109,21 @@ This section is focused on preparing for local development
             CREATE USER read_user WITH PASSWORD '<read_password>';
             GRANT readaccess TO read_user;
 
-* Loading virtualenv and setting up dependencies
+* Loading virtualenv and setting up app dependencies
 
     .. code-block:: shell
 
-        python setup_venvs.py #helper script to create virtualenvs
+        # creation of virtualenv
+        virtualenv .local_venv
+        virtualenv .prod_venv #for production
+
+        # activating virtualenv and installing app dependencies
         source .local_venv/bin/activate
-        # validate if.local_venv reflects set variables
-        echo $POSTGRES_DB
         pip install -r requirements/local.txt
 
-    .. note::
-    
-        ``.local_venv`` is a preloaded virtualenv that follows the rules in
-        :ref:`adding_custom_virtualenv`
+        # validate if.local_venv reflects set environment variables
+        echo $POSTGRES_DB
+
 
     .. caution::
 

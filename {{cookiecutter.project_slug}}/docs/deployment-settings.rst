@@ -34,7 +34,7 @@ Setup Server
 ------------
 
     * `Pubkey setup <https://www.digitalocean.com/community/tutorials/how-to-configure-ssh-key-based-authentication-on-a-linux-server>`_
-    * clone repository
+    * `Clone Repository via SSH<https://www.google.com/amp/s/dylancastillo.co/how-to-use-github-deploy-keys/amp/>`_
     * Refer to :ref:`Getting started <getting_started>`
 
     .. warning::

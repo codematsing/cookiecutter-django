@@ -48,6 +48,12 @@ class BaseModelMixin:
             )
 
     @classmethod
+    def get_ajax_list_url(cls):
+        return reverse(
+            f"{cls._meta.app_label}:ajax:list",
+            )
+
+    @classmethod
     def get_create_url(cls):
         return reverse(
             f"{cls._meta.app_label}:create",

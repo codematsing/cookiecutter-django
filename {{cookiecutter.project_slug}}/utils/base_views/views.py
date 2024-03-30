@@ -277,8 +277,12 @@ class BaseWAjaxDatatableMixin:
 	def get_ajax_list_url(self):
 		"""Ajax list url that will be processed in template view
   		"""
-		ajax_url = f"{self.request.resolver_match.namespace}:ajax:list"
-		return reverse_lazy(ajax_url, kwargs=self.kwargs)
+		ajax_url = "#"
+		try:
+			ajax_url = self.modelget_ajax_list_url
+		except Exception as e:
+			logger.error(e)
+		return ajax_url
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
@@ -292,9 +296,11 @@ class BaseListView(BaseWAjaxDatatableMixin, BaseMixin, ListView):
 	template_name='pages/list.html'
 
 	def get_header_buttons(self):
-		add_url = reverse_lazy(
-			":".join(self.request.resolver_match.namespaces)+":create", kwargs=self.kwargs
-		)
+		add_url = "#"
+		try:
+			add_url = self.model.get_create_url()
+		except Exception as e:
+			logger.error(e)
 		return [
 			{'label':'Add', 'icon':'mdi-plus', 'href':add_url}
 		]
@@ -323,9 +329,11 @@ class BaseDetailView(BaseMixin, DetailView):
 	extra_context = {'show_action_buttons':True}
 
 	def get_header_buttons(self):
-		update_url = reverse_lazy(
-			":".join(self.request.resolver_match.namespaces)+":update", kwargs=self.kwargs
-		)
+		update_url = "#"
+		try:
+			update_url = self.model.get_update_url()
+		except Exception as e:
+			logger.error(e)
 		return [
 			{'label':'Edit', 'icon':'mdi-pencil', 'href':update_url}
 		]

@@ -107,9 +107,10 @@ CELERY_TASK_EAGER_PROPAGATES = True
 # Your stuff...
 # ------------------------------------------------------------------------------
 # Notebooks: https://github.com/django-extensions/django-extensions/issues/865
+SHELL_PLUS="notebook"
 NOTEBOOK_ARGUMENTS = [
     '--notebook-dir', 'notebooks',
-    '--no-browser',
+    '--no-browser'
 ]
 
 IPYTHON_ARGUMENTS = [

@@ -75,12 +75,29 @@ requires a certain approach:
 * Deleteing database
 * Recreating database
 
-To simplify this instruction, a script is provided in the base folder
+To simplify this sequence:
 
 .. code-block:: shell
 
-    # to reset db
-    ./reset_db.sh
+    # reset_migrations: resets all app migration directories
+    ./manage.py reset_migrations
+
+    # reset_db: recreates database
+    ./manage.py reset_db
+
+.. tip::
+
+    If an error occurs with recreation of database due to active connections, try:
+
+    .. code-block::
+
+        # for linux
+        sudo service restart postgresql
+        # for mac
+        sudo brew services restart postgresql
+
+        # reset_db
+        ./manage.py reset_db
 
 .. danger::
 

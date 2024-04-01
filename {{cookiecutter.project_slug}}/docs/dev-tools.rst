@@ -143,6 +143,20 @@ when an ```ENV_FILE_DIR``` variable is set. But by default we are setting it to
         elif os.path.exists(ENV_FILE_DIR):
             env.read_env(ENV_FILE_DIR)
 
+Investigate Django Setting Variables
++++++++++++++++++++++++++++++++++++++
+
+From previous section, we state that we are toggling environment variables from
+```ENV_FILE_DIR```. To see settings being read as well as other django variables
+loaded we can run the command:
+
+.. code-block:: python
+
+    python manage.py diffsettings --all
+    # or 
+    python manage.py diffsettings --all | grep <variable_name>
+
+
 Hijack
 -------------------------------
 

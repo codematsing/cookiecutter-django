@@ -96,7 +96,7 @@ login using organization email.
 
 .. hint::
 
-    We setup :code:`RESTRICT_LOGIN_DOMAINS` and :code:`ALLOWED_LOGIN_DOMAINS` 
+    We setup :code:`RESTRICT_LOGIN_DOMAINS` and :code:`WHITELIST_LOGIN_DOMAINS` 
     in :file:`settings/base.py` and :file:`.envs/.django to toggle this condition`
 
     For example:
@@ -104,7 +104,7 @@ login using organization email.
             * :code:`RESTRICT_LOGIN_DOMAINS=False`
         * We want to only accept :code:`up.edu.ph` emails
             * :code:`RESTRICT_LOGIN_DOMAINS=True`
-            * :code:`RESTRICT_LOGIN_DOMAINS=['up.edu.ph']`
+            * :code:`WHITELIST_LOGIN_DOMAINS=['up.edu.ph']`
 
     .. tip::
         

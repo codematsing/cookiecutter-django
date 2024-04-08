@@ -4,6 +4,7 @@ from allauth.account.adapter import DefaultAccountAdapter
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
 from django.conf import settings
 from django.http import HttpRequest
+from django.contrib.auth import get_user_model
 
 
 class AccountAdapter(DefaultAccountAdapter):
@@ -38,8 +39,9 @@ class SocialAccountAdapter(DefaultSocialAccountAdapter):
         # an existing user's account
         try:
             user = get_user_model().objects.filter(email=email.email).first()
-            user.first_name = sociallogin.account.extra_data.get("given_name")
-            user.last_name = sociallogin.account.extra_data.get("family_name")
+            first_name = sociallogin.account.extra_data.get("given_name")
+            last_name = sociallogin.account.extra_data.get("family_name")
+            user.name = f"{first_name} {last_name}"
             user.username = sociallogin.account.extra_data.get("email").split('@')[0]
             user.save()
             # if it does, connect this new social login to the existing user
@@ -56,7 +58,7 @@ class SocialAccountAdapter(DefaultSocialAccountAdapter):
         # Be careful with the staff setting, as some providers don't verify
         # email address, so that could be considered a security flaw.
         #u.is_staff = u.email.split('@')[1] == "customdomain.com"
-        if settings.ALLOWED_LOGIN_DOMAINS:
-            return u.email.split('@')[1] in settings.ALLOWED_LOGIN_DOMAINS
-        else:
-            return
+        email_username, email_domain = u.email.split('@')
+        if settings.RESTRICT_LOGIN_DOMAINS and email_domain not in settings.WHITELIST_LOGIN_DOMAINS:
+            raise ValueError(f"{email_domain} is not in settings.WHITELIST_LOGIN_DOMAINS={settings.WHITELIST_LOGIN_DOMAINS}")
+        return True

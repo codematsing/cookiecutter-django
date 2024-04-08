@@ -479,10 +479,10 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-#
-#Restrict login domains shall toggle 
-RESTRICT_LOGIN_DOMAINS = os.environ.get("RESTRICT_LOGIN_DOMAINS", DEBUG)
-ALLOWED_LOGIN_DOMAINS = None if RESTRICT_LOGIN_DOMAINS else os.environ.get("ALLOWED_LOGIN_DOMAINS", [])
+#Restrict login domains shall toggle
+RESTRICT_LOGIN_DOMAINS = os.environ.get("RESTRICT_LOGIN_DOMAINS", default=str(DEBUG))=="True"
+# See adapters
+WHITELIST_LOGIN_DOMAINS = os.environ.get("ALLOWED_LOGIN_DOMAINS", [])
 
 # DJANGO TABLES
 # ------------------------------------------------------------------------------

@@ -9,7 +9,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 class EmailValidator(EmailValidator):
-    allowlist = settings.ALLOWED_LOGIN_DOMAINS
+    allowlist = settings.WHITELIST_LOGIN_DOMAINS
 
 class UPEmailValidator(EmailValidator):
     domain_regex = _lazy_re_compile(r'up.*\.edu.ph', re.IGNORECASE)

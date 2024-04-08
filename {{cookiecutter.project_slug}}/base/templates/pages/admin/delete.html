@@ -1,24 +1,22 @@
 {% extends 'partials/admin/base.html' %}
 
 {% block content %}
-<div class="row">
-  <div class="col-12 col-md-10 offset-md-1">
-    <div class="alert alert-danger" role="alert">
+  <div class="row grid-margin">
+    <div class="alert alert-danger my-0" role="alert">
       <b>Warning:</b> Deleting {{object}} is completely irreversible and can affect losing other data dependent on it.
       Are you sure you want to delete this?
     </div>
-
-    {{object.as_card | safe}}
-
-    <div class="d-flex align-items-center justify-content-md-end my-4">
-      <form action="" method="post">
-        {% csrf_token %}
-        <a class="btn btn-secondary me-2" href={{request.META.HTTP_REFERER}}>
-          Cancel
-        </a>
-        <input type="submit" class="btn btn-primary" value="Delete">
-      </form>
-    </div>
   </div>
-</div>
+
+  {{object.as_card | safe}}
+
+  <div class="d-flex align-items-center justify-content-md-end pb-5 mb-5">
+    <form action="" method="post">
+      {% csrf_token %}
+      <a class="btn btn-secondary me-2" href="{{request.META.HTTP_REFERER}}">
+        Cancel
+      </a>
+      <input type="submit" class="btn btn-primary" value="Delete">
+    </form>
+  </div>
 {% endblock %}

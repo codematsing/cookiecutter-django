@@ -279,7 +279,7 @@ class BaseWAjaxDatatableMixin:
   		"""
 		ajax_url = "#"
 		try:
-			ajax_url = self.modelget_ajax_list_url
+			ajax_url = self.model.get_ajax_list_url()
 		except Exception as e:
 			logger.error(e)
 		return ajax_url
@@ -298,7 +298,7 @@ class BaseListView(BaseWAjaxDatatableMixin, BaseMixin, ListView):
 	def get_header_buttons(self):
 		add_url = "#"
 		try:
-			add_url = self.model.get_create_url()
+			add_url = self.get_object().get_create_url()
 		except Exception as e:
 			logger.error(e)
 		return [
@@ -331,7 +331,7 @@ class BaseDetailView(BaseMixin, DetailView):
 	def get_header_buttons(self):
 		update_url = "#"
 		try:
-			update_url = self.model.get_update_url()
+			update_url = self.get_object().get_update_url()
 		except Exception as e:
 			logger.error(e)
 		return [

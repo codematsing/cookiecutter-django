@@ -37,7 +37,7 @@ class BaseFormMixin(SuccessMessageMixin, FormViewMixin, FileUploadMixin):
 
 	def get_initial(self):
 		initial = super().get_initial()
-		if not self.form_class and hasattr(self.model, 'updated_by') and ('updated_by' in self.fields or self.fields=='__all__'):
+		if hasattr(self.model, 'updated_by') and (self.form_class or ('updated_by' in self.fields or self.fields=='__all__')):
 			initial['updated_by'] = self.request.user
 		return initial
 

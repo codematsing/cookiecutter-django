@@ -8,6 +8,15 @@ import random
 class Command(BaseCommand):
     help = "Reset migrations files for fresh migration alongside reset_db"
 
+    def add_arguments(self, parser):
+        # Named (optional) arguments
+        parser.add_argument(
+            "-f",
+            "--force",
+            action="store_true",
+            help="Forces reset of migrations",
+        )
+
     def reset_migrations(self):
         included_dirs = [os.path.join(settings.ROOT_DIR, _dir) for _dir in ['apps', 'utils']]
         exception_dirs = [
@@ -24,5 +33,10 @@ class Command(BaseCommand):
                             # os.remove(filepath)
 
 
-    def handle(self, *args, **kwargs):
-        self.reset_migrations()
+    def handle(self, *args, **options):
+        if settings.DEBUG==False and not options['force']:
+            print("WARNING: You are in a production environment setting.")
+            print("add --force to reset migrations")
+            print("PROCEED WITH CAUTION!")
+        else:
+            self.reset_migrations()

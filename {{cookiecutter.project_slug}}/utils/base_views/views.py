@@ -171,6 +171,17 @@ class BaseFormCollectionView(SuccessMessageMixin, BaseMixin, FormCollectionView)
 	# follow form collection get_field format: nested '.'
 	disabled_fields = []
 	hidden_fields = []
+
+	def get_form_header(self):
+		default = f"{self.model._meta.verbose_name} Form"
+		return getattr(self, 'form_header', default)
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context["form_header"] = self.get_form_header()
+		logger.info(context)
+		return context
+
 	def disable_field(self, field):
 		field.widget.attrs.update({'disabled':True})
 		return field
@@ -239,13 +250,17 @@ class BaseCreateFormCollectionView(BaseFormCollectionView):
 		messages.success(self.request, self.success_message)
 		return JsonResponse({'success_url': self.get_success_url()})
 
-class BaseUpdateFormCollectionView(BaseFormCollectionView, SingleObjectMixin):
+class BaseUpdateFormCollectionView(SingleObjectMixin, BaseFormCollectionView):
 	def form_collection_valid(self, form_collection):
 		logger.info("valid form collection")
 		self.object = form_collection.update()
 		self.success_message = self.get_success_message(form_collection.cleaned_data) or f"{self.object} has been updated"
 		messages.success(self.request, self.success_message)
 		return JsonResponse({'success_url': self.get_success_url()})
+
+	def get_form_header(self):
+		default = f"{self.get_object()} Update Form"
+		return getattr(self, 'form_header', default)
 
 	def get_context_data(self, **kwargs):
 		self.object = self.get_object()
@@ -298,7 +313,7 @@ class BaseListView(BaseWAjaxDatatableMixin, BaseMixin, ListView):
 	def get_header_buttons(self):
 		add_url = "#"
 		try:
-			add_url = self.get_object().get_create_url()
+			add_url = self.model.get_create_url()
 		except Exception as e:
 			logger.error(e)
 		return [

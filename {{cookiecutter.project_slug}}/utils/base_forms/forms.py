@@ -83,5 +83,15 @@ class BaseFormCollection(FormCollection):
 		for elem in fields:
 			self.disable_fields([elem])
 			self.fields[elem].widget = HiddenInput()
+
+	def save(self, *args, **kwargs):
+		raise NotImplementedError("Need to provide saving mechanism for Form")
+
+	def create(self):
+		return self.save()
+
+	def update(self):
+		return self.save()
+
 		
 	#TODO: form collection hidden and disabled fields

@@ -131,7 +131,8 @@ THIRD_PARTY_APPS = [
 
 UTIL_APPS = [
     "base.mock_data", #dummy generator
-    "base.test_email" #test email
+    "base.test_email", #test email
+    "base.reset_migrations", #reset_migrations
 ]
 
 LOCAL_APPS = [

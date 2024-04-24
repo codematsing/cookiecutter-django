@@ -5,6 +5,7 @@ from django.template.loader import render_to_string
 from django.contrib.auth import get_user_model
 from utils.lambdas import get_current_domain
 from utils.detail_wrapper.mixins import DetailCard
+from datetime import datetime
 import pandas as pd
 
 # Create your models here.
@@ -109,5 +110,37 @@ class AbstractAuditedModel(BaseModelMixin, HistoryMixin, models.Model):
         else:
             return 'Unknown Status'
     
+    class Meta:
+        abstract=True
+
+class ProtectedModelManager(models.Manager):
+    def get_queryset(self) -> models.QuerySet:
+        return super().get_queryset().filter(deleted_at__isnull=True)
+
+    def get_unfiltered_queryset(self) -> models.QuerySet:
+        return super().get_queryset()
+
+    def soft_deleted_objects(self) -> models.QuerySet:
+        return super().get_queryset().filter(deleted_at__isnull=False)
+
+class AbstractProtectedModel(models.Model):
+    """Allows another level to protect object instances by
+    setting deletion to toggle `deleted_at` value.
+
+    Note: If you are planning to inherit AbstractedProtectedModel,
+    and override Model Manager as well, make sure your model manager 
+    inherits ProtectedModelManager.
+    """
+    objects = ProtectedModelManager()
+
+    deleted_at = models.DateTimeField(null=True, blank=True, default=None)
+
+    def delete(self):
+        self.deleted_at=datetime.now()
+        self.save()
+
+    def force_delete(self):
+        return super().delete()
+
     class Meta:
         abstract=True

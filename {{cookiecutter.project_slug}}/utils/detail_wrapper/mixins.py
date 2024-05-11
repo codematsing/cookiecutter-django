@@ -30,7 +30,7 @@ class DetailWrapperMixin:
         field_obj = obj._meta.get_field(field)
         _field_value = getattr(obj, field, "")
         if hasattr(obj, f"render_{field}"):
-            return getattr(obj, f"render{field}")()
+            return getattr(obj, f"render_{field}")()
         if isinstance(field_obj, models.ManyToManyField):
             return render_to_string('detail_wrapper/manytomany.html', {'field':_field_value})
         elif isinstance(field_obj, models.ForeignKey):
@@ -84,13 +84,17 @@ class DetailWrapperMixin:
 
 class DetailCard(DetailWrapperMixin):
     def __init__(
-            self, object, fields, 
+            self, 
+            object,
+            fields="__all__",
+            exclude=[],
             card_header="Details", 
             card_subheader="", 
             template="detail_wrapper/detail_card.html"
         ):
         self.object = object
         self.fields = fields
+        self.exclude = exclude
         self.card_header = card_header
         self.card_subheader = card_subheader
         self.template = template
@@ -102,3 +106,8 @@ class DetailCard(DetailWrapperMixin):
     @property
     def card(self):
         return render_to_string(self.template, context={'fields':self.get_rendered_fields_items(), 'card_header':self.card_header, 'card_subheader':self.card_subheader})
+
+
+    @property
+    def template_html(self):
+        return render_to_string(self.template, context={'object': self.object, 'fields':self.get_rendered_fields_items()})

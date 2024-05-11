@@ -4,19 +4,37 @@ from django.http import JsonResponse
 from django.template.loader import render_to_string
 from guardian.shortcuts import get_objects_for_user
 from urllib.parse import parse_qs
+from django.urls import resolve
+from django.contrib.auth.mixins import UserPassesTestMixin
+
+import re
 import json
 
 import logging
 logger = logging.getLogger(__name__)
 
-class BaseListAjaxView(AjaxDatatableView):
+class BaseListAjaxView(UserPassesTestMixin, AjaxDatatableView):
 	# show_column_filters=False
 	# refer to https://github.com/morlandi/django-ajax-datatable#16column_defs-customizations
 	column_defs = [
 		{'name':'pk', 'visible':False},
 		{'name':'name'},
-		{'name':'action', 'searchable':False},
+		{'name':'action', 'searchable':False, 'orderable':False},
+		{'name':'url', 'orderable':False, 'visible':False},
 	]
+	initial_order=[[1, "asc"]]
+
+	def test_func(self):
+		referrer = self.request.META.get("HTTP_REFERRER", self.request.headers['Referer'])
+		referrer = re.sub(r"(https?://[^\/]+)(.*)", r"\2", referrer)
+		logger.info(referrer)
+		try:
+			resolve(referrer)
+			if self.request.user.is_authenticated:
+				return True
+		except Exception as e:
+			logger.exception(e)
+		return False
 
 	def list_autofilter_choices(self, request, column_spec, field, initial_search_value):
 		qs = self.get_initial_queryset(request)

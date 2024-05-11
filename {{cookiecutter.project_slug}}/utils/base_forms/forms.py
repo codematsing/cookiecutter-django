@@ -4,8 +4,20 @@ from formset.renderers.bootstrap import FormRenderer
 from formset.collection import FormCollection
 from django.contrib.auth import get_user_model
 from utils.validators import EmailValidator
+from formset.widgets import Selectize, SelectizeMultiple, DualSelector
 import logging
 logger = logging.getLogger(__name__)
+class CustomSelectize(Selectize):
+    max_prefetch_choices = 600
+	# customize due to cap of original
+
+class CustomSelectizeMultiple(SelectizeMultiple):
+    max_prefetch_choices = 600
+	# customize due to cap of original
+
+class CustomDualSelector(DualSelector):
+    max_prefetch_choices = 600
+	# customize due to cap of original
 
 class MultiEmailField(forms.Field):
 
@@ -59,6 +71,12 @@ class BaseModelForm(forms.ModelForm):
 
 class BaseFormCollection(FormCollection):
 	default_renderer = FormRenderer
+	is_draft = None
+
+	def __init__(self, **kwargs):
+		if 'is_draft' in kwargs:
+			self.is_draft = kwargs.pop('is_draft', None)
+		super().__init__(**kwargs)
 
 	def set_meta_fields(self):
 		fields = set(getattr(self.Meta, 'fields', []))
@@ -84,14 +102,14 @@ class BaseFormCollection(FormCollection):
 			self.disable_fields([elem])
 			self.fields[elem].widget = HiddenInput()
 
-	def save(self, *args, **kwargs):
+	def save(self, extras={}, *args, **kwargs):
 		raise NotImplementedError("Need to provide saving mechanism for Form")
 
-	def create(self):
-		return self.save()
+	def create(self, extras={}):
+		return self.save(extras)
 
-	def update(self):
-		return self.save()
+	def update(self, extras={}):
+		return self.save(extras)
 
 		
 	#TODO: form collection hidden and disabled fields

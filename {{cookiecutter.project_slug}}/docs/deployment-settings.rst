@@ -26,7 +26,7 @@ Deployment Settings
         :bind gunicorn wsgi configuration;
     }
     partition "Setup network routing" {
-        :nginx app routing;
+        :nginx/apache app routing;
         :ssl certification;
     }
 
@@ -64,7 +64,7 @@ Google Oauth
         * Authorized Javascript Origins: 
             [http://<domain name>, https://<domain name>, http://localhost:8000, http://127.0.0.1:8000]
         * Authorized Redirect URIs: 
-            [http://<domain name>, https://<domain name>, http://localhost:8000, http://127.0.0.1:8000]/accounts/google/login/callback
+            [http://<domain name>, https://<domain name>, http://localhost:8000, http://127.0.0.1:8000]/accounts/google/login/callback/
 
         .. image:: media/authorized_javascript_origins.png
 
@@ -217,20 +217,21 @@ Bind Gunicorn WSGI Configuration
     # gunicorn will replace manage.py runserver
     .prod_venv/bin/gunicorn config.wsgi --bind 0.0.0.0:8000
 
-    # open site to at port 8000 if no nginx configuration yet to see if app is running
+    # open site to at port 8000 if no nginx/apache configuration yet to see if app is running
 
-    # in the succeeding section, nginx will refer to the gunicorn port for load balancing
+    # in the succeeding section, nginx/apache will refer to the gunicorn port for load balancing
 
 
 .. tip::
 
     Add service to gunicorn to make sure that the system will run each restart of the system
 
-    Create gunicorn services for each app you will deploy in your server
+    Create Gunicorn services for each app you will deploy in your server
 
 .. code-block:: shell
 
     # /etc/systemd/system/<app_name>.socket
+    [Unit]
     Description=gunicorn socket for <app_name> web app
 
     [Socket]
@@ -241,9 +242,9 @@ Bind Gunicorn WSGI Configuration
 
 .. code-block:: shell
 
-    # /etc/systemd/system/<app_name>.service
+    # FOR NGINX /etc/systemd/system/<app_name>.service
     [Unit]
-    Description=gunicorn daemon for <app_name> web app
+    Description=Gunicorn daemon for <app_name> web app
     Requires=<app_name>.socket
     After=network.target
 
@@ -252,6 +253,7 @@ Bind Gunicorn WSGI Configuration
     Group=www-data
     WorkingDirectory=/path/to/working_directory
     Environment="ENV_FILE_DIR=/path/to/app/.envs/.production" #absolute_path
+    # for nginx
     ExecStart=/path/to/venv/bin/gunicorn \
         --workers 3  \
         --bind unix:/run/<app_name>.sock config.wsgi:application \ 
@@ -270,7 +272,7 @@ Bind Gunicorn WSGI Configuration
     sudo systemctl start <app_name>.service #run app
 
     # check if sock file was created
-    file /run/gunicorn.sock
+    file /run/<app_name>.sock
 
     # to check status
     sudo systemctl status <app_name>.socket
@@ -278,6 +280,24 @@ Bind Gunicorn WSGI Configuration
 
     # check logs
     sudo journalctl -u <app_name>
+
+.. code-block:: shell
+
+    # FOR APACHE /etc/systemd/system/<app_name>.service
+    [Unit]
+    Description=Gunicorn daemon for <app_name>  web app
+    After=network.target
+
+    [Service]
+    User=root
+    Group=www-data
+    WorkingDirectory=/path/to/app
+    Environment="DJANGO_SETTINGS_MODULE=config.settings.production"
+    Environment="ENV_FILE_DIR=/path/to/app/.envs/.production"
+    ExecStart=/bin/bash -c '/path/to/app/.prod_venv/bin/gunicorn config.wsgi --bind 0.0.0.0:8005'
+
+    [Install]
+    WantedBy=multi-user.target
 
 .. tip::
 
@@ -358,6 +378,76 @@ Create and nginx conf for your system at: ```/etc/nginx/sites-enabled/<domain_na
 
     # to check running configuration files and append include files
     nginx -T
+
+Apache App Routing
++++++++++++++++++
+
+.. code-block:: shell
+
+    <VirtualHost *:80>
+        ServerName <domain_name>
+        Redirect permanent / https://<domain_name>
+    </VirtualHost>
+
+    <IfModule mod_ssl.c>
+    <VirtualHost *:443>
+
+        ServerName <domain_name>
+
+            ProxyPass / http://127.0.0.1:8005/
+            ProxyPassReverse / http://127.0.0.1:8005/
+
+        <Directory /path/to/app/config>
+            <Files wsgi.py>
+                Require all granted
+            </Files>
+        </Directory>
+
+        Alias /static/ /path/to/app/staticfiles/
+            <Directory /path/to/app/staticfiles>
+                    Require all granted
+            </Directory>
+
+        Alias /media/ /path/to/app/qmslib/media/
+            <Directory /path/to/app/qmslib/media>
+                    Require all granted
+            </Directory>
+
+        Redirect gone /favicon.ico
+        RedirectMatch gone ^/apple-touch-icon
+
+            ErrorLog /var/log/httpd/qmslib.error.log
+            CustomLog /var/log/httpd/qmslib.acccess.log common
+
+
+        <Directory /path/to/app/config>
+            <Files wsgi.py>
+                Require all granted
+            </Files>
+        </Directory>
+
+        Alias /static/ /path/to/app/staticfiles/
+            <Directory /path/to/app/staticfiles>
+                    Require all granted
+            </Directory>
+
+        Alias /media/ /path/to/app/qmslib/media/
+            <Directory /path/to/app/qmslib/media>
+                    Require all granted
+            </Directory>
+
+        Redirect gone /favicon.ico
+        RedirectMatch gone ^/apple-touch-icon
+
+        ErrorLog /var/log/httpd/qmslib.error.log
+        CustomLog /var/log/httpd/qmslib.acccess.log common
+
+        Include /etc/letsencrypt/options-ssl-apache.conf
+
+        SSLCertificateFile /etc/letsencrypt/live/<domain_name>/fullchain.pem
+        SSLCertificateKeyFile /etc/letsencrypt/live/<domain_name>/privkey.pem
+    </VirtualHost>
+    </IfModule>
 
 SSL Certification
 +++++++++++++++++

@@ -4,8 +4,10 @@ from auditlog.models import AuditlogHistoryField
 from django.template.loader import render_to_string
 from django.contrib.auth import get_user_model
 from utils.lambdas import get_current_domain
-from utils.detail_wrapper.mixins import DetailCard
 from datetime import datetime
+from utils.detail_wrapper.mixins import DetailCard
+from django.contrib.contenttypes.fields import GenericRelation
+from utils.object_groups.models import ObjectGroup
 import pandas as pd
 
 # Create your models here.
@@ -103,6 +105,7 @@ class AbstractAuditedModel(BaseModelMixin, HistoryMixin, models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     updated_by = models.ForeignKey(get_user_model(), null=True, blank=True, on_delete=models.SET_NULL, related_name='%(app_label)s_%(class)s_verified_by')
     history = AuditlogHistoryField()
+    comments = models.TextField(null=True, blank=True)
 
     def render_status(self):
         if self.status:

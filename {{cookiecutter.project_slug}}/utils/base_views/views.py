@@ -6,21 +6,31 @@ from django.views.generic import (
 	RedirectView,
 	DeleteView,
 )
+from django.db.models.deletion import ProtectedError
 from django.views.generic.detail import SingleObjectMixin
 from django.http import JsonResponse
-from formset.views import FormViewMixin, FileUploadMixin, FormCollectionView
+from django.http import HttpResponseRedirect
+from formset.views import (
+	FormViewMixin,
+	FileUploadMixin,
+	FormCollectionView,
+	IncompleteSelectResponseMixin,
+)
 from formset.widgets import UploadedFileInput
 from django.forms.fields import FileField, ImageField
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse, reverse_lazy, resolve
 from django.contrib import messages
+from formset.renderers.bootstrap import FormRenderer
 from utils.detail_wrapper.views import DetailView, DetailWrapperMixin
 import json
 
 import logging
 logger = logging.getLogger(__name__)
 
-class BaseFormMixin(SuccessMessageMixin, FormViewMixin, FileUploadMixin):
+class BaseFormMixin(IncompleteSelectResponseMixin, SuccessMessageMixin, FormViewMixin, FileUploadMixin):
+	success_message = "%(object)s has been saved"
+
 	def __init__(self, *args, **kwargs):
 		if self.form_class == None:
 			disabled_fields = set(getattr(self, 'disabled_fields', [])).intersection(set(field.name for field in self.model._meta.fields))
@@ -67,6 +77,9 @@ class BaseFormMixin(SuccessMessageMixin, FormViewMixin, FileUploadMixin):
 		for field in form.fields.values():
 			if type(field) in [FileField, ImageField]:
 				field.widget = UploadedFileInput()
+		if not vars(form.renderer):
+			# forces rendering of form to similar to crispy form tags
+			setattr(form, 'renderer', FormRenderer())
 		return form
 
 	def get_success_url(self):
@@ -99,8 +112,14 @@ class BaseFormMixin(SuccessMessageMixin, FormViewMixin, FileUploadMixin):
 		return self.success_url
 
 	def form_valid(self, form):
-		self.object = form.save()
-		messages.success(self.request, f"{self.object} has been saved")
+		extra_data = self.get_extra_data()
+		extras = {key: val for (key, val) in extra_data.items() if "is_draft" == key} if extra_data else {}
+		if extras == {}:
+			self.object = form.save()
+		else:
+			self.object = form.save(extras)
+		success_message = self.get_success_message({'object': str(self.object)})
+		messages.success(self.request, success_message)
 		return JsonResponse({'success_url': self.get_success_url()})
 
 	def form_invalid(self, form):
@@ -112,9 +131,13 @@ class BaseFormMixin(SuccessMessageMixin, FormViewMixin, FileUploadMixin):
 		default = f"{self.model._meta.verbose_name} Form"
 		return getattr(self, 'form_header', default)
 
+	def get_save_as_draft_enabled(self):
+		return getattr(self, 'save_as_draft_enabled', False)
+
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
 		context["form_header"] = self.get_form_header()
+		context["enable_save_as_draft"] = self.get_save_as_draft_enabled()
 		return context
 
 class BaseMixin:
@@ -134,27 +157,32 @@ class BaseMixin:
 		return self.model._meta.verbose_name_plural
 
 	def get_breadcrumbs(self):
-		def get_next_breadcrumb(route_list):
+		def get_next_breadcrumb(route_list, last):
 			route_path = f"/{'/'.join(route_list)}/"
 			try:
 				match = resolve(route_path)
-				label = match.func.view_class.model._meta.verbose_name_plural.title()
-				if match.url_name=="detail":
-					label=str(match.func.view_class.model.objects.get(pk=route_list[-1]))
-				elif match.url_name=="create":
-					label="Create"
-				elif match.url_name=="update":
-					label="Edit"
+				label = getattr(match.func.view_class, "breadcrumb_name", None)
+				if label is None:
+					if match.url_name=="detail":
+						label=str(match.func.view_class.model.objects.get(pk=route_list[-1]))
+					elif match.url_name=="create":
+						label="Create"
+					elif match.url_name=="update":
+						label="Edit"
+					else:
+						label = match.func.view_class.model._meta.verbose_name_plural.title()
+				if last:
+					route_path = "#"
 				return {label:route_path}
 			except Exception as e:
-				print(f"\n no resolve for {route_path}\n")
+				print(f"\n no resolve for {route_path}\n{e}")
 				return {}
 
 		if not getattr(self, 'breadcrumbs', None):
 			route = self.request.get_full_path().strip("/").split("/")
 			breadcrumbs = {}
 			for index in range(len(route)):
-				breadcrumbs.update(get_next_breadcrumb(route[:index+1]))
+				breadcrumbs.update(get_next_breadcrumb(route[:index+1], len(route)==len(route[:index+1])))
 			self.breadcrumbs = breadcrumbs
 		return self.breadcrumbs
 
@@ -171,16 +199,28 @@ class BaseFormCollectionView(SuccessMessageMixin, BaseMixin, FormCollectionView)
 	# follow form collection get_field format: nested '.'
 	disabled_fields = []
 	hidden_fields = []
+	success_message = "%(object)s has been saved"
 
 	def get_form_header(self):
 		default = f"{self.model._meta.verbose_name} Form"
 		return getattr(self, 'form_header', default)
 
+	def get_save_as_draft_enabled(self):
+		return getattr(self, 'save_as_draft_enabled', False)
+
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
 		context["form_header"] = self.get_form_header()
+		context["enable_save_as_draft"] = self.get_save_as_draft_enabled()
 		logger.info(context)
 		return context
+
+	def get_collection_kwargs(self):
+		extra_data = self.get_extra_data()
+		if extra_data and 'is_draft' in extra_data:
+			self.collection_kwargs = self.collection_kwargs or {}
+			self.collection_kwargs.update({'is_draft': extra_data['is_draft']})
+		return super().get_collection_kwargs()
 
 	def disable_field(self, field):
 		field.widget.attrs.update({'disabled':True})
@@ -236,27 +276,32 @@ class BaseFormCollectionView(SuccessMessageMixin, BaseMixin, FormCollectionView)
 		logger.warning(form_collection._errors)
 		return super().form_collection_invalid(form_collection)
 
-	def form_collection_valid(self, form_collection):
-		self.object = form_collection.save()
-		self.success_message = self.get_success_message(form_collection.cleened_data) or f"{self.object} has been saved"
-		messages.success(self.request, self.success_message)
+	def form_collection_valid(self, form_collection, state=None):
+		logger.info("valid form collection")
+		extra_data = self.get_extra_data()
+		extras = {key: val for (key, val) in extra_data.items() if "is_draft" == key} if extra_data else {}
+		if not state:
+			self.object = form_collection.save(extras)
+		elif state == "create":
+			self.object = form_collection.create(extras)
+		elif state =="update":
+			self.object = form_collection.update(extras)
+		success_message = self.get_success_message({'object': str(self.object)})
+		messages.success(self.request, success_message)
 		return JsonResponse({'success_url': self.get_success_url()})
+
 
 class BaseCreateFormCollectionView(BaseFormCollectionView):
+	success_message = "%(object)s has been created"
+
 	def form_collection_valid(self, form_collection):
-		logger.info("valid form collection")
-		self.object = form_collection.create()
-		self.success_message = self.get_success_message(form_collection.cleaned_data) or f"{self.object} has been created"
-		messages.success(self.request, self.success_message)
-		return JsonResponse({'success_url': self.get_success_url()})
+		return super().form_collection_valid(form_collection, "create")
 
 class BaseUpdateFormCollectionView(SingleObjectMixin, BaseFormCollectionView):
+	success_message = "%(object)s has been updated"
+
 	def form_collection_valid(self, form_collection):
-		logger.info("valid form collection")
-		self.object = form_collection.update()
-		self.success_message = self.get_success_message(form_collection.cleaned_data) or f"{self.object} has been updated"
-		messages.success(self.request, self.success_message)
-		return JsonResponse({'success_url': self.get_success_url()})
+		return super().form_collection_valid(form_collection, "update")
 
 	def get_form_header(self):
 		default = f"{self.get_object()} Update Form"
@@ -324,19 +369,13 @@ class BaseCreateView(BaseMixin, BaseFormMixin, CreateView):
 	template_name='pages/create.html'
 	fields = '__all__'
 	disabled_fields=['updated_by']
+	success_message = "%(object)s has been created"
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
 		if 'page_title' not in context.keys():
 			context["page_title"] = f"{self.model._meta.verbose_name} Create Form"
 		return context
-
-	def form_valid(self, form):
-		self.object = form.save()
-		self.success_message = self.get_success_message(form.cleaned_data) or f"{self.object} has been updated"
-		messages.success(self.request, self.success_message)
-		return JsonResponse({'success_url': self.get_success_url()})
-
 
 class BaseDetailView(BaseMixin, DetailView):
 	template_name='pages/detail.html'
@@ -364,6 +403,7 @@ class BaseUpdateView(BaseMixin, BaseFormMixin, UpdateView):
 	template_name='pages/update.html'
 	fields = '__all__'
 	disabled_fields=['updated_by']
+	success_message = "%(object)s has been updated"
 
 	def get_page_title(self):
 		return str(self.get_object())
@@ -371,12 +411,6 @@ class BaseUpdateView(BaseMixin, BaseFormMixin, UpdateView):
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
 		return context
-
-	def form_valid(self, form):
-		self.object = form.save()
-		self.success_message = self.get_success_message(form.cleaned_data) or f"{self.object} has been updated"
-		messages.success(self.request, self.success_message)
-		return JsonResponse({'success_url': self.get_success_url()})
 
 class BaseDeleteView(BaseMixin, DetailWrapperMixin, DeleteView):
 	template_name = 'pages/delete.html'
@@ -393,6 +427,17 @@ class BaseDeleteView(BaseMixin, DetailWrapperMixin, DeleteView):
 
 	def get_success_url(self):
 		return reverse_lazy(f"{':'.join(self.request.resolver_match.namespaces)}:list")
+
+	def delete(self, request, *args, **kwargs):
+		try:
+			return super().delete(request, *args, **kwargs)
+		except ProtectedError:
+			messages.error(self.request, f"Cannot delete {self.object}. There exists references to this object.")
+			url = reverse(f"{':'.join(self.request.resolver_match.namespaces)}:delete", kwargs={"pk": self.kwargs['pk']})
+			return HttpResponseRedirect(url)
+
+	def post(self, request, *args, **kwargs):
+		return self.delete(request, *args, **kwargs)
 
 class BaseActionView(RedirectView):
 	pass

@@ -11,6 +11,7 @@ from utils.base_views.views import (
     BaseDeleteView,
     BaseCreateFormCollectionView,
     BaseUpdateFormCollectionView,
+    BaseFormCollectionView
 )
 
 import logging
@@ -31,6 +32,9 @@ class AdminUpdateView(LoginRequiredMixin, BaseUpdateView):
 
 class AdminDeleteView(LoginRequiredMixin, BaseDeleteView):
 	template_name='pages/admin/delete.html'
+
+class AdminFormCollectionView(LoginRequiredMixin, BaseFormCollectionView):
+	template_name='pages/admin/form.html'
 
 class AdminCreateFormCollectionView(LoginRequiredMixin, BaseCreateFormCollectionView):
 	template_name='pages/admin/create.html'

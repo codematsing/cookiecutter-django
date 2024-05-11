@@ -127,6 +127,7 @@ THIRD_PARTY_APPS = [
     # datatable
     "ajax_datatable",
     'django_tables2',
+    "django_extensions",
 ]
 
 UTIL_APPS = [
@@ -138,7 +139,10 @@ UTIL_APPS = [
 LOCAL_APPS = [
     "users",
     "file_management",
+    "group_management",
+    "module_management",
     "user_registration",
+    "commons",
     "posts",
     "tags",
     # Your stuff: custom apps go here
@@ -206,6 +210,7 @@ MIDDLEWARE = [
     "django.middleware.common.BrokenLinkEmailsMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "auditlog.middleware.AuditlogMiddleware",
+    "module_management.middleware.module_management_middleware",
 ]
 
 # STATIC
@@ -225,9 +230,15 @@ STATICFILES_FINDERS = [
 # MEDIA
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#media-root
-MEDIA_ROOT = str(BASE_DIR / "media")
 # https://docs.djangoproject.com/en/dev/ref/settings/#media-url
+
+# public
+MEDIA_ROOT = str(BASE_DIR / "media" / "public")
 MEDIA_URL = "/media/"
+
+# internal, restricted and confidential
+INTERNAL_MEDIA_ROOT = str(BASE_DIR / "media" / "internal")
+INTERNAL_MEDIA_URL = "/internal/media/"
 
 # TEMPLATES
 # ------------------------------------------------------------------------------
@@ -493,4 +504,7 @@ DJANGO_TABLE2_TEMPLATE = "partials/table.html"
 # Your stuff...
 # ------------------------------------------------------------------------------
 # crispy form tags still required due to cookiecutter dependency
-CRISPY_TEMPLATE_PACK = 'bootstrap5'
+# https://aisaastemplate.com/blog/django-allauth-google-login-prompt/
+SOCIALACCOUNT_LOGIN_ON_GET=True
+# https://docs.allauth.org/en/latest/account/views.html
+ACCOUNT_LOGOUT_ON_GET=True

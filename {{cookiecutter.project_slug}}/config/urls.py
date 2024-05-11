@@ -7,6 +7,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.urls import include, path
 from django.views import defaults as default_views
 from django.views.generic import TemplateView
+import apps.file_management.views as file_views
 {%- if cookiecutter.use_drf == 'y' %}
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework.authtoken.views import obtain_auth_token
@@ -27,7 +28,10 @@ urlpatterns = [
     path("posts/", include("posts.urls", namespace="posts")),
     # User management
     path("users/registrations/", include("user_registration.urls", namespace="user_registration")),
-    path("users/", include("users.urls", namespace="users")),
+    # disabling users portfolio to avoid updating of user information
+    # path("users/", include("users.urls", namespace="users")),
+    # disabling accounts/email
+    path("accounts/email/", default_views.page_not_found, kwargs={"exception": Exception("Page not Found")},),
     path("accounts/", include("allauth.urls")),
     # FileManagement
     path("", include("file_management.urls", namespace="file")),
@@ -36,7 +40,12 @@ urlpatterns = [
     # Comments
     path(r'comments/', include('django_comments_xtd.urls')),
     # Your stuff: custom urls includes go here
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path("roles/", include("group_management.urls", namespace="roles")),
+    path("modules/", include("module_management.urls", namespace="modules")),
+    # MEDIA ACCESS
+    path(f"media/<str:file>", file_views.serve_public_media_view, name="public_media"),
+    path(f"internal/media/<str:file>", file_views.serve_internal_media_view, name="internal_media"),
+]
 {%- if cookiecutter.use_async == 'y' %}
 if settings.DEBUG:
     # Static file serving when using Gunicorn + Uvicorn for local web socket development

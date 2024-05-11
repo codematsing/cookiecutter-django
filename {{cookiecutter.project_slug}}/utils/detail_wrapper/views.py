@@ -7,10 +7,10 @@ logger = logging.getLogger(__name__)
 class DetailView(DetailWrapperMixin, DetailView):
     """Rationale: Allows use of fields in detail view for template view
     Use in tags in 'utils/detail_wrapper/tags.py'
-    {% raw %}
+    
     {% load detail %}
     {% detail fields %}
-    {% endraw %}
+    
 
     Why have this?
     So that each detail view will just specify fields to be shown

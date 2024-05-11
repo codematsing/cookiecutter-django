@@ -7,6 +7,9 @@ from django.utils.text import slugify
 from utils import lambdas
 from utils.lambdas import YN_BOOLEAN_CHOICES
 from utils.base_models.models import AbstractAuditedModel
+from utils.lambdas import confidential_upload
+from utils.base_models.fields import InternalFileField
+from django.core.validators import FileExtensionValidator
 
 # Create your models here.
 class DocumentMetadata(models.Model):
@@ -34,7 +37,7 @@ class DocumentMetadata(models.Model):
 # Create your models here.
 class DocumentSubmission(AbstractAuditedModel):
     metadata = models.ForeignKey(DocumentMetadata, on_delete=models.RESTRICT)
-    attachment = models.FileField(upload_to=lambdas.rename_upload)
+    attachment = InternalFileField(upload_to=confidential_upload, validators=[FileExtensionValidator(['pdf'])])
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey("content_type", "object_id")

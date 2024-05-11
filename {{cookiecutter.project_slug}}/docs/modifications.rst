@@ -263,3 +263,87 @@ This module provides that functionality.
     alt User is approved
         User -> System: Creates User Credentials
     end
+    
+Module Management
+^^^^^^^^^^^^^^^^^
+
+Sets up sidebar items for client admin pages.
+
+This module management introduces a middleware to check if a user has access by checking its group access.
+
+.. uml::
+
+    User -> System : Access client admin
+    System -> System : Checks accessible modules (see module_management/ajax/views.py)
+    System -> User : Returns UI with sidebar items
+    User -> System : Access link
+    System -> System : Checks link accessibility (see module_mangaement/ajax/middleware.py)
+    alt link is accessible
+        System -> User: Returns UI
+    else link is NOT accessible
+        System -> User: Forbidden
+    end
+
+.. tip::
+
+    To setup client admin sidebar data, you may do the following:
+
+    * go to django-admin and setup sidebar items there
+    * go to `Modules` module in sidebar (if already set and existing)
+    * setup load_dummy to include sidebar items
+
+Group Management
+^^^^^^^^^^^^^^^^^
+
+Role / Group Management with incorporation of Module Management
+
+Media Storage and File Encryption
+---------------------------------
+Due to the nature of serving media files by webservers, extra security is needed
+to ensure that file classifications are followed when users force access media urls.
+
+.. uml::
+
+    User -> System : access media
+    System -> System: Checks media accessibility
+    alt User has access:
+        System -> User: Returns media
+    else User has NO access:
+        System -> User: Returns 404
+    end
+
+Storages
+^^^^^^^^
+
+See utils/storage.py
+
+Storage introduce a separate storage space for internal documents and public documents.
+
+These storages shall be called by custom FileFields and ImageFields that dictate location of document.
+
+The reason why storage only has public and internal file storage is because and internal file may easily
+jump between internal, confidential or restristricted.
+
+File Encryptor
+^^^^^^^^^^^^^^
+
+See utils/file_encryptor.py
+
+File encryptors renames files for extra encryption. They contain information as to file access subclassification
+
+.. tip::
+
+    For ease of incorporation of FileEncryptor, use utils.lambdas.py functions to during
+    development of model fields
+
+    .. code-block:: python
+
+        from utils.lambdas import public_upload, internal_upload, confidential_upload, restricted_upload
+        from utils.base_models.fields import PublicImageField, InternalImageField, PublicFileField, InternalFileField
+
+        class Model(models.Model):
+            public_image = PublicImageField(upload_to=public_upload)
+            public_attachment = PublicFileField(upload_to=public_upload)
+            internal_attachment = InternalFileField(upload_to=internal_upload)
+            confidential_attachment = InternalFileField(upload_to=confidential_upload)
+            restricted_attachment = InternalFileField(upload_to=restricted_upload)

@@ -1,4 +1,4 @@
-{% load formsetify %}
+{% load util_tags %}
 {% load static %}
 {% load i18n %}
 
@@ -26,15 +26,23 @@
           {% if form_collection %}
             {{ form_collection }}
           {% elif form %}
-            {% render_form form "bootstrap" %}
+            {% render_form form %}
           {% endif %}
           {% block form_collection_buttons %}
           <div class="d-flex align-items-center justify-content-md-end">
-            <a class="btn btn-secondary me-3" href="{{request.META.HTTP_REFERER}}">
-              Cancel
+            <a class="btn btn-secondary me-2" href="{{request.META.HTTP_REFERER}}">
+              {{ button_names.cancel }}
             </a>
-
-            <button class="primaryAction btn btn-primary" df-click="disable -> submit -> proceed !~ scrollToError">Save</button>
+            {% if enable_save_as_draft %}
+              <button class="primaryAction btn btn-warning me-2" df-click="disable -> submit({is_draft: true}) -> proceed !~ scrollToError">{{ button_names.save_as_draft }}</button>
+            {% endif %}
+            {% if enable_save_modal %}
+              {% with modal_name='save_modal' %}
+                {% include 'partials/common/form_modal.html' %}
+              {% endwith %}
+            {% else %}
+              <button class="primaryAction btn btn-primary me-2" df-click="disable -> submit({is_draft: false}) -> proceed !~ scrollToError">{{ button_names.save }}</button>
+            {% endif %}
           </div>
           {% endblock %}
         {% endblock %}

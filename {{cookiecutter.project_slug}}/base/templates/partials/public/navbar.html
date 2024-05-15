@@ -1,14 +1,15 @@
 {% load static %}
+{% load account socialaccount %}
 <div class="horizontal-menu">
   <nav class="navbar top-navbar col-lg-12 col-12 p-0">
     <div class="container">
       <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
         <a class="navbar-brand brand-logo" href="{% url 'home' %}">
-          <img src="{% static 'logos/logo_maroon.png' %}" alt="logo" />
+          <img src="{% static 'logos/icon_transparent.png' %}" alt="logo" />
           <span class="font-10 d-block font-weight-light mt-1">{{cookiecutter.project_name}}</span>
         </a>
         <a class="navbar-brand brand-logo-mini" href="{% url 'home' %}"><img
-            src="{% static 'logos/icon_transparent.png' %}" alt="logo" /></a>
+            src="{% static 'logos/icon_transparent.png' %}" alt="logo" class="img-fluid"/></a>
       </div>
       <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
         {% comment %} <ul class="navbar-nav mr-lg-2">
@@ -56,7 +57,7 @@
           {% include 'partials/common/hijack.html' %}
           {% else %}
           <li class="nav-item nav-profile dropdown">
-            <a class="btn btn-lg btn-primary" href="{% url 'account_login' %}">Login</a>
+            <a class="btn btn-danger" href="{% provider_login_url 'google' process='login' %}">Login</a>
           </li>
         </ul>
         {% endif %}
@@ -72,27 +73,47 @@
       <ul class="nav page-navigation">
         <li class="nav-item">
           {% comment %} #TODO url {% endcomment %}
-          <a class="nav-link" href="{% url 'posts:list' %}">
+          <a class="nav-link" href="#announcements">
             <i class="mdi mdi-bullhorn menu-icon"></i>
             <span class="menu-title">Announcements</span>
           </a>
         </li>
-        {% comment %} #TODO url {% endcomment %}
         
-        {% comment %} #TODO url {% endcomment %}
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'about' %}">
+          <a class="nav-link" href="#about">
             <i class="mdi mdi-information-outline menu-icon"></i>
             <span class="menu-title">About Us</span>
           </a>
         </li>
-        {% comment %} #TODO url {% endcomment %}
+
         <li class="nav-item">
           <a class="nav-link" href="#contact">
             <i class="mdi mdi-contact-mail menu-icon"></i>
             <span class="menu-title">Contact Us</span>
           </a>
         </li>
+        {% if request.user.is_authenticated %}
+          {% if request.user_agent.is_mobile or request.user_agent.is_tablet or request.user_agent.is_touch_capable %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'dashboard' %}">
+            <i class="mdi mdi-view-quilt"></i>
+              <span class="menu-title">Dashboard</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'notifications:all' %}">
+              <i class="mdi mdi-bell-outline"></i>
+              <span class="menu-title">Notifications</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'account_logout' %}">
+            <i class="mdi mdi-logout"></i>
+              <span class="menu-title">Logout</span>
+            </a>
+          </li>
+          {% endif %}
+        {% endif %}
       </ul>
     </div>
   </nav>

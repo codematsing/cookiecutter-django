@@ -51,6 +51,13 @@ class BaseFormMixin(IncompleteSelectResponseMixin, SuccessMessageMixin, FormView
 			initial['updated_by'] = self.request.user
 		return initial
 
+	def get_form_kwargs(self):
+		extra_data = self.get_extra_data()
+		if extra_data and 'is_draft' in extra_data:
+			self.form_kwargs = self.form_kwargs or {}
+			self.form_kwargs.update({'is_draft': extra_data['is_draft']})
+		return super().get_form_kwargs()
+
 	def get_hidden_fields(self):
 		return getattr(self, 'hidden_fields', [])
 
@@ -77,7 +84,7 @@ class BaseFormMixin(IncompleteSelectResponseMixin, SuccessMessageMixin, FormView
 		for field in form.fields.values():
 			if type(field) in [FileField, ImageField]:
 				field.widget = UploadedFileInput()
-		if not vars(form.renderer):
+		if getattr(self, 'form_class', None)==None:
 			# forces rendering of form to similar to crispy form tags
 			setattr(form, 'renderer', FormRenderer())
 		return form
@@ -123,21 +130,29 @@ class BaseFormMixin(IncompleteSelectResponseMixin, SuccessMessageMixin, FormView
 		return JsonResponse({'success_url': self.get_success_url()})
 
 	def form_invalid(self, form):
-		logger.info(vars(form))	
-		logger.info(form.errors)	
+		logger.error(form._errors.get_json_data())
 		return super().form_invalid(form)
 	
 	def get_form_header(self):
 		default = f"{self.model._meta.verbose_name} Form"
 		return getattr(self, 'form_header', default)
 
-	def get_save_as_draft_enabled(self):
-		return getattr(self, 'save_as_draft_enabled', False)
+	def get_button_names(self):
+		return {
+			"save": getattr(self, 'save_button_text', "Save"),
+			"save_as_draft": getattr(self, 'save_as_draft_button_text', "Save as Draft"),
+			"cancel": getattr(self, 'cancel_button_text', "Cancel"),
+			"modal_negative": getattr(self, 'modal_negative_button_text', "Continue Editing"),
+			"modal_positive": getattr(self, 'modal_positive_button_text', "Validate and Submit"),
+		}
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
 		context["form_header"] = self.get_form_header()
-		context["enable_save_as_draft"] = self.get_save_as_draft_enabled()
+		context["enable_save_as_draft"] = getattr(self, 'save_as_draft_enabled', False)
+		context["enable_save_modal"] = getattr(self, 'save_modal_enabled', False)
+		context["button_names"] = self.get_button_names()
+		context["modal_confimation_message"] = getattr(self, 'modal_confimation_message', None)
 		return context
 
 class BaseMixin:
@@ -208,18 +223,35 @@ class BaseFormCollectionView(SuccessMessageMixin, BaseMixin, FormCollectionView)
 	def get_save_as_draft_enabled(self):
 		return getattr(self, 'save_as_draft_enabled', False)
 
+	def get_save_modal_enabled(self):
+		return getattr(self, 'save_modal_enabled', False)
+
+	def get_button_names(self):
+		return {
+			"save": getattr(self, 'save_button_text', "Save"),
+			"save_as_draft": getattr(self, 'save_as_draft_button_text', "Save as Draft"),
+			"cancel": getattr(self, 'cancel_button_text', "Cancel"),
+			"modal_negative": getattr(self, 'modal_negative_button_text', "Continue Editing"),
+			"modal_positive": getattr(self, 'modal_positive_button_text', "Validate and Submit"),
+		}
+
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
 		context["form_header"] = self.get_form_header()
-		context["enable_save_as_draft"] = self.get_save_as_draft_enabled()
+		context["enable_save_as_draft"] = getattr(self, 'save_as_draft_enabled', False)
+		context["enable_save_modal"] = getattr(self, 'save_modal_enabled', False)
+		context["button_names"] = self.get_button_names()
+		context["modal_confimation_message"] = getattr(self, 'modal_confimation_message', None)
 		logger.info(context)
 		return context
 
 	def get_collection_kwargs(self):
 		extra_data = self.get_extra_data()
+		self.collection_kwargs = self.collection_kwargs or {}
 		if extra_data and 'is_draft' in extra_data:
-			self.collection_kwargs = self.collection_kwargs or {}
 			self.collection_kwargs.update({'is_draft': extra_data['is_draft']})
+		if hasattr(self, "object"):
+			self.collection_kwargs.update({'object': self.object})
 		return super().get_collection_kwargs()
 
 	def disable_field(self, field):
@@ -404,6 +436,9 @@ class BaseUpdateView(BaseMixin, BaseFormMixin, UpdateView):
 	fields = '__all__'
 	disabled_fields=['updated_by']
 	success_message = "%(object)s has been updated"
+
+	def get_form(self, form_class=None):
+		return super(BaseFormMixin, self).get_form(form_class)
 
 	def get_page_title(self):
 		return str(self.get_object())

@@ -91,7 +91,6 @@ DJANGO_APPS = [
 ]
 THIRD_PARTY_APPS = [
     # models
-    "colorfield",
     "mptt",
     # forms
     "crispy_forms",
@@ -128,6 +127,7 @@ THIRD_PARTY_APPS = [
     "ajax_datatable",
     'django_tables2',
     "django_extensions",
+    "django_user_agents",
 ]
 
 UTIL_APPS = [
@@ -211,6 +211,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "auditlog.middleware.AuditlogMiddleware",
     "module_management.middleware.module_management_middleware",
+    'django_user_agents.middleware.UserAgentMiddleware',
 ]
 
 # STATIC
@@ -508,3 +509,6 @@ DJANGO_TABLE2_TEMPLATE = "partials/table.html"
 SOCIALACCOUNT_LOGIN_ON_GET=True
 # https://docs.allauth.org/en/latest/account/views.html
 ACCOUNT_LOGOUT_ON_GET=True
+
+# https://docs.allauth.org/en/latest/account/views.html
+USER_AGENTS_CACHE = 'default'

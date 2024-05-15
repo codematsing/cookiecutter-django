@@ -58,8 +58,8 @@
   "_copy_without_render": [
     "base/templates/*",
     "base/static/*",
-    "utils/cookiecutter-app/*",
+    "utils/*",
     "utils/**/templates/*",
-    "docs/*.rst"
+    "docs/*"
   ]
 }

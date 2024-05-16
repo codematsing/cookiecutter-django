@@ -1,0 +1,41 @@
+[
+    {
+        "model": "module_management.sidebaritem",
+        "pk": 1,
+        "fields": {
+            "header": "HOME",
+            "label": "Dashboard",
+            "href": "/dashboard/",
+            "icon": "mdi-view-quilt",
+            "classification": 1,
+            "priority_number": 1,
+            "groups": []
+        }
+    },
+    {
+        "model": "module_management.sidebaritem",
+        "pk": 2,
+        "fields": {
+            "header": "SETTINGS",
+            "label": "Roles",
+            "href": "/roles/",
+            "icon": "mdi-play",
+            "classification": 1,
+            "priority_number": 100,
+            "groups": []
+        }
+    },
+    {
+        "model": "module_management.sidebaritem",
+        "pk": 3,
+        "fields": {
+            "header": "SETTINGS",
+            "label": "Modules",
+            "href": "/modules/",
+            "icon": "mdi-play",
+            "classification": 1,
+            "priority_number": 99,
+            "groups": []
+        }
+    }
+]

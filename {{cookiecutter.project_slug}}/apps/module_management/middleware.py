@@ -37,7 +37,7 @@ def module_management_middleware(get_response):
         sidebar_items = SidebarItem.objects.filter(href__in={request.path, root_url})
         response = get_response(request)
 
-        if can_url_bypass_middleware(request.path):
+        if user.is_superuser or user.is_staff or can_url_bypass_middleware(request.path):
             return response
 
         for sidebar_item in sidebar_items:

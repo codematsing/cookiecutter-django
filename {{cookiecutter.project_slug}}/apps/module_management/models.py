@@ -48,7 +48,7 @@ class SidebarItem(BaseModelMixin, models.Model):
         return reverse("modules:create", kwargs={})
 
     def __str__(self):
-        return self.href
+        return self.label
 
     class Meta:
         app_label="module_management"

@@ -67,5 +67,21 @@
     </div>
     {% include 'partials/admin/js.html' %}
     {% block extra_js %}{% endblock %}
+    <script>
+        $(document).ready(function() {
+            $('#sidebar-search').on('input', function() {
+              console.log(this.value)
+                $.ajax({
+                    url: '{% url "modules:ajax:sidebar" %}',
+                    data: {
+                      'query': this.value
+                    },
+                    success: function(data) {
+                        $('#sidebar-results').html(data.html);
+                    }
+                });
+            }).trigger("input");
+        });
+    </script>
   </body>
 </html>

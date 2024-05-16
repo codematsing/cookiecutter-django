@@ -36,6 +36,7 @@ class MultiEmailField(forms.Field):
 
 class BaseModelForm(forms.ModelForm):
 	default_renderer = FormRenderer
+	is_draft = None
 
 	def set_meta_fields(self):
 		fields = set(getattr(self.Meta, 'fields', []))
@@ -65,6 +66,8 @@ class BaseModelForm(forms.ModelForm):
 		self.set_disabled_fields(kwargs)
 		self.set_hidden_fields(kwargs)
 		self.set_meta_fields()
+		if 'is_draft' in kwargs:
+			self.is_draft = kwargs.pop('is_draft', None)
 		super().__init__(*args, **kwargs)
 		self.disable_fields(self.disabled_fields)
 		self.hide_fields(self.hidden_fields)

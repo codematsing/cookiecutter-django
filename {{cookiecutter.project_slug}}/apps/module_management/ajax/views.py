@@ -48,7 +48,7 @@ class SidebarAjaxView(View):
 			qs = qs.filter(classification=SidebarClassification.INTERNAl) | qs.filter(classification=SidebarClassification.CONFIDENTIAL, groups__user=self.request.user)
 		headers = list(qs.distinct("header").values_list("header", flat=True))
 		for header in self._sort_headers(headers):
-			items.append(render_to_string("detail_wrapper/nav_item_head.html", {'header':header}))
+			items.append(render_to_string("partials/admin/sidebar/nav_item_head.html", {'header':header}))
 			for sidebar_item in qs.filter(header=header):
 				items.append(sidebar_item.as_nav_link)
 		return JsonResponse({'html':"".join(items)})

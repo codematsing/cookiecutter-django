@@ -26,7 +26,7 @@ class SidebarItem(BaseModelMixin, models.Model):
 
     @property
     def as_nav_link(self):
-        return render_to_string("detail_wrapper/nav_link.html", context={'object':self})
+        return render_to_string("partials/admin/sidebar/nav_link.html", context={'object':self})
         
     def save(self, *args, **kwargs):
         if not self.href:

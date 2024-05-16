@@ -113,7 +113,7 @@ login using organization email.
 Base Models
 -------------------------------
 
-By default we are following vanilla django model fields and integrtiong with :code:`colorfield` library (for fields that require color inputs - usually used for tags color coding).
+By default we are following vanilla django model fields.
 
 The shortcoming however of declaring model fields based on vanilla django will also preset to default form widgets.
 Default widgets can be outdated sometimes such as the default select widget that does not have intuitive search functionality.

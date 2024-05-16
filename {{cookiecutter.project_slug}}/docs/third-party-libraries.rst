@@ -9,8 +9,6 @@ Some of the libraries that are adopted in base project are:
     * This library handles single forms and collections of forms with a way better user experience than the internal Django implementation for formsets offers.
 * `django-ajax-datatable <https://github.com/morlandi/django-ajax-datatable>`_
     * Provides advanced integration with the jQuery Javascript library DataTables.net
-* `django-colorfield <https://pypi.org/project/django-colorfield/>`_
-    * Simple color field for your models with a nice color-picker in the admin-interface.
 * `django-guardian <https://github.com/django-guardian/django-guardian/tree/55beb9893310b243cbd6f578f9665c3e7c76bf96>`_
     * Per object permission handling
 * `django-tables2 <https://django-tables2.readthedocs.io/en/latest/>`_

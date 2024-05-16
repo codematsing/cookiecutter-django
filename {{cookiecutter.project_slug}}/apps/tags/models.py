@@ -1,6 +1,6 @@
 from django.db import models
-from colorfield.fields import ColorField
 from django.template.loader import render_to_string
+from django.core.validators import RegexValidator
 
 # Create your models here.
 
@@ -17,8 +17,8 @@ class BaseTag(models.Model):
         null=True,
         blank=True,
     )
-    foreground = ColorField(default="#000000")
-    background = ColorField(default="#FFFFFF")
+    foreground = models.CharField(default="#000000", validators=[RegexValidator(regex=r"#\d{6}")])
+    background = models.CharField(default="#FFFFFF", validators=[RegexValidator(regex=r"#\d{6}")])
 
     @property
     def as_html(self):

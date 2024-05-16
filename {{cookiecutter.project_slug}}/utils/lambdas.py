@@ -5,11 +5,19 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.contrib.sites.models import Site
 from django.utils import timezone
+
+from django.conf import settings
 import logging
 import datetime
 import uuid
 import os
 from utils.file_encryptor import FileEncryptor, FileType, AccessClassification
+from django.conf import settings
+from django.urls import resolve
+from django_extensions.management.commands import show_urls
+from django.core import management
+import pandas as pd
+import json
 
 logger = logging.getLogger(__name__)
 
@@ -89,7 +97,7 @@ def get_current_domain(with_protocol=True):
     return f"{protocol}{current_domain}"
 
 def get_sao_group():
-    return Group.objects.get(name=settings.SAO_GROUP_NAME)
+    return Group.objects.get(name=settings.QAO_GROUP_NAME)
 
 def pisa_link_callback(uri, rel):
     """
@@ -120,3 +128,26 @@ def pisa_link_callback(uri, rel):
             'media URI must start with %s or %s' % (static_url, media_url)
         )
     return path
+
+def get_url_df(
+    as_url_list=False, 
+    exclude_patterns=["detail", "create", "ajax", "update", "delete", "api", "edit"],
+    exclude_modules = ["file_management"],
+    ):
+    values = []
+    with open('/tmp/inspectdb', 'w+') as f:
+        values = json.loads(management.call_command('show_urls', format="json", stdout=f))
+    def url_name(url):
+        try:
+            resolver = resolve(url)
+            url_name = ":".join(resolver.namespaces + [resolver.url_name])
+            return url_name
+        except Exception as e:
+            return None
+    df = pd.DataFrame(values)
+    df["module_app"] = df['module'].str.extract("(\w+)\..*")
+    df["name_valid"] = df["name"].apply(lambda name: True if url_name==None else not any(substr in name for substr in exclude_patterns))
+    df = df.query(f"module_app.isin({settings.LOCAL_APPS}) and name_valid and ~module_app.isin({exclude_modules})")
+    if as_url_list:
+        return df["url"].to_list()
+    return df[["url", "module", "name", "module_app"]]

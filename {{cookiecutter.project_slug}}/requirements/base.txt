@@ -73,4 +73,5 @@ xhtml2pdf==0.2.15
 django-upload-validator==1.1.6
 django-extensions==3.2.1  # https://github.com/django-extensions/django-extensions
 ua-parser==0.18.0
-user-agents==0.4.0
+user-agents==1.0.0
+django-user-agents==0.4.0

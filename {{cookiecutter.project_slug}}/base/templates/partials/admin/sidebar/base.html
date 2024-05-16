@@ -1,67 +1,38 @@
 {% load static %}
+
 <!-- partial:partials/_sidebar.html -->
 <nav class="sidebar sidebar-offcanvas" id="sidebar">
   <ul class="nav">
     <li class="nav-item nav-profile border-bottom pb-3">
-      <a href="#" class="nav-link flex-column">
-        {% comment %} <div class="nav-profile-image"> {% endcomment %}
-        {% comment %} <img src="{% static 'logos/icon_green.png' %}" alt="profile" class="img-fluid" /> {% endcomment %}
-        <!--change to offline or busy as needed-->
-        {% comment %} </div> {% endcomment %}
-        <div class="nav-profile-text d-flex ms-0 flex-column">
-          <span class="font-weight-semibold mb-1 mt-2 text-center">Welcome back, {{ request.user.username }}!</span>
-          {% with request.user.notifications.unread.count as notifs %}
-            <a href="{% url 'notifications:all' %}">
-              {% if notifs %}
-                <span class="badge badge-warning">{{ request.user.notifications.unread.count }} new notifications</span>
-              {% endif %}
-              <span class="badge badge-light">No new notifications</span>
-            {% endwith %}
+      <a class="navbar-brand brand-logo-mini" href="{% url 'dashboard' %}">
+        <img src="{% static 'logos/icon_transparent.png' %}"
+          alt="logo"
+          class="img-fluid" />
+      </a>
+      <div class="nav-profile-text d-flex ms-0 flex-column">
+        <span class="font-weight-semibold mb-1 mt-2 text-center">Welcome back, {{ request.user.username }}!</span>
+        {% with request.user.notifications.unread.count as notifs %}
+          <a class="text-center" href="{% url 'notifications:all' %}">
+            {% if notifs %}
+              <span class="badge badge-warning">{{ request.user.notifications.unread.count }} new notifications</span>
+            {% endif %}
+            <span class="badge badge-light">No new notifications</span>
+          {% endwith %}
+          </a>
+        {% include 'partials/common/hijack.html' %}
+      </div>
+      </li>
+      <li class="nav-item pt-3 active">
+        <form class="d-flex align-items-center" action="#">
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <i class="input-group-text border-0 mdi mdi-magnify"></i>
+            </div>
+            <input id="sidebar-search" type="text" class="form-control border-0" placeholder="Search" />
           </div>
-          {% include 'partials/common/hijack.html' %}
-        </a>
+        </form>
       </li>
-      {% comment %} #TODO sidebar search {% endcomment %}
-      {% comment %} <li class="nav-item pt-3">
-    <form class="d-flex align-items-center" action="#">
-        <div class="input-group">
-        <div class="input-group-prepend">
-            <i class="input-group-text border-0 mdi mdi-magnify"></i>
-        </div>
-        <input type="text" class="form-control border-0" placeholder="Search" />
-        </div>
-    </form>
-      </li> {% endcomment %}
-      <li class="pt-2 pb-1">
-        <span class="nav-item-head">Home</span>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'dashboard' %}">
-          <i class="mdi mdi-view-quilt menu-icon"></i>
-          <span class="menu-title">Dashboard</span>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="">
-          <i class="mdi mdi-account-box menu-icon"></i>
-          <span class="menu-title">Item</span>
-        </a>
-      </li>
-      <li class="pt-2 pb-1">
-        <span class="nav-item-head">Settings</span>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'posts:managed_list' %}">
-          <i class="mdi mdi-newspaper menu-icon"></i>
-          <span class="menu-title">Posts</span>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'user_registration:list' %}">
-          <i class="mdi mdi-account-plus menu-icon"></i>
-          <span class="menu-title">User Registrations</span>
-        </a>
-      </li>
-      {% comment %} not using if else for superuser cases to show both sidebars{% endcomment %}
+      <div id="sidebar-results">
+      </div>
     </ul>
   </nav>

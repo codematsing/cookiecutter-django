@@ -7,7 +7,6 @@ from utils.lambdas import get_current_domain
 from datetime import datetime
 from utils.detail_wrapper.mixins import DetailCard
 from django.contrib.contenttypes.fields import GenericRelation
-from utils.object_groups.models import ObjectGroup
 import pandas as pd
 
 # Create your models here.

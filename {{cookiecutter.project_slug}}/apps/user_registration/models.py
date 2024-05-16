@@ -25,7 +25,7 @@ class Registration(models.Model):
 
     is_approved = models.BooleanField(default=None, null=True, blank=True, choices=((None, "Unknown"), (True, "Approved"), (False, "Declined")))
     created_at = fields.DateTimeField(auto_now_add=True)
-    attachment = fields.FileField(upload_to=lambdas.rename_upload)
+    attachment = fields.FileField(upload_to=lambdas.internal_upload)
 
 
     def __str__(self):

@@ -14,7 +14,7 @@ class Post(AbstractAuditedModel):
         unique=True
     )
     body = models.TextField(null=True, blank=True)
-    thumbnail = fields.ImageField(upload_to=lambdas.image_upload, blank=True, null=True)
+    thumbnail = fields.ImageField(upload_to=lambdas.public_upload, blank=True, null=True)
     is_published = models.BooleanField(
         default=False, 
         verbose_name="Publish post",

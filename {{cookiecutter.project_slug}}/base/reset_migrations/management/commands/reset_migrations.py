@@ -30,7 +30,7 @@ class Command(BaseCommand):
                         if f != "__init__.py":
                             filepath = os.path.join(root,f)
                             print(f"Removing {filepath}")
-                            # os.remove(filepath)
+                            os.remove(filepath)
 
 
     def handle(self, *args, **options):

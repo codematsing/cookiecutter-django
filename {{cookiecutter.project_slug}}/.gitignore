@@ -347,4 +347,9 @@ vendors.js
 *.min.js
 {%- endif %}
 !apps/tags/
-**/migrations/** #toggle on for development
+**/*.ipynb
+
+# Only for Development only
+**/migrations/**
+!**/migrations
+!**/migrations/__init__.py

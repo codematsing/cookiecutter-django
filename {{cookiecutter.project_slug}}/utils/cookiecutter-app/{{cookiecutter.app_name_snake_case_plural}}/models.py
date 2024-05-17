@@ -3,7 +3,7 @@ from django.urls import reverse
 from utils import lambdas
 from utils.base_models.models import AbstractAuditedModel, BaseModelMixin
 from utils.base_models import fields
-from django.template.loaders import render_to_string
+from django.template.loader import render_to_string
 import os
 
 # Create your models here.

@@ -1,10 +1,11 @@
 from django.db import models
 from django.template.loader import render_to_string
 from django.core.validators import RegexValidator
+from utils.base_models.models import BaseModelMixin
 
 # Create your models here.
 
-class BaseTag(models.Model):
+class BaseTag(BaseModelMixin, models.Model):
     name = models.CharField(
         max_length=128,
         null=False,

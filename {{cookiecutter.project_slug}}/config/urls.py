@@ -46,6 +46,7 @@ urlpatterns = [
     path("modules/", include("module_management.urls", namespace="modules")),
     # MEDIA ACCESS
     path(f"media/<str:file>", file_views.serve_public_media_view, name="public_media"),
+    path(f"internal/media/upload_temp/<str:file>", file_views.serve_temp_media_view, name="temp_media"), #django-formset uploads files in default_storage. See STORAGES. Changed default to InternalFileStorage to protect files
     path(f"internal/media/<str:file>", file_views.serve_internal_media_view, name="internal_media"),
 ]
 {%- if cookiecutter.use_async == 'y' %}

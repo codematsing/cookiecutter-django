@@ -6,6 +6,19 @@ from django.conf import settings
 from django.http import FileResponse
 from django.shortcuts import redirect
 from utils.file_encryptor import FileEncryptor, AccessClassification
+from django.views import static
+import posixpath
+from django.contrib.staticfiles import finders
+
+import mimetypes
+import posixpath
+from pathlib import Path
+
+from django.http import FileResponse, Http404, HttpResponse, HttpResponseNotModified
+from django.template import Context, Engine, TemplateDoesNotExist, loader
+from django.utils._os import safe_join
+from django.utils.http import http_date, parse_http_date
+from django.views.static import directory_index, was_modified_since
 
 import os
 
@@ -13,6 +26,11 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+def serve_temp_media_view(request, file):
+    full_path = os.path.join(settings.INTERNAL_MEDIA_ROOT, "upload_temp", file)
+    if os.path.exists(full_path) and request.user.is_authenticated:
+        return FileResponse(open(full_path, "rb"))
+    return Http404
 
 def serve_public_media_view(request, file):
     full_path = os.path.join(settings.MEDIA_ROOT, file)
@@ -51,6 +69,17 @@ def pdf_view(request, *args, **kwargs):
     """
     Use of pdfjs as document viewer to control if user can download files
     """
+    # NOTE: I think this is not needed anymore, let the view handle accessibility of files
+    # filename = request.GET['file']
+    # logger.info(f'Filename GET: {filename}')
+    # filename = filename.replace('/media/', '')
+    # if submission := DocumentSubmission.objects.filter(attachment__icontains=filename).last():
+    # 	if not request.user.is_anonymous and request.user.is_sao or request.user==submission.updated_by:
+    # 		return render(request, "pdf/viewer.html", context={'is_downloadable': True})
+    # 	else:
+    # 		return HttpResponseForbidden()
+    # else:
+    # 	# Workaround for Auto generated PDFs
     return render(request, "pdf/viewer.html", context={"is_downloadable": True})
 
 

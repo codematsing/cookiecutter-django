@@ -12,6 +12,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # This means the script will look in the base directory for any module imports
 # Therefore you'll be able to import analysis.models etc
 sys.path.insert(0, BASE_DIR)
+sys.path.insert(0, f"{BASE_DIR}/apps")
 
 # The DJANGO_SETTINGS_MODULE has to be set to allow us to access django imports
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "arcwebsite.settings")

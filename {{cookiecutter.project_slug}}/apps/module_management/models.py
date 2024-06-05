@@ -18,6 +18,7 @@ class SidebarClassification(models.IntegerChoices):
 class SidebarItem(BaseModelMixin, models.Model):
     header = models.CharField(max_length=32, verbose_name="Sidebar grouping header", default="HOME", validators=[RegexValidator(r"[A-Z\ ]+", message="Must be capitalized")])
     label = models.CharField(max_length=32, null=False, blank=False, unique=True)
+    description = models.CharField(max_length=128, null=True, blank=True, verbose_name="Description", help_text="short description about module")
     href = models.CharField(max_length=64, null=False, blank=False, verbose_name="Entry point href to module", unique=True)
     icon = models.CharField(max_length=64, default="mdi-play", verbose_name="Material Design Icon Code", help_text="ex. mdi-power", validators=[RegexValidator(r'[a-z\-]+', message="Must be one word, dash-separated")])
     classification = models.IntegerField(choices=SidebarClassification.choices, default=SidebarClassification.INTERNAl, help_text="Show to: Public - Anyone, Internal - Logged in, Confidential - Only allowed roles / groups")

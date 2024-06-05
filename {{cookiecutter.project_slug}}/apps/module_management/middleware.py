@@ -1,7 +1,10 @@
 from module_management.models import SidebarItem, SidebarClassification
 from django.http import HttpResponseForbidden
 from django.urls import resolve
+from django.contrib import messages
+from django.urls import reverse
 from django.conf import settings
+from django.shortcuts import redirect
 from utils.lambdas import get_url_df
 import logging
 logger = logging.getLogger(__name__)
@@ -49,7 +52,10 @@ def module_management_middleware(get_response):
                     return response
 
         logger.warning(f"Custom Middleware will force Http Response Forbidden for {request.path}")
-        return HttpResponseForbidden(request)
+        messages.error(request, "Sorry, the url you are trying to access is not found.")
+        if user.is_authenticated:
+            return redirect("dashboard")
+        return redirect("home")
 
 
     return middleware

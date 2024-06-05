@@ -15,8 +15,9 @@
           <a class="text-center" href="{% url 'notifications:all' %}">
             {% if notifs %}
               <span class="badge badge-warning">{{ request.user.notifications.unread.count }} new notifications</span>
-            {% endif %}
+            {% else %}
             <span class="badge badge-light">No new notifications</span>
+            {% endif %}
           {% endwith %}
           </a>
         {% include 'partials/common/hijack.html' %}

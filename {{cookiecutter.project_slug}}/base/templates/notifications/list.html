@@ -1,0 +1,81 @@
+{% extends 'partials/admin/base.html' %}
+
+{% block content %}
+  <div class="card p-0">
+    <div class="card-header p-3 bg-warning bg-opacity-50">
+      <div class="d-flex justify-content-between px-2">
+        <div class="card-title align-self-center mb-0">Notifications</div>
+        <div class="text-muted"></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="card-text">
+        <div class="table-responsive">
+          <table id="table" width="100%" class="table table-bordered dt-responsive nowrap"></table>
+        </div>
+      </div>
+      <div class="d-flex justify-content-end">
+        <a href="{% url 'notifications:read_all' %}" class="btn btn-lg btn-success">Mark all as Read</a>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block extra_js %}
+  <script language="javascript">
+  $(document).ready(function () {
+    AjaxDatatableViewUtils.initialize_table(
+      $("#table"),
+      "{% url 'notifications:ajax:list' %}",
+      {
+        // extra_options (example)
+        processing: false,
+        autoWidth: false,
+        full_row_select: false,
+        scrollX: false,
+        {% if request.user.is_sao %}
+        dom: 'TBlfrtip',
+        buttons: [
+            {
+              extend:'copy',
+              className:'bg-warning mb-2'
+            },
+            {
+              extend:'csv',
+              filename:'{{page_title}}',
+              className:'bg-warning mb-2'
+            }
+          ],
+        {% endif %}
+      },
+      {
+        {% if request.GET.urlencode %}
+        forward: "{{request.GET.urlencode}}",
+        {% endif %}
+        {% if query %}
+        query: "{{query|escapejs}}",
+        {% endif %}
+        {% if hidden %}
+        hidden: "{{hidden|escapejs}}",
+        {% endif %}
+      }
+    );
+  });
+  </script>
+
+  <script language="javascript">
+      function changeStatus(notif_pk, status) {
+        $.ajax({
+          url: "{% url 'notifications:ajax:update_status' %}",
+          data: {
+            notif: notif_pk,
+            unread: status
+          },
+          dataType: 'json',
+          success: function(data) {
+            $('#status-' + notif_pk).html(data.html)
+          }
+        })
+      }
+    </script>
+{% endblock %}

@@ -67,6 +67,9 @@
     </div>
     {% include 'partials/admin/js.html' %}
     {% block extra_js %}{% endblock %}
+
+    {% include 'session_security/all.html' %}
+
     <script>
         $(document).ready(function() {
             $('#sidebar-search').on('input', function() {

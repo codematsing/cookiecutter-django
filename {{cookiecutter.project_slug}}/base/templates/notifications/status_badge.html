@@ -1,0 +1,24 @@
+<div class="dropdown d-inline-block">
+    <a href="#"
+       id="status-{{ record.pk }}"
+       data-bs-toggle="dropdown"
+       aria-expanded="true">
+        {% if record.unread %}
+            <label class="badge badge-danger">Unread</label>
+        {% else %}
+            <label class="badge badge-success">Read</label>
+        {% endif %}
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="status-{{ record.pk }}">
+        <li class="dropdown-item">
+            <button class="dropdown-item" onclick="changeStatus({{ record.pk }}, true)">
+                <label class="badge badge-danger">Mark as Unread</label>
+            </button>
+        </li>
+        <li class="dropdown-item">
+            <button class="dropdown-item" onclick="changeStatus({{ record.pk }}, false)">
+                <label class="badge badge-success">Mark as Read</label>
+            </button>
+        </li>
+    </ul>
+</div>

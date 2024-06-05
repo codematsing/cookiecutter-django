@@ -128,6 +128,7 @@ THIRD_PARTY_APPS = [
     'django_tables2',
     "django_extensions",
     "django_user_agents",
+    "session_security",
 ]
 
 UTIL_APPS = [
@@ -139,6 +140,7 @@ UTIL_APPS = [
 LOCAL_APPS = [
     "users",
     "file_management",
+    "notification_management",
     "group_management",
     "module_management",
     "user_registration",
@@ -512,3 +514,9 @@ ACCOUNT_LOGOUT_ON_GET=True
 
 # https://docs.allauth.org/en/latest/account/views.html
 USER_AGENTS_CACHE = 'default'
+
+# https://django-session-security.readthedocs.io/en/latest/full.html
+SESSION_SECURITY_INSECURE = True
+
+DJANGO_NOTIFICATIONS_CONFIG = {"USE_JSONFIELD": True}
+NOTIFICATIONS_NOTIFICATION_MODEL = "notification_management.Notification"

@@ -22,8 +22,10 @@ urlpatterns = [
     ),
     # Django Admin, use {% raw %}{% url 'admin:index' %}{% endraw %}
     path(settings.ADMIN_URL, admin.site.urls),
+    # https://django-session-security.readthedocs.io/en/latest/quick.html
+    path(r'session_security/', include('session_security.urls')),
     # Notifications
-    path('inbox/notifications/', include("notifications.urls", namespace='notifications')),
+    path('inbox/notifications/', include("notification_management.urls", namespace='notifications')),
     # Posts
     path("posts/", include("posts.urls", namespace="posts")),
     # User management

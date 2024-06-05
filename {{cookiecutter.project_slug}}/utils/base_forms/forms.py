@@ -79,12 +79,15 @@ class BaseModelForm(forms.ModelForm):
 			self.disable_fields([elem])
 			self.fields[elem].widget = HiddenInput()
 
+	def save(self, commit=True, extras={}):
+		return super().save(commit)
+
 	def __init__(self, *args, **kwargs):
+		if 'is_draft' in kwargs:
+			self.is_draft = kwargs.pop('is_draft', None)
 		self.set_disabled_fields(kwargs)
 		self.set_hidden_fields(kwargs)
 		self.set_meta_fields()
-		if 'is_draft' in kwargs:
-			self.is_draft = kwargs.pop('is_draft', None)
 		super().__init__(*args, **kwargs)
 		self.disable_fields(self.disabled_fields)
 		self.hide_fields(self.hidden_fields)
@@ -92,10 +95,16 @@ class BaseModelForm(forms.ModelForm):
 class BaseFormCollection(FormCollection):
 	default_renderer = FormRenderer
 	is_draft = None
+	view_object = None
+	updated_by = None
 
 	def __init__(self, **kwargs):
 		if 'is_draft' in kwargs:
 			self.is_draft = kwargs.pop('is_draft', None)
+		if 'object' in kwargs:
+			self.view_object = kwargs.pop('object', None)
+		if 'user' in kwargs:
+			self.updated_by = kwargs.pop('user', None)
 		super().__init__(**kwargs)
 
 	def set_meta_fields(self):

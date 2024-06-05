@@ -8,6 +8,7 @@ from django.views.generic import (
 )
 from django.db.models.deletion import ProtectedError
 from django.views.generic.detail import SingleObjectMixin
+from utils.base_forms.forms import PdfFileWidget, ImageFileWidget
 from django.http import JsonResponse
 from django.http import HttpResponseRedirect
 from formset.views import (
@@ -82,8 +83,12 @@ class BaseFormMixin(IncompleteSelectResponseMixin, SuccessMessageMixin, FormView
 		for field in self.get_disabled_fields():
 			self.disable_field(form, field)
 		for field in form.fields.values():
-			if type(field) in [FileField, ImageField]:
-				field.widget = UploadedFileInput()
+			if type(field) in [FileField]:
+				field.widget = PdfFileWidget()
+				field.help_text = f'{getattr(field, "help_text", "")}\nAccepts only PDF. Maximum of 10MB'
+			if type(field) in [ImageField]:
+				field.widget = ImageFileWidget()
+				field.help_text = f'{getattr(field, "help_text", "")}\nAccepts only .png, .jpeg. Maximum of 1MB'
 		if getattr(self, 'form_class', None)==None:
 			# forces rendering of form to similar to crispy form tags
 			setattr(form, 'renderer', FormRenderer())

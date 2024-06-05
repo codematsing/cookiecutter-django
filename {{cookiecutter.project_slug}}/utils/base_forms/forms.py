@@ -4,9 +4,26 @@ from formset.renderers.bootstrap import FormRenderer
 from formset.collection import FormCollection
 from django.contrib.auth import get_user_model
 from utils.validators import EmailValidator
-from formset.widgets import Selectize, SelectizeMultiple, DualSelector
+from formset.widgets import Selectize, SelectizeMultiple, DualSelector, UploadedFileInput
 import logging
 logger = logging.getLogger(__name__)
+
+class PdfFileWidget(UploadedFileInput):
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
+		self.attrs.update({
+			"max-size": 1024 * 1024 * 10,  # 10mb
+			"accept": 'application/pdf',
+		})
+
+class ImageFileWidget(UploadedFileInput):
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
+		self.attrs.update({
+			"max-size": 1024 * 1024 * 1,  # 1
+			"accept": 'image/png, image/jpeg',
+		})
+
 class CustomSelectize(Selectize):
     max_prefetch_choices = 600
 	# customize due to cap of original

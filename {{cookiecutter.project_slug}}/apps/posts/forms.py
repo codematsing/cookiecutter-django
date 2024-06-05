@@ -1,5 +1,5 @@
 from django import forms
-from formset.widgets import SelectizeMultiple, UploadedFileInput
+from utils.base_forms.forms import ImageFileWidget
 from formset.richtext.widgets import RichTextarea
 from utils.base_forms.forms import BaseModelForm
 from .models import Post
@@ -11,5 +11,5 @@ class PostForm(BaseModelForm):
         model = Post
         exclude = ['history_remarks']
         widgets = {
-            'thumbnail': UploadedFileInput(),
+			'thumbnail': ImageFileWidget(),
         }

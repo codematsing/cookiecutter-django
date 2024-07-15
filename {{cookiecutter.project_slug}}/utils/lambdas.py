@@ -18,6 +18,7 @@ from django_extensions.management.commands import show_urls
 from django.core import management
 import pandas as pd
 import json
+from django.core.mail import send_mail as native_send_mail
 
 logger = logging.getLogger(__name__)
 
@@ -151,3 +152,10 @@ def get_url_df(
     if as_url_list:
         return df["url"].to_list()
     return df[["url", "module", "name", "module_app"]]
+
+def send_mail(subject, message, from_email, recipient_list, fail_silently=False, auth_user=None, auth_password=None, connection=None, html_message=None, allow_sending_on_debug=False):
+    # restricts sending mail on production
+    if not settings.DEBUG or allow_sending_on_debug:
+        native_send_mail(subject, message, from_email, recipient_list, fail_silently=False, auth_user=None, auth_password=None, connection=None, html_message=None)
+    else:
+        logger.warning(f"Will not send mail to {recipient_list} due to debug settings")

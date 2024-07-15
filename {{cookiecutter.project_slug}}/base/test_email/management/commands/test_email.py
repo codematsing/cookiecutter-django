@@ -1,4 +1,4 @@
-from django.core.mail import send_mail
+from utils.lambdas import send_mail
 from django.core.management.base import BaseCommand
 from django.conf import settings
 from django.utils import timezone
@@ -28,6 +28,7 @@ class Command(BaseCommand):
                 message="lorem ipsum",
                 from_email=settings.EMAIL_HOST_USER,
                 recipient_list=recipient_list,
+                allow_sending_on_debug=True
                 )
         except Exception as e:
             logger.exception(e)

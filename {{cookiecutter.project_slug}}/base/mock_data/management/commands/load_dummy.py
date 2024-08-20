@@ -42,7 +42,7 @@ class Command(BaseCommand):
                 for file in files:
                     fixture_json = os.path.join(root, file)
                     if ".json" in fixture_json:
-                        logger.info(f"LOADING fixture from: {{fixture_json}}")
+                        logger.info(f"LOADING fixture from: {fixture_json}")
                         management.call_command("loaddata", fixture_json)
 
 

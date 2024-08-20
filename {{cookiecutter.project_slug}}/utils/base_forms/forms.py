@@ -8,7 +8,6 @@ from formset.fieldset import FieldsetMixin, Fieldset
 from formset.renderers.bootstrap import FormRenderer
 from formset.widgets import Selectize, SelectizeMultiple, DualSelector, UploadedFileInput
 from utils.validators import EmailValidator
-from auxiliaries.status_tags.form_status.models import FormStatus
 import logging
 logger = logging.getLogger(__name__)
 
@@ -226,30 +225,3 @@ class BaseFormCollection(FormCollection):
 
 		
 	#TODO: form collection hidden and disabled fields
-
-class FormVerificationForm(BaseForm):
-	"""
-		A generic form for verification of models. Accepts an object instance.
-		Reason for being generic is to accomodate all models that inherits AbstractTrackedSubmission
-	"""
-	status = forms.ModelChoiceField(queryset=FormStatus.objects.verification_options(), required=True)
-	feedback = forms.CharField(label="Feedback", max_length=2048, widget=RichTextarea)
-
-	def clean(self):
-		logger.info(self.instance)
-		cleaned_data = super().clean()
-		logger.info(cleaned_data)
-		if cleaned_data['status'] in FormStatus.objects.required_supplmentary_feedback_statuses() and not cleaned_data['feedback']:
-			self.add_error("feedback", "Requires reason pending status")
-		return cleaned_data
-
-	def save(self, commit=True):
-		feedback = self.cleaned_data["feedback"]
-		logger.info(self.instance)
-		self.instance.status = self.cleaned_data["status"]
-		self.instance._additional_data = {
-			"Feedback": feedback
-		}
-		self.instance.save()
-		return self.instance
-

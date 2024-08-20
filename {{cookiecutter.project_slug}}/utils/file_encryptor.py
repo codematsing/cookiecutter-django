@@ -3,13 +3,14 @@ import uuid
 from django.utils import timezone
 from django.contrib.auth import get_user_model
 from django.conf import settings
+from django.db import models
 import os
 import re
 
 import logging
 logger = logging.getLogger(__name__)
 
-class AccessClassification:
+class AccessClassification(models.IntegerChoices):
     PUBLIC = 1
     INTERNAL = 2
     CONFIDENTIAL = 3

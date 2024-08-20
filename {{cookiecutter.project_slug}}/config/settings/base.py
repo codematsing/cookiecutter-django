@@ -149,6 +149,7 @@ LOCAL_APPS = [
     "commons",
     "posts",
     "tags",
+    "faqs",
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps

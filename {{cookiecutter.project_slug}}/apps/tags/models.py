@@ -1,11 +1,11 @@
 from django.db import models
 from django.template.loader import render_to_string
 from django.core.validators import RegexValidator
-from utils.base_models.models import BaseModelMixin
+from utils.base_models.models import AbstractAuditedModel
 
 # Create your models here.
 
-class BaseTag(BaseModelMixin, models.Model):
+class BaseTag(AbstractAuditedModel):
     name = models.CharField(
         max_length=128,
         null=False,
@@ -20,6 +20,7 @@ class BaseTag(BaseModelMixin, models.Model):
     )
     foreground = models.CharField(default="#000000", validators=[RegexValidator(regex=r"#\d{6}")])
     background = models.CharField(default="#FFFFFF", validators=[RegexValidator(regex=r"#\d{6}")])
+    requires_log_entry_on_update = models.BooleanField(default=False, help_text="System identifier if feedback is required for status change")
 
     @property
     def as_html(self):

@@ -1,17 +1,9 @@
-from urllib.parse import urlencode
 from base64 import b64decode
 
-from django.shortcuts import render, redirect
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.contrib import messages
 
 from django.urls import reverse
-from django.conf import settings
-from django.utils.translation import gettext_lazy as _
 from django import forms
-
-from utils.permissions import IsSAOPermissionMixin, IsStudentOwnerPermissionMixin
 
 from formset.widgets import DateInput
 
@@ -19,18 +11,8 @@ from .models import Registration
 
 from allauth.account.views import SignupView
 
-from utils.base_views.views import (
-
-    BaseDeleteView,
-    BaseActionView,
-    BaseAddObjectView,
-    BaseRemoveObjectView,
-    BaseActionObjectView,
-)
-
 from utils.base_views.admin_views import (
     AdminListView,
-    AdminCreateView,
     AdminDetailView,
     AdminUpdateView,
     AdminDeleteView
@@ -56,7 +38,7 @@ class ApprovedSignupView(SignupView):
         return form
 
 # Create your views here.
-class RegistrationListView(IsSAOPermissionMixin, SuccessMessageMixin, AdminListView):
+class RegistrationListView(SuccessMessageMixin, AdminListView):
     model = Registration
     template_name='registrations/list.html'
 
@@ -65,7 +47,7 @@ class RegistrationListView(IsSAOPermissionMixin, SuccessMessageMixin, AdminListV
 
 class RegistrationCreateView(PublicCreateView):
     model = Registration
-    success_message = _("Registration request created. Please check your email for updates")
+    success_message = "Registration request created. Please check your email for updates"
     hidden_fields = ['is_approved']
     disabled_fields = ['is_approved']
     template_name='registrations/create.html'
@@ -80,16 +62,16 @@ class RegistrationCreateView(PublicCreateView):
             "user_registration:list",
         )
 
-class RegistrationDetailView(IsSAOPermissionMixin, AdminDetailView):
+class RegistrationDetailView(AdminDetailView):
     model = Registration
 
-class RegistrationUpdateView(IsSAOPermissionMixin, AdminUpdateView):
+class RegistrationUpdateView(AdminUpdateView):
     model = Registration
 
-class RegistrationDeleteView(IsSAOPermissionMixin, AdminDeleteView):
+class RegistrationDeleteView(AdminDeleteView):
     model = Registration
 
-class RegistrationApproveView(IsSAOPermissionMixin, AdminUpdateView):
+class RegistrationApproveView(AdminUpdateView):
     model = Registration
     template_name='registrations/approve.html'
     fields = ["is_approved"]

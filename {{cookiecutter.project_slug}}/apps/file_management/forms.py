@@ -14,16 +14,15 @@ class DocumentMetadataForm(BaseModelForm):
         form_css_classes="row",
 		fieldset_css_classes="row",
         field_css_classes={
-            "name": "mb-2 col-4",
-            "require_for_tags": "mb-2 col-4",
-            "description": "mb-2 col-4",
+            "name": "mb-2 col-6",
+            "description": "mb-2 col-6",
         },
     )
     id = forms.IntegerField(required=False, widget=forms.HiddenInput())
 
     class Meta:
         model = DocumentMetadata
-        fields = ["name", "description", "require_for_tags"]
+        fields = ["name", "description"]
         widgets = {
             "description": forms.Textarea(attrs={"rows": 1}),
             "require_for_tags": SelectizeMultiple(),

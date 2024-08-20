@@ -7,7 +7,6 @@ from utils.lambdas import confidential_upload
 from utils.base_models.fields import InternalFileField
 from utils.base_models.models import AbstractAuditedModel
 from utils.file_encryptor import AccessClassification
-import uuid
 
 # Create your models here.
 class DocumentMetadata(AbstractAuditedModel):

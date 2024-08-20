@@ -1,5 +1,4 @@
 from django import forms
-from unit_roles.forms import UnitRoleFormset
 from utils.base_forms.forms import BaseFormCollection, BaseModelForm, BaseForm, LogEntryForm
 from allauth.account.forms import SignupForm
 from allauth.socialaccount.forms import SignupForm as SocialSignupForm
@@ -7,7 +6,6 @@ from django.contrib.auth import forms as admin_forms
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
-from unit_roles.models import UnitRole
 import logging
 logger = logging.getLogger(__name__)
 User = get_user_model()
@@ -73,7 +71,6 @@ class UserProfileForm(BaseModelForm):
 
 class UserUpdateFormCollectionForm(BaseFormCollection):
     user_profile = UserProfileForm()
-    unit_role_formset = UnitRoleFormset()
     log_entry_form = LogEntryForm()
 
     def save(self):
@@ -83,17 +80,6 @@ class UserUpdateFormCollectionForm(BaseFormCollection):
                 "Log Entry": log_entry
             }
         instance.save()
-        for unit_role_form in self.cleaned_data["unit_role_formset"]:
-            unit_role_kwargs = unit_role_form["unit_role_form"]
-            is_primary = unit_role_kwargs.pop('is_primary', False)
-            unit_role, created = UnitRole.objects.update_or_create(**unit_role_kwargs)
-            if marked_for_removal := unit_role_kwargs.pop('_marked_for_removal_', False):
-                instance.unit_roles.remove(unit_role)
-            else:
-                instance.unit_roles.add(unit_role)
-                if is_primary:
-                    instance.primary_unit_role = unit_role
-                    instance.save()
         return instance
 
 class UserAdminCreationForm(admin_forms.UserCreationForm):

@@ -1,29 +1,31 @@
 from django.db import models
 from django.urls import reverse
-from django.contrib.auth import get_user_model
-from django.utils.text import slugify
 from django.template.loader import render_to_string
+from utils import lambdas
+from utils.base_models.models import AbstractAuditedModel
+from utils.base_models import fields
 from django.utils import timezone
-from utils.base_models.fields import PublicImageField
-from utils.base_models.models import BaseModelManager, AbstractAuditedModel
-from auxiliaries.status_tags.post_tags.models import PostTag
+from dateutil import relativedelta
+from tags.models import BaseTag
+import logging
+logger = logging.getLogger(__name__)
 
-import os
-
-def image_upload(instance, filename):
-    filename, ext = os.path.splitext(filename)
-    timestamp = timezone.now().strftime('%Y%m%d%H%M%S')
-    return f"{slugify(instance.title)}_{timestamp}{ext}"
 
 # Create your models here.
+class PostTag(BaseTag):
+    pass
 class Post(AbstractAuditedModel):
     title = models.CharField(
         max_length=240,
+        unique=True
     )
     body = models.TextField(null=True, blank=True)
-    thumbnail = PublicImageField(upload_to=image_upload, blank=True, null=True)
-    published_date = models.DateTimeField(verbose_name="Published Date", default=timezone.now)
-    is_published = models.BooleanField(default=False, verbose_name="Publish post", choices=((False, 'Save as draft'), (True, 'Publish Post')))
+    thumbnail = fields.ImageField(upload_to=lambdas.public_upload, blank=True, null=True)
+    is_published = models.BooleanField(
+        default=False, 
+        verbose_name="Publish post?",
+        choices=[[True, "Publish"], [False, "Save As Draft"]]
+        )
     tags = models.ManyToManyField(PostTag, related_name="posts")
 
     def __str__(self):
@@ -33,83 +35,43 @@ class Post(AbstractAuditedModel):
     def is_drafted(self):
         return not self.is_published
 
+    @property
+    def is_3_days_recent(self):
+        return relativedelta.relativedelta(timezone.now(), self.updated_at).days<=3
+
+    @property
+    def is_published_as_badge(self):
+        field_item = {
+            'name': "Published" if self.is_published else "Drafted",
+            'background': "#184425" if self.is_published else "#a0a0a0",
+            'foreground': "#FFFFFF" if self.is_published else "#FFFFFF",
+        }
+        return render_to_string('detail_wrapper/badge.html', {'field':field_item})
+
+    @classmethod
+    def get_list_url(cls):
+        return reverse(
+            f"posts_management:list",
+            )
+
     def get_absolute_url(self):
         return reverse(
-            "posts:detail",
+            "post_detail",
             kwargs={"pk": self.pk}
             )
 
     def get_update_url(self):
         return reverse(
-            "posts:update",
+            f"posts_management:update",
             kwargs={"pk": self.pk}
             )
 
     def get_delete_url(self):
         return reverse(
-            "posts:delete",
+            f"posts_management:update",
             kwargs={"pk": self.pk}
             )
 
     class Meta:
-        ordering = ['-published_date', 'is_published']
-        get_latest_by = 'published_date'
-
-class ScholarshipPostManager(BaseModelManager):
-    def get_queryset(self):
-        return Post.objects.filter(qualification_set__isnull=False)
-
-    def active_scholarships(self):
-        pks = [post.pk for post in self.get_queryset() if post.qualification_set.is_open]
-        if pks:
-            return Post.objects.filter(pk__in=pks)
-        return Post.objects.none()
-
-    def closed_scholarships(self):
-        pks = [post.pk for post in self.get_queryset() if post.qualification_set.is_closed]
-        if pks:
-            return Post.objects.filter(pk__in=pks)
-        return Post.objects.none()
-
-    def published_scholarships(self):
-        pks = [post.pk for post in self.get_queryset() if post.is_published]
-        if pks:
-            return Post.objects.filter(pk__in=pks)
-        return Post.objects.none()
-
-    def drafted_scholarships(self):
-        pks = [post.pk for post in self.get_queryset() if post.is_drafted]
-        if pks:
-            return Post.objects.filter(pk__in=pks)
-        return Post.objects.none()
-
-    @property
-    def active_scholarships(self):
-        pks = [post.pk for post in self.get_queryset() if post.qualification_set.is_open]
-        if pks:
-            return Post.objects.filter(pk__in=pks)
-        return Post.objects.none()
-
-class ScholarshipPost(Post):
-    objects = ScholarshipPostManager()
-
-    def get_absolute_url(self):
-        return reverse(
-            "posts:scholarship_filter:detail",
-            kwargs={"pk": self.pk}
-            )
-
-    class Meta:
-        proxy=True
-
-class BlogPostManager(BaseModelManager):
-    def get_queryset(self):
-        return Post.objects.filter(qualification_set__isnull=True)
-
-class BlogPost(Post):
-    objects = BlogPostManager()
-    class Meta:
-        proxy=True
-
-    def get_list_instruction_element(cls):
-        return render_to_string("posts/instructions.html")
+        ordering = ['-history__timestamp', 'is_published']
+        get_latest_by = 'history__timestamp'

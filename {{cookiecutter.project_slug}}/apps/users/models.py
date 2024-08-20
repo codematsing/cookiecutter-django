@@ -48,17 +48,6 @@ class User(AbstractUser, AbstractAuditedModel):
 			])
 
 	@property
-	def is_qao(self):
-		return self.is_superuser or self.is_staff or self.groups.filter(name=settings.QAO_GROUP_NAME).exists()
-
-	@property
-	def primary_unit(self):
-		primary_unit_role = self.unit_roles.objects.filter(is_primary_unit_role=True)
-		if primary_unit_role.exists():
-			return primary_unit_role.first()
-		return None
-
-	@property
 	def salutation(self):
 		name_parts = [
 			self.honorifics,
@@ -93,60 +82,6 @@ class User(AbstractUser, AbstractAuditedModel):
 		else:
 			return f"{self.username}"
 
-	@property
-	def projects(self):
-		from members.models import Member
-		from projects.models import Project
-
-		projects = Member.objects.filter(email=self.email).values_list("project", flat=True).distinct()
-		return Project.objects.filter(id__in=projects)
-
-	@property
-	def for_approval_projects(self):
-		from members.models import Member
-		from projects.models import Project
-		projects = Project.objects.filter(approval_events__state__authorized_roles__in=self.unit_roles.all().values_list['roles'])
-		return Project.objects.filter(id__in=projects)
-
-	@property
-	def editable_projects(self):
-		from members.models import Member
-		from members.models import AccessType
-		from projects.models import Project
-
-		projects = Member.objects.filter(
-			email=self.email, access_type=AccessType.EDITOR
-		).values_list("project", flat=True).distinct()
-		return Project.objects.filter(id__in=projects)
-
-	def can_view_project(self, project):
-		# can view if qao or if member of project
-		approvers_authorized_role_ids = project.approval_events.values_list('state__authorized_roles', flat=True)
-		return self.is_qao or self.projects.filter(id=project.id).exists() or self.groups.filter(
-			# unit=project.proponent_unit,
-			pk__in=approvers_authorized_role_ids,
-		).exists()
-
-	def is_project_approver(self, project):
-		approvers_authorized_role_ids = project.approval_events.filter().first().state.authorized_roles.values_list('pk', flat=True)
-		return self.groups.filter(
-			# unit=project.proponent_unit,
-			# role__pk__in=approvers_authorized_role_ids
-			pk__in=approvers_authorized_role_ids,
-		).exists()
-
-	def can_approve_project(self, project):
-		approval_event = (project.approval_events.filter(approver_action__isnull=True) | project.approval_events.filter(approver_action__in=[-1,0])).first()
-		approvers_authorized_role_ids = approval_event.state.authorized_roles.values_list('pk', flat=True)
-		return self.groups.filter(
-			# unit=project.proponent_unit,
-			# role__pk__in=approvers_authorized_role_ids
-			pk__in=approvers_authorized_role_ids,
-		).exists()
-
-	def can_edit_project(self, project):
-		return self.is_superuser or self.editable_projects.filter(id=project.id).exists()
-
 	def get_absolute_url(self):
 		"""Get url for user's detail view.
 
@@ -159,12 +94,3 @@ class User(AbstractUser, AbstractAuditedModel):
 
 	def get_profile_update_url(self):
 		return reverse("profile:update")
-
-	@property
-	def get_profile_required_fields(self):
-		return [
-			'honorifics',
-			'first_name',
-			'last_name',
-			'employee_number',
-		]

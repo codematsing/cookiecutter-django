@@ -51,9 +51,6 @@ urlpatterns = [
     path("history/ajax/", include("history_management.urls", namespace="history")),
     # Notifications
     path('inbox/notifications/', include("notification_management.urls", namespace='notifications')),
-    # Your stuff: custom urls includes go here
-    path("roles/", include("role_management.urls", namespace="roles")),
-    path("modules/", include("module_management.urls", namespace="modules")),
     # MEDIA ACCESS
     path(f"media/<str:file>", file_views.serve_public_media_view, name="public_media"),
     path(f"internal/media/upload_temp/<str:file>", file_views.serve_temp_media_view, name="temp_media"), #django-formset uploads files in default_storage. See STORAGES. Changed default to InternalFileStorage to protect files

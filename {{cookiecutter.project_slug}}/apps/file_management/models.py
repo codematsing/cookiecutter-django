@@ -23,7 +23,7 @@ class DocumentMetadata(AbstractAuditedModel):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True, blank=True)
     object_id = models.PositiveIntegerField(null=True, blank=True)
     content_object = GenericForeignKey("content_type", "object_id")
-    access_classification = models.IntegerField(verbose_name="Access Classification", choices=AccessClassification.get_choices())
+    access_classification = models.IntegerField(verbose_name="Access Classification", choices=AccessClassification.choices)
     def __str__(self):
         return self.name
 

@@ -1,5 +1,3 @@
-from auditlog.models import AuditlogHistoryField
-from auxiliaries.status_tags.metadata_tags.models import MetadataTag
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
@@ -7,7 +5,6 @@ from django.db import models
 from django.urls import reverse
 from utils.lambdas import confidential_upload
 from utils.base_models.fields import InternalFileField
-from softdelete.models import SoftDeleteObject
 from utils.base_models.models import AbstractAuditedModel
 from utils.file_encryptor import AccessClassification
 import uuid
@@ -27,10 +24,6 @@ class DocumentMetadata(AbstractAuditedModel):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True, blank=True)
     object_id = models.PositiveIntegerField(null=True, blank=True)
     content_object = GenericForeignKey("content_type", "object_id")
-    require_for_tags = models.ManyToManyField(
-        MetadataTag,
-        blank=True,
-        )
     access_classification = models.IntegerField(verbose_name="Access Classification", choices=AccessClassification.get_choices())
     def __str__(self):
         return self.name

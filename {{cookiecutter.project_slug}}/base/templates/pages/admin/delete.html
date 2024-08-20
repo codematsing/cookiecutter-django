@@ -1,22 +1,22 @@
-{% extends 'partials/admin/base.html' %}
-
+{% extends 'pages/admin/form.html' %}
 {% block content %}
   <div class="row grid-margin">
-    <div class="alert alert-danger my-0" role="alert">
-      <b>Warning:</b> Deleting {{object}} is completely irreversible and can affect losing other data dependent on it.
-      Are you sure you want to delete this?
+      <div class="alert alert-danger" role="alert">
+        <b>Warning:</b> Deleting {{ object }} is completely irreversible and can affect losing other data dependent on it. Are you sure you want to delete this?
     </div>
   </div>
 
-  {{object.as_card | safe}}
+  {{ object.as_card|safe }}
+  
+  {{ block.super }}
+{% endblock %}
 
-  <div class="d-flex align-items-center justify-content-md-end pb-5 mb-5">
-    <form action="" method="post">
-      {% csrf_token %}
-      <a class="btn btn-secondary me-2" href="{{request.META.HTTP_REFERER}}">
-        Cancel
-      </a>
-      <input type="submit" class="btn btn-primary" value="Delete">
-    </form>
-  </div>
+{% block extra_js %}
+<script>
+$(document).ready(function(){
+  $('#id_object_str').bind("cut copy paste",function(e) {
+      e.preventDefault();
+  });
+});
+</script>
 {% endblock %}

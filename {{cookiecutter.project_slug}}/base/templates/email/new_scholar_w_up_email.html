@@ -1,0 +1,16 @@
+{% extends 'partials/email/base.html' %}
+{% load account socialaccount util_tags %}
+
+{% block content %}
+<p>Dear scholar,</p>
+  
+<p>You have been promoted as a Scholar in the UP SIKAP System</p>
+
+<p>
+    The purpose for this system is to streamline necessary processes and submissions concerning your scholarship: {{scholar.scholarship}}.  
+    Thus, we are requiring that all scholars to create an account for your monitoring purposes as well.
+</p>
+
+<p><a href="{{current_domain}}{% url 'account_login' %}">Please log in and create your portfolio if you have not created so</a></p>
+
+{% endblock  %}

@@ -1,24 +1,13 @@
 from django.shortcuts import render
 from django.views.decorators.clickjacking import xframe_options_exempt
-from file_management.models import DocumentSubmission
-from django.http import HttpResponseForbidden, HttpResponse, Http404
+from file_management.models import DocumentSubmission, DocumentMetadata
+from django.http import HttpResponse, Http404
 from django.conf import settings
 from django.http import FileResponse
-from django.shortcuts import redirect
 from utils.file_encryptor import FileEncryptor, AccessClassification
-from django.views import static
-import posixpath
-from django.contrib.staticfiles import finders
-
-import mimetypes
-import posixpath
-from pathlib import Path
-
-from django.http import FileResponse, Http404, HttpResponse, HttpResponseNotModified
-from django.template import Context, Engine, TemplateDoesNotExist, loader
-from django.utils._os import safe_join
-from django.utils.http import http_date, parse_http_date
-from django.views.static import directory_index, was_modified_since
+from django.http import FileResponse, Http404, HttpResponse
+from utils.base_views.admin_views import AdminCreateFormCollectionView
+from file_management.forms import DocumentSubmissionFormset
 
 import os
 
@@ -26,43 +15,68 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-def serve_temp_media_view(request, file):
+def serve_temp_media_view(request, file, token=None):
     full_path = os.path.join(settings.INTERNAL_MEDIA_ROOT, "upload_temp", file)
     if os.path.exists(full_path) and request.user.is_authenticated:
         return FileResponse(open(full_path, "rb"))
     return Http404
 
-def serve_public_media_view(request, file):
+def serve_public_media_view(request, file, token=None):
     full_path = os.path.join(settings.MEDIA_ROOT, file)
     if os.path.exists(full_path):
         return FileResponse(open(full_path, "rb"))
     raise Http404
 
 
-def serve_internal_media_view(request, file):
-    owner = FileEncryptor(file).owner
+def serve_internal_media_view(request, file, token=None):
     access_classification = FileEncryptor(file).access_classification
-    user = request.user
+    token = FileEncryptor(file).token
+    owner_pk = FileEncryptor(file).owner_pk
     filepath = os.path.join(settings.INTERNAL_MEDIA_ROOT, file)
+
+    user = request.user
     has_internal_permission = (
         access_classification == AccessClassification.INTERNAL and user.is_authenticated
     )
     has_confidential_permission = (
         access_classification == AccessClassification.CONFIDENTIAL
         and user.is_authenticated
-        and (owner == user or user.is_sao)
+        and (owner_pk==request.user.pk or user.is_sao)
     )
     has_restricted_permission = (
         access_classification == AccessClassification.RESTRICTED
         and user.is_authenticated
-        and (owner == user)
+        and (owner_pk==request.user.pk)
     )
-    logger.info(has_internal_permission)
-    logger.info(has_confidential_permission)
-    logger.info(has_restricted_permission)
-    if has_internal_permission or has_confidential_permission or has_restricted_permission or user.is_superuser:
+
+    has_token = False
+    try:
+        document = DocumentSubmission.objects.filter(object_token__startswith=token).first()
+        has_token = token==document.get_access_token_for_user(request.user)
+    except Exception as e:
+        pass
+
+    if has_internal_permission or has_confidential_permission or has_restricted_permission or user.is_superuser or has_token:
         return FileResponse(open(filepath, "rb"))
+    logger.warning(f"{request.user} does not have access to view {file}")
     raise Http404
+
+class DocumentSubmissionFormsetView(AdminCreateFormCollectionView):
+    model = DocumentSubmission
+    collection_class = DocumentSubmissionFormset
+
+    def get_form_collection(self):
+        form_collection = super().get_form_collection()
+        user_special_filter = DocumentMetadata.objects.filter(for_scholarships__scholars__scholar=self.request.user) | DocumentMetadata.objects.filter(for_scholarships__applications__applicant=self.request.user)
+        metadata_filter = DocumentMetadata.objects.filter(require_for_tags__name__in=[
+            "Student Profile",
+            "Academic Profile",
+        ])
+        form_collection.get_field('0.document_form.metadata').queryset = metadata_filter | user_special_filter
+        return form_collection
+
+    def get_success_message(self, cleaned_data):
+        return f"{self.request.user} has successfully upload document/s"
 
 @xframe_options_exempt
 def pdf_view(request, *args, **kwargs):

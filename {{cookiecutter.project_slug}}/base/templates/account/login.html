@@ -8,7 +8,7 @@
 {% endblock %}
 {% block inner %}
   <div class="card p-0">
-    <div class="card-header p-3 bg-primary bg-opacity-50">
+    <div class="card-header p-3 bg-warning bg-opacity-50">
       <div class="d-flex justify-content-between px-2">
         <div class="card-title align-self-center mb-0">
           <h3>{% translate "Sign In" %}</h3>
@@ -24,7 +24,7 @@
       {% if socialaccount_providers %}
         <div class="socialaccount_ballot">
           <a class="btn btn-social-icon-text btn-google"
-             href="{% provider_login_url 'google' %}token">
+             href="{% provider_login_url 'google' %}">
             <i class="mdi mdi-google-plus"></i>UP Email
           </a>
         </div>
@@ -33,7 +33,7 @@
   </div>
   <div class="card-body pt-0">
     <div class="card-text">
-      <h6>For users with no UP email but registered for {{cookiecutter.project_name | upper}} account</h6>
+      <h6>For users with no UP email but registered for SIKAP account</h6>
       <form class="login" method="POST" action="{% url 'account_login' %}">
         {% csrf_token %}
         {{ form|crispy }}
@@ -53,14 +53,11 @@
   <small class="card-body pt-0">
     <div class="card-text text-muted">
       {% if ACCOUNT_ALLOW_REGISTRATION %}
-          <h6>For users with no UP email and no {{cookiecutter.project_name | upper}} account:</h6>
+          <h6>For students with no UP email and no SIKAP account:</h6>
           <div>
             Kindly <a href="{% url 'user_registration:create' %}">apply</a> for an account.
           </div>
           <i>Applicants are subject to verification. Please monitor your email for approval status.</i>
-          <p>
-          <i>Approved applicants may signup using ths <a href="{{ signup_url }}">link</a>.</i>
-          </p>
       {% endif %}
     </div>
   </small>

@@ -1,0 +1,23 @@
+{% load humanize %}
+{% if history_table %}
+<div class="row grid-margin">
+    <div class="card p-0">
+        <a class="text-decoration-none"
+           data-bs-toggle="collapse"
+           href="#details"
+           aria-expanded="true"
+           aria-controls="apps">
+            <div class="card-header p-3 bg-light bg-opacity-50">
+                <div class="d-flex justify-content-between px-2">
+                    <div class="card-title align-self-center mb-0">{{object}} History</div>
+                </div>
+            </div>
+        </a>
+        <div class="card-body multi-collapse" id="details">
+            <div class="table-responsive">
+               {{history_table | safe}} 
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}

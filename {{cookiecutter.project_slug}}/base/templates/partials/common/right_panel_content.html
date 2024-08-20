@@ -1,0 +1,51 @@
+{% if auditlog %}
+
+<p class="settings-heading"> HISTORY </p>
+<p>
+  <ul class="list-group list-group-flush">
+    {% for log in auditlog %}
+
+      <li class="list-group-item">
+        <p>
+          <span class='text-secondary'>{{ log.timestamp }}</span> <br>
+          <strong> {{ log.username }} </strong>
+          {% if log.changes %}
+            {% if log.action == 0 %}
+              created <strong> {{ log.object_name }} </strong>
+            {% elif log.action == 1 %}
+              made changes <br>
+              <p>
+              {% for key, val in log.changes.items %}
+                <span class="mx-2">
+                  <strong>{{ key }}:</strong>
+                  {{ val.0 }} <i class="mdi mdi-arrow-right"></i> {{ val.1}}
+                </span> <br>
+              {% endfor %}
+              </p>
+              {% if log.comment %}
+                <strong> with remarks: </strong> <br> {{ log.comment }}
+              {% else %}
+                <strong> with no remarks </strong>
+              {% endif %}
+            {% endif %}
+          {% else %}
+            {% if log.comment %}
+            commented <br>
+            {{ log.comment }}
+            {% endif %}
+          {% endif %}
+        </p>
+      </li>
+    {% endfor %}
+  </ul>
+</p>
+
+{% else %}
+<div class="mt-5 pt-5">
+
+</div>
+<p class="text-center mt-3 pt-3 font-weight-bold">
+  No changes to track.
+</p>
+
+{% endif %}

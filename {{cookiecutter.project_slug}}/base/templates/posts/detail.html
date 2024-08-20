@@ -1,0 +1,49 @@
+{% extends 'partials/public/base.html' %}
+{% load static i18n compress %}
+{% load humanize %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="page-header flex-wrap">
+      <div class="header-left">
+        <h1>{{object.title}}</h1>
+        <h6 class="text-muted">Published Date: {{object.published_date}}
+        {% if not object.is_published %}
+        <span class="badge badge-warning">Draft</span>
+        {% endif %}
+        <p>
+        {% for tag in object.tags.all %}
+        <span class="text-muted">{{tag.as_html|safe}}</span>
+        {% endfor %}
+        </p>
+        </h6>
+      </div>
+      {% block header_right %}
+      {% endblock %}
+    </div>
+  </div>
+
+  {% if object.thumbnail %}
+  <div class="d-flex justify-content-center mb-3">
+    <img src="{{object.thumbnail.url}}" height="300px" class="bg-white">
+  </div>
+  {% endif %}
+
+  {% if object.body %}
+  <div class="row grid-margin">
+    <div class="card h-100 border-0 bg-transparent">
+      <div class="card-body bg-white">
+        <div class="card-text">
+          {{ object.body | safe }}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+{% block extra_content %}
+{% endblock %}
+</div>
+
+{% endblock %}

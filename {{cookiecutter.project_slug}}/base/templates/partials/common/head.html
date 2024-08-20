@@ -2,12 +2,15 @@
 <meta charset="utf-8">
 <meta http-equiv="x-ua-compatible" content="ie=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="">
+<meta name="description" content="UP Diliman's Scholarship Information Kit and Portal">
 <meta name="author" content="Sam Solis">
 <link rel="icon" href="{% static 'logos/icon_transparent.png' %}">
 
 {% block head_css %}
 {% endblock %}
 
+<!-- Check static/vendors/formset/README.txt -->
+<script type="module" src="{% static 'formset/js/django-formset.js' %}"></script>
+{% comment %} <script type="module" src="{% static 'vendors/formset/js/django-formset.js' %}"></script> {% endcomment %}
 {% block head_js %}
 {% endblock %}

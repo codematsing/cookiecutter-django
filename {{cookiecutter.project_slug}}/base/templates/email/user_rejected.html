@@ -1,4 +1,9 @@
-<p>Hello <strong>{{ object.first_name }}</strong> - your registration request has been rejected.</p>
+{% extends 'partials/email/base.html' %}
+
+{% block content %}
+<p>Hello <strong>{{ object.first_name }}</strong> </p>
+
+<p>Your registration request has been rejected.</p>
 
 <ul style="list-style-type: none">
   <li>Name: <strong>{{ object.first_name }} {{ object.last_name }}</strong></li>
@@ -6,4 +11,5 @@
   <li>Email: <strong>{{ object.email }}</strong></li>
 </ul>
 
-<p>For any concerns or clarifications, please contact {{cookiecutter.project_name}} Adminsitrators </p>
+<p>For any concerns or clarifications, please contact Sikap Administrators </p>
+{% endblock  %}

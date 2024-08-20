@@ -1,0 +1,17 @@
+<label
+class="badge" 
+style="
+{% if field.background %}
+background-color:{{field.background}}; 
+{% else %}
+background-color: rgba(var(--bs-primary-rgb), var(--bs-bg-opacity));
+{% endif %}
+{% if field.foreground %}
+color:{{field.foreground}};
+{% else %}
+color: rgba(var(--bs-white-rgb), var(--bs-text-opacity));
+{% endif %}
+"
+>
+{{field}}
+</label>

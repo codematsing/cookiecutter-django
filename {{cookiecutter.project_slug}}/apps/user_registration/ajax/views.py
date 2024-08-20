@@ -5,14 +5,6 @@ from user_registration.models import Registration
 
 from utils.base_views.ajax.views import (
     BaseListAjaxView,
-    BaseCreateAjaxView,
-    BaseDetailAjaxView,
-    BaseUpdateAjaxView,
-    BaseDeleteAjaxView,
-    BaseActionAjaxView,
-    BaseAddObjectAjaxView,
-    BaseRemoveObjectAjaxView,
-    BaseActionObjectAjaxView,
 )
 
 # Create your views here.
@@ -21,6 +13,7 @@ class RegistrationListAjaxView(BaseListAjaxView):
     model = Registration
     column_defs = [
         {'name':'pk', 'visible':False},
+        {'name':'student_number'},
         {'name':'last_name'},
         {'name':'first_name'},
         {'name':'email'},
@@ -29,7 +22,7 @@ class RegistrationListAjaxView(BaseListAjaxView):
     ]
 
     def get_initial_queryset(self, request):
-        qs = self.model.objects.filter(is_approved=False)
+        qs = self.model.objects.filter(is_approved=None)
         qs = self.filter_qs_from_params(request, qs)
         qs = self.filter_qs_from_data(request, qs)
         return qs
@@ -46,15 +39,3 @@ class RegistrationListAjaxView(BaseListAjaxView):
             </a>
             """
         return
-
-class RegistrationCreateAjaxView(BaseCreateAjaxView):
-    model = Registration
-
-class RegistrationDetailAjaxView(BaseDetailAjaxView):
-    model = Registration
-
-class RegistrationUpdateAjaxView(BaseUpdateAjaxView):
-    model = Registration
-
-class RegistrationDeleteAjaxView(BaseDeleteAjaxView):
-    model = Registration

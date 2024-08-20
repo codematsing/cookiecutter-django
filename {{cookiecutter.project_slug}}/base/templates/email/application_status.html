@@ -1,0 +1,11 @@
+{% extends 'partials/email/base.html' %}
+{% load account socialaccount util_tags %}
+
+{% block content %}
+<p>Hello <strong>{{ application.applicant }},</strong></p>
+  
+<p>{{message}}</p>
+
+<p><a href="{{current_domain}}{{application.get_absolute_url}}">To review your application, click here</a></p>
+
+{% endblock  %}

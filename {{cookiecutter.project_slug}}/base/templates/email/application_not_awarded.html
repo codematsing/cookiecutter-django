@@ -1,0 +1,38 @@
+{% extends 'partials/email/base.html' %}
+{% load account socialaccount util_tags %}
+
+{% block content %}
+<p>Dear {{application.applicant.salutation}},</p>
+
+<p>
+    We regret to inform you that after careful consideration, 
+    you have not been awarded a slot for the Scholarship: 
+    <b>{{application.scholarship}}</b>
+</p>
+
+<p>
+    We received an overwhelming number of applications, and unfortunately, 
+    we are unable to accommodate all deserving candidates.
+</p>
+
+<p>
+    Please understand that the decision was not easy, 
+    and each application was thoroughly reviewed. 
+    Unfortunately, due to the limited number of available slots, 
+    we were unable to grant one to you at this time.
+</p>
+
+<p>
+    Nevertheless, we encourage you to continue your search for scholarship opportunities 
+    through our site {{current_domain}}. 
+    
+    There are numerous opportunities out there, 
+    and we wish you the best of luck in your pursuit of funding for your education.
+</p>
+
+<p>
+    Thank you for your interest in our scholarship program and for taking the time to apply. 
+    We appreciate your understanding and wish you success in all your future endeavors.
+</p>
+
+{% endblock  %}

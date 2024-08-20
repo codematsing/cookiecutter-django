@@ -1,1 +1,7 @@
 {% extends 'pages/admin/form.html' %}
+
+{% block subcontent %}
+{% if object.history%}
+    {% include 'history_management/card.html' %}
+{% endif %}
+{% endblock %}

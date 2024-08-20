@@ -1,0 +1,121 @@
+{% extends 'posts/detail.html' %}
+{% load static i18n compress %}
+{% load humanize %}
+{% block header_right %}
+  <div class="header-right flex-wrap mt-md-2 mt-lg-0 bg-primary text-white p-3">
+    <div>
+      <strong>Deadline:</strong>
+      {{ object.qualification_set.application_deadline }}
+    </div>
+    <div>
+      <strong>Slots:</strong>
+      {{ object.qualification_set.no_vacant_slots }}
+    </div>
+  </div>
+{% endblock %}
+{% block extra_content %}
+  <div class="row grid-margin">
+    <div class="col-sm-12 col-md-6 grid-margin">
+      <div class="card h-100">
+        <div class="card-header p-3 bg-warning bg-opacity-50">
+          <div class="card-title align-self-center mb-0">Qualifications</div>
+        </div>
+        <div class="card-body">
+          <div class="card-text">
+            <ul class="list arrow">
+              {% for qualification in object.qualification_set.primary_qualifications %}
+                <li>{{ qualification.criterion | safe }}</li>
+              {% endfor %}
+            </ul>
+            {% if object.qualification_set.secondary_qualifications %}
+              <small><i>Additional Qualification Requirements:</i></small>
+              <ul class="list arrow">
+                {% for qualification in object.qualification_set.secondary_qualifications %}
+                  <li>{{ qualification.criterion | safe }}</li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-6 grid-margin">
+      <div class="card h-100">
+        <div class="card-header p-3 bg-warning bg-opacity-50">
+          <div class="card-title align-self-center mb-0">Benefits</div>
+        </div>
+        <div class="card-body">
+          <div class="card-text">
+            <ul class="list arrow">
+              {% for benefits in object.qualification_set.scholarship.benefits.all %}<li>{{ benefits }}</li>{% endfor %}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row grid-margin">
+    <div class="d-flex p-0 justify-content-center">
+      {% if not request.user.is_authenticated %}
+        <a class="btn btn-lg btn-primary" href="{% url 'account_login' %}">Login to apply</a>
+      {% elif user_application %}
+        <div class="alert alert-success">
+          <h4>Congratulations on your application!</h4>
+          <p>
+            You can monitor your application <a href="{{ user_application.0.get_absolute_url }}">here</a>
+          </p>
+        </div>
+      {% elif user_can_apply %}
+        <!-- Button trigger modal -->
+        <button type="button"
+                class="btn btn-lg btn-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#apply">Apply Now!</button>
+        <!-- Modal -->
+        <div class="modal fade"
+             id="apply"
+             tabindex="-1"
+             aria-labelledby="apply-modal"
+             aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="apply-modal">Integrity Statement</h5>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                {% include 'partials/statements/integrity_statement.html' %}
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <a href="{% url 'posts:apply_redirect' pk=post.id %}">
+                  <button class="btn btn-lg btn-primary">Apply Now!</button>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% else %}
+        <div class="alert alert-warning">
+          <h4>Sorry! it seems that you cannot apply for this scholarship.</h4>
+          <p>
+            <h5>Reasons may be:</h5>
+            <ul>
+              <li>
+                You have not completed your portfolio. You may complete it <a href="{% url 'portfolios:home' %}">here</a>
+              </li>
+              <li>Your portfolio does not meet qualifications for this scholarship</li>
+              <li>Scholarship application is already closed</li>
+            </ul>
+          </p>
+          <p class="small text-muted">For appeals or concerns, please contact OSG</p>
+        </div>
+      {% endif %}
+      <div></div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,45 @@
+<div class="row grid-margin">
+	<div class="card p-0">
+		<a class="text-decoration-none"
+		   data-bs-toggle="collapse"
+		   href="#history"
+		   aria-expanded="true"
+		   aria-controls="apps">
+			<div class="card-header p-3 bg-light bg-opacity-50">
+				<div class="d-flex justify-content-between px-2">
+					<div class="card-title align-self-center mb-0">{{object}} History</div>
+				</div>
+			</div>
+		</a>
+		<div class="card-body multi-collapse" id="history">
+			<div class="table-responsive">
+				<table id="history-table" width="100%" class="table table-bordered dt-responsive nowrap table-hover"></table>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<script language="javascript">
+document.addEventListener(
+	'DOMContentLoaded', 
+	function () {
+	AjaxDatatableViewUtils.initialize_table(
+	  $("#history-table"),
+	  "{% url 'history:list' %}",
+	  {
+		// extra_options (example)
+		processing: false,
+		autoWidth: false,
+		full_row_select: false,
+		scrollX: false,
+	  },
+	  {
+		fields: "{{object.history_field_mapping|escapejs}}",
+		token: "{{object.pk}}-{{object.last_object_token_chars}}{{request.user.last_object_token_chars}}",
+	  }
+	);
+  }, 
+	false
+);
+</script>

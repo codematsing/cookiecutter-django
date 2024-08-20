@@ -1,11 +1,15 @@
-{% extends 'pages/public/create.html' %}
+{% extends "account/base.html" %}
 {% load formsetify %}
-
-{% block content %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% block head_title %}
+  {% translate "Apply for Account" %}
+{% endblock %}
+{% block inner %}
 <div class="card p-0">
   <div class="card-header p-3 bg-warning bg-opacity-50">
     <div class="d-flex justify-content-between px-2">
-      <div class="card-title align-self-center mb-0">{{page_title}}</div>
+      <div class="card-title align-self-center mb-0"> Apply for Account </div>
       {% if show_action_buttons %}
       <div class="text-muted">
         <a href="{{object.get_update_url}}" class="btn btn-sm btn-warning" title="Update">
@@ -33,7 +37,7 @@
               Cancel
             </a>
 
-            <button class="primaryAction btn btn-primary" df-click="disable -> submit -> proceed !~ scrollToError">Save</button>
+            <button class="primaryAction btn btn-primary" df-click="disable -> submit -> proceed !~ scrollToError">Submit</button>
           </div>
           {% endblock %}
         {% endblock %}

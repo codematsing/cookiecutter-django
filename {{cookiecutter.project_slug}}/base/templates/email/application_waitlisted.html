@@ -1,0 +1,46 @@
+{% extends 'partials/email/base.html' %}
+{% load account socialaccount util_tags %}
+
+{% block content %}
+<p>Dear {{application.applicant.salutation}},</p>
+
+<p>
+    We regret to inform you that at this time, 
+    you have not been awarded a slot for the Scholarship:
+    <b>{{application.scholarship}}</b>.
+    
+    However, we are pleased to inform you that your application
+    has been placed on our waitlist.
+</p>
+
+<p>
+    Due to the exceptional number of highly qualified applicants, 
+    we are currently unable to offer you a definitive decision. 
+    However, should a slot become available in the future, 
+    we will revisit your application and notify you promptly.
+</p>
+
+<p>
+    Being placed on the waitlist indicates our recognition of your potential 
+    and the value we see in your application. 
+
+    While we cannot guarantee anything, 
+    we encourage you to remain hopeful and to explore other 
+    scholarship opportunities posted on our site {{current_domain}}.
+</p>
+
+<p>
+    We appreciate your patience and understanding as we navigate this process. 
+</p>
+
+<p>
+    Should you have any questions or require further assistance, 
+    please do not hesitate to contact us.
+</p>
+
+<p>
+    Thank you for your interest in our scholarship program, 
+    and we wish you the best of luck in your academic pursuits.
+</p>
+
+{% endblock  %}

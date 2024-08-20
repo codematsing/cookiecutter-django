@@ -1,0 +1,22 @@
+{% extends 'partials/admin/base.html' %}
+
+{% block content %}
+
+{% with request.user.notifications.unread.count as notifs %}
+    <div class="row grid-margin">
+    {% if notifs %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        You have {{request.user.notifications.unread.count}} new notifications.
+        View them <a href="{% url 'notifications:all' %}">here</a>
+        </div>
+    {% else %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+        You have no new notifications
+        </div>
+    {% endif %}
+
+    </div>
+{% endwith %}
+
+{% include 'portfolio/partials/student_header_w_image.html' with student_profile=request.user.student_profile %}
+{% endblock %}

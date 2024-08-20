@@ -3,3 +3,9 @@
 {% block content %}
 {{object.as_card | safe}}
 {% endblock %}
+
+{% block subcontent %}
+{% if object.history%}
+    {% include 'history_management/card.html' %}
+{% endif %}
+{% endblock %}

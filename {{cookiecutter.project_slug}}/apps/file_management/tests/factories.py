@@ -1,21 +1,21 @@
-from factory.django import DjangoModelFactory, FileField
-from factory.fuzzy import FuzzyChoice
+from factory.django import DjangoModelFactory
 from file_management.models import DocumentMetadata, DocumentSubmission
 from factory import (
-    SubFactory,
     Faker,
-    PostGenerationMethodCall,
-    Sequence,
-    RelatedFactory,
     Iterator,
     post_generation,
-    LazyAttribute,
+    lazy_attribute,
+    SubFactory
 )
+
 from django.contrib.contenttypes.models import ContentType
 from django.core.files.base import ContentFile
-from users.tests.factories import UserFactory
+from django.contrib.auth import get_user_model
+from sikap.users.tests.factories import UserFactory
 import re
 import random
+from logging import getLogger
+logger = getLogger(__name__)
 
 random.seed(0)
 
@@ -25,9 +25,17 @@ def generate_email(record):
 
 class DocumentMetadataFactory(DjangoModelFactory):
     name = Faker("sentence")
-    content_type = LazyAttribute(lambda record: ContentType.objects.get_for_model(record.content_object))
-    object_id = LazyAttribute(lambda record: record.content_object.pk)
-    updated_by = UserFactory()
+    content_object = SubFactory(UserFactory)
+
+    @lazy_attribute
+    def content_type(self):
+        logger.info(self.content_object)
+        return ContentType.objects.get_for_model(self.content_object)
+
+    @lazy_attribute
+    def object_id(self):
+        logger.info(self.content_object)
+        return self.content_object.pk
 
     class Meta:
         model = DocumentMetadata
@@ -68,9 +76,10 @@ def get_pdf_data(content):
     )
     return pdf_content
 
-
 class DocumentSubmissionFactory(DjangoModelFactory):
     metadata = Iterator(DocumentMetadata.objects.all())
+    content_object = SubFactory(UserFactory)
+    owner = SubFactory(UserFactory)
 
     @post_generation
     def create_file(self, create, extracted, **kwargs):
@@ -78,7 +87,7 @@ class DocumentSubmissionFactory(DjangoModelFactory):
             return
         # create a ContentFile with a custom name based on my_attribute
         filename = f"doc{self.metadata.documentsubmission_set.count()}.pdf"
-        file_content = get_pdf_data(f"{self.content_object} {self.metadata} of {self.updated_by}")
+        file_content = get_pdf_data(f"{self.content_object} {self.metadata}")
         content_file = ContentFile(file_content, name=filename)
         # set the file field to the ContentFile
         self.attachment.save(filename, content_file, save=True)

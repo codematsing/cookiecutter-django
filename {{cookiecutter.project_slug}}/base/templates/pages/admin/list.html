@@ -1,31 +1,35 @@
-{% extends 'partials/admin/base.html' %} 
-
+{% extends 'partials/admin/base.html' %}
 {% block content %}
-
-<div class="card p-0">
-  <div class="card-header p-3 bg-warning bg-opacity-50">
-    <div class="d-flex justify-content-between px-2">
-      <div class="card-title align-self-center mb-0">
-        {{page_title}}
+  <div class="row grid-margin">
+    <div class="card p-0">
+      <a class="text-decoration-none" data-bs-toggle="collapse" href="#header" aria-expanded="true" aria-controls="collapse">
+        <div class="card-header p-3 bg-warning bg-opacity-50">
+          <div class="d-flex justify-content-between px-2">
+            <div class="card-title align-self-center mb-0">{{ page_title }}</div>
+            <div class="text-muted"></div>
+            {% if view.model.get_list_instruction_element %}
+              <div>
+                <a class="text-decoration-none" data-bs-toggle="collapse" href="#header-faqs" aria-expanded="false" aria-controls="collapse" title="FAQs"><i class="mdi mdi-24px mdi-help-circle-outline text-dark"></i></a>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </a>
+      <div class="card-body collapse" id="header-faqs">
+        <div class="alert alert-warning m-0">{{ view.model.get_list_instruction_element }}</div>
       </div>
-      <div class="text-muted">
+      <div class="card-body">
+        <div class="card-text">
+          <div class="table-responsive">
+            <table id="table" width="100%" class="table table-bordered table-striped dt-responsive nowrap"></table>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-  <div class="card-body">
-    <div class="card-text">
-      <div class="table-responsive">
-        <table id="table" width="100%" class="table table-bordered dt-responsive nowrap"></table>
-      </div>
-      </div>
-  </div>
-</div>
-
-
 {% endblock %}
-
 {% block extra_js %}
-<script language="javascript">
+  <script language="javascript">
   $(document).ready(function () {
     AjaxDatatableViewUtils.initialize_table(
       $("#table"),
@@ -36,6 +40,7 @@
         autoWidth: false,
         full_row_select: false,
         scrollX: false,
+        {% if request.user.is_sao %}
         dom: 'TBlfrtip',
         buttons: [
             {
@@ -48,6 +53,7 @@
               className:'bg-warning mb-2'
             }
           ],
+        {% endif %}
       },
       {
         {% if request.GET.urlencode %}
@@ -62,5 +68,5 @@
       }
     );
   });
-</script>
+  </script>
 {% endblock %}

@@ -1,0 +1,165 @@
+{% extends 'partials/admin/base.html' %}
+{% block content %}
+  <div class="row">
+    <div class="col-sm-12 col-md-3 grid-margin">
+      <div class="card card-stretch bg-primary text-white h-100">
+        <div class="card-body d-flex flex-wrap justify-content-between">
+          <div>
+            <h4 class="font-weight-semibold mb-1 ">
+              <i class="mdi mdi-account-box text-white"></i>
+              Donors
+            </h4>
+          </div>
+          <h3 class="font-weight-bold">{{ no_donors }}</h3>
+        </div>
+        <div class="card-body bg-white text-primary">
+          <div class="d-flex">
+            <h4 class="font-weight-bold mb-0">{{ no_donors_assigned }}</h4>
+            <div class="ps-4">
+              <h6 class="text-muted">Assigned to me</h6>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-3 grid-margin">
+      <div class="card card-stretch bg-warning text-white h-100">
+        <div class="card-body d-flex flex-wrap justify-content-between">
+          <div>
+            <h4 class="font-weight-semibold mb-1 ">
+              <i class="mdi mdi-star text-white"></i>
+              Scholarships
+            </h4>
+          </div>
+          <h3 class="font-weight-bold">{{ no_scholarships }}</h3>
+        </div>
+        <div class="card-body bg-white text-warning">
+          <div class="d-flex">
+            <h4 class="font-weight-bold mb-0">{{ no_scholarships_assigned }}</h4>
+            <div class="ps-4">
+              <h6 class="text-muted">Assigned to me</h6>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-3 grid-margin">
+      <div class="card bg-success text-white h-100">
+        <div class="card-body d-flex flex-wrap justify-content-between">
+          <div>
+            <h4 class="font-weight-semibold mb-1 ">
+              <i class="mdi mdi-file-send text-white"></i>
+              Applications
+            </h4>
+          </div>
+          <h3 class="font-weight-bold">
+            {{ no_applications }}
+          </h4>
+        </div>
+        <div class="card-body bg-white text-success">
+          <div class="d-flex">
+            <h4 class="font-weight-bold mb-0">{{ no_applications_assigned }}</h4>
+            <div class="ps-4">
+              <h6 class="text-muted">Assigned to me</h6>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-3 grid-margin">
+      <div class="card bg-info text-white h-100">
+        <div class="card-body d-flex flex-wrap justify-content-between">
+          <div>
+            <h4 class="font-weight-semibold mb-1 ">
+              <i class="mdi mdi-school text-white"></i>
+              Scholars
+            </h4>
+          </div>
+          <h3 class="font-weight-bold">{{ no_scholars }}</h3>
+        </div>
+        <div class="card-body bg-white text-info">
+          <div class="d-flex">
+            <h4 class="font-weight-bold mb-0">{{ no_scholars_assigned }}</h4>
+            <div class="ps-4">
+              <h6 class="text-muted">Assigned to me</h6>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card p-0">
+    <div class="card-header p-3 bg-warning bg-opacity-50">
+      <div class="d-flex justify-content-between px-2">
+        <div class="card-title align-self-center mb-0">My Scholarships</div>
+        <div class="text-white"></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="card-text">
+        <div class="table-responsive">
+          <table id="scholarship-table"
+                 width="100%"
+                 class="table table-bordered dt-responsive nowrap">
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card p-0 mt-4">
+    <div class="card-header p-3 bg-warning bg-opacity-50">
+      <div class="d-flex justify-content-between px-2">
+        <div class="card-title align-self-center mb-0">My Donors</div>
+        <div class="text-white"></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="card-text">
+        <div class="table-responsive">
+          <table id="donor-table"
+                 width="100%"
+                 class="table table-bordered dt-responsive nowrap">
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+{% block extra_js %}
+  <script language="javascript">
+	$(document).ready(function () {
+		AjaxDatatableViewUtils.initialize_table(
+			$("#scholarship-table"),
+			"{% url 'scholarships:ajax:list' %}", {
+				// extra_options (example)
+				processing: false,
+				autoWidth: false,
+				full_row_select: false,
+				scrollX: false,
+			}, {
+				query: "{{scholarship_query|escapejs}}",
+				hidden: '["assigned_officers"]',
+			}
+		);
+	});
+
+  </script>
+  <script language="javascript">
+	$(document).ready(function () {
+		AjaxDatatableViewUtils.initialize_table(
+			$("#donor-table"),
+			"{% url 'donors:ajax:list' %}", {
+				// extra_options (example)
+				processing: false,
+				autoWidth: false,
+				full_row_select: false,
+				scrollX: false,
+			}, {
+				query: "{{donor_query|escapejs}}",
+				hidden: "{{donor_hidden|escapejs}}"
+			}
+		);
+	});
+
+  </script>
+{% endblock %}

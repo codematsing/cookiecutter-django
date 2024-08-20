@@ -1,6 +1,7 @@
 from django.template.loader import render_to_string
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.contrib.contenttypes.fields import GenericRelation
 import re
 import logging
 logger = logging.getLogger(__name__)
@@ -9,6 +10,11 @@ class DetailWrapperMixin:
     fields = "__all__"
     card_header = "Details"
     card_subheader = ""
+    # html template field
+    # {
+        # name : html template (str),
+    # donor_type: html template (badge.html)
+    # }
     def get_context_data(self, *arg, **kwargs):
         context = super().get_context_data(*arg, **kwargs)
         context["fields"] = self.get_rendered_fields_items()
@@ -18,7 +24,7 @@ class DetailWrapperMixin:
 
     def get_fields(self):
         if self.fields=='__all__':
-            return [field.name for field in self.model._meta.fields]
+            return [field.name for field in self.model._meta.fields if field.name not in  ['deleted_at', 'modified_at', 'object_token']]
         return self.fields
 
     def get_exclude(self):
@@ -29,13 +35,11 @@ class DetailWrapperMixin:
     def get_rendered_value(self, obj, field):
         field_obj = obj._meta.get_field(field)
         _field_value = getattr(obj, field, "")
-        if hasattr(obj, f"render_{field}"):
-            return getattr(obj, f"render_{field}")()
         if isinstance(field_obj, models.ManyToManyField):
             return render_to_string('detail_wrapper/manytomany.html', {'field':_field_value})
         elif isinstance(field_obj, models.ForeignKey):
-            if hasattr(_field_value, "background") or hasattr(_field_value, "foreground"):
-                return render_to_string('detail_wrapper/badge.html', {'field':_field_value})
+            if hasattr(_field_value, "as_badge"):
+                return _field_value.as_badge
             elif type(_field_value)==get_user_model():
                 return _field_value
             return render_to_string('detail_wrapper/foreignkey.html', {'field':_field_value})
@@ -48,8 +52,8 @@ class DetailWrapperMixin:
         elif isinstance(field_obj, models.ImageField):
             return render_to_string('detail_wrapper/image.html', {'field':_field_value})
         elif isinstance(field_obj, models.FileField):
-            if re.fullmatch(r".*\.pdf", str(_field_value)):
-                return render_to_string('detail_wrapper/pdf.html', {'object': obj, 'field':_field_value})
+            if re.fullmatch(r".*\.pdf", _field_value):
+                return render_to_string('detail_wrapper/pdf.html', {'field':_field_value})
             else:
                 return render_to_string('detail_wrapper/file.html', {'field':_field_value})
         elif isinstance(field_obj, models.URLField):
@@ -61,12 +65,21 @@ class DetailWrapperMixin:
         else:
             return _field_value
 
+    def get_field_verbose_name(self, field_obj):
+        default = field_obj.name.replace("_", " ").capitalize()
+        return getattr(field_obj, 'verbose_name', default)
+            
+
     def get_rendered_field_item(self, obj, field):
-        if field in [field.name for field in obj._meta.fields]:
+        try:
             field_obj = obj._meta.get_field(field)
-            return {field_obj.verbose_name:self.get_rendered_value(obj, field)}
-        else:
-            return {field: getattr(obj, field, "NA")}
+            if isinstance(field_obj, GenericRelation) or isinstance(field_obj, models.ManyToManyField):
+                return {self.get_field_verbose_name(field_obj):render_to_string('detail_wrapper/manytomany.html', {'field':getattr(obj, field)})}
+            elif field in [field.name for field in obj._meta.fields]:
+                return {self.get_field_verbose_name(field_obj):self.get_rendered_value(obj, field)}
+        except Exception as e:
+            logger.warning(e)
+            return {field.replace("_", " "): getattr(obj, field, None)}
 
     def get_rendered_fields_items(self):
         obj = self.get_object()
@@ -83,21 +96,12 @@ class DetailWrapperMixin:
         return list(filter(lambda field: field not in exclude, fields))
 
 class DetailCard(DetailWrapperMixin):
-    def __init__(
-            self, 
-            object,
-            fields="__all__",
-            exclude=[],
-            card_header="Details", 
-            card_subheader="", 
-            template="detail_wrapper/detail_card.html"
-        ):
+    def __init__(self, object, fields, exclude=[], card_header="Details", card_subheader=""):
         self.object = object
         self.fields = fields
         self.exclude = exclude
         self.card_header = card_header
         self.card_subheader = card_subheader
-        self.template = template
         self.model = self.object._meta.model
 
     def get_object(self):
@@ -105,9 +109,4 @@ class DetailCard(DetailWrapperMixin):
 
     @property
     def card(self):
-        return render_to_string(self.template, context={'fields':self.get_rendered_fields_items(), 'card_header':self.card_header, 'card_subheader':self.card_subheader})
-
-
-    @property
-    def template_html(self):
-        return render_to_string(self.template, context={'object': self.object, 'fields':self.get_rendered_fields_items()})
+        return render_to_string('detail_wrapper/detail.html', context={'fields':self.get_rendered_fields_items(), 'card_header':self.card_header, 'card_subheader':self.card_subheader})

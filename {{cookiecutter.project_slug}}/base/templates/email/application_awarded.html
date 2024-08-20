@@ -1,0 +1,46 @@
+{% extends 'partials/email/base.html' %}
+{% load account socialaccount util_tags %}
+
+{% block content %}
+<p>Dear {{application.applicant.salutation}},</p>
+
+<p><b>Congratulations!</b></p>
+
+<p>
+    We are pleased to inform you that according to the decision of 
+    the University Committee on Student Affairs (UCSA) 
+    that you have been awarded the Scholarship: 
+    <b>{{application.scholarship}}</b> for the upcoming semester.
+
+    This scholarship is renewable provided that you have met 
+    the terms and conditions outlined in the governing scholarship.
+</p>
+
+<p>
+    This grant provides the following benefits:
+    <ul>
+        {% for benefit in application.scholarship.benefits.all %}
+        <li>{{benefit}}</li>
+        {% endfor %}
+    </ul>
+</p>
+  
+<p>
+    To accept the scholarship offer and 
+    may we request that you visit your
+    <a href="{{current_domain}}{{application.get_absolute_url}}">
+        application
+    </a>
+    and select on <b>"Accept"</b>.
+
+    Alternatively, should you choose not to accept the scholarship, you may decline it. 
+    It's important to note that this decision is final and cannot be reconsidered or appealed.
+</p>
+
+<p>
+    Please await for our email for further instructions, 
+    but please do not hesitate to contact us regarding 
+    the status of your scholarship.
+</p>
+
+{% endblock  %}

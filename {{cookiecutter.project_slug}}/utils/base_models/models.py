@@ -1,148 +1,176 @@
-from django.db import models
 from django.urls import reverse
 from auditlog.models import AuditlogHistoryField
-from django.template.loader import render_to_string
-from django.contrib.auth import get_user_model
 from utils.lambdas import get_current_domain
-from datetime import datetime
 from utils.detail_wrapper.mixins import DetailCard
-from django.contrib.contenttypes.fields import GenericRelation
-import pandas as pd
+from softdelete.models import SoftDeleteObject, SoftDeleteManager
+from django.template.loader import render_to_string
+from django.contrib.contenttypes.models import ContentType
+from django.utils import timezone
+from django.db import models
+import logging
+import uuid
+import re
+logger = logging.getLogger(__name__)
 
 # Create your models here.
-class HistoryMixin:
-    def get_history_df(self, columns = ["updated_by", "status", "comments"]):
-        history_df = pd.DataFrame()
-        for entry in self.history.all():
-            record = entry.changes_dict
-            _items = {'updated_at':entry.timestamp}
-            for key in ['updated_by', 'status', 'comments']:
-                record.get(key, [None, None])
-            _items.update({key:record.get(key, [None,None])[1] for key in columns})
-            history_df =history_df.append(_items, ignore_index=True)
-        history_df['updated_at'] = history_df['updated_at'].dt.tz_convert("Asia/Manila").dt.strftime("%Y-%m-%d %I:%M %p")
-        history_df.dropna(thresh=2, inplace=True)
-        history_df.fillna("None", inplace=True)
-        history_df.columns = pd.Series(history_df.columns).apply(lambda col: f"<b>{col.replace('_', ' ').capitalize()}</b>")
-        return history_df
+class BaseModelManager(SoftDeleteManager):
+	pass
 
-    @property
-    def history_as_table(self):
-        history_table = self.get_history_df().to_html(index=False, render_links=True, classes="table table-striped", justify="left", escape=False)
-        return render_to_string('partials/common/history.html', {'object':self, 'history_table':history_table})
+class AbstractBaseModel(SoftDeleteObject):
+	# please note to always inherit BaseModelManager
+	objects = BaseModelManager()
 
-class BaseModelMixin:
-    def field_dict(self):
-        return {field.name:getattr(self, field.name) for field in self._meta.fields}
+	@classmethod
+	def get_contentype_for_model(cls):
+		return ContentType.objects.get_for_model(cls)
 
-    @property
-    def as_anchor_tag(self):
-        return f"<a href='{self.get_absolute_url()}'>{self}</a>"
+	@property
+	def db_identifier(self):
+		return f"{self.get_contentype_for_model().pk}-{self.pk}"
 
-    @property
-    def as_card(self):
-        return DetailCard(self).card
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
+		if not isinstance(self.__class__.objects, SoftDeleteManager):
+			raise ValueError(f"{self.__class__}.objects must inherit utils.base_models.models.BaseModelManager")
 
-    @classmethod
-    def get_list_url(cls):
-        return reverse(
-            f"{cls._meta.app_label}:list",
-            )
+	def field_dict(self):
+		return {field.name:getattr(self, field.name) for field in self._meta.fields}
 
-    @classmethod
-    def get_ajax_list_url(cls):
-        return reverse(
-            f"{cls._meta.app_label}:ajax:list",
-            )
 
-    @classmethod
-    def get_create_url(cls):
-        return reverse(
-            f"{cls._meta.app_label}:create",
-            )
+	@property
+	def as_anchor_tag(self):
+		return f"<a href='{self.get_absolute_url()}'>{self}</a>"
 
-    def get_absolute_url(self):
-        return reverse(
-            f"{self._meta.app_label}:detail",
-            kwargs={"pk": self.pk}
-        )
+	def as_card(self, fields='__all__', **kwargs):
+		return DetailCard(self, fields=fields, **kwargs).card
 
-    def get_update_url(self):
-        return reverse(
-            f"{self._meta.app_label}:update",
-            kwargs={"pk": self.pk}
-            )
+	@property
+	def as_href(self):
+		return f"<a href='{self.get_full_absolute_url()}'>{self}<a/>"
 
-    def get_delete_url(self):
-        return reverse(
-            f"{self._meta.app_label}:delete",
-            kwargs={"pk": self.pk}
-            )
+	@classmethod
+	def get_list_url(cls):
+		return reverse(
+			f"{cls._meta.app_label}:list",
+			)
 
-    @classmethod
-    def get_list_url(cls):
-        return f"{get_current_domain()}{cls.get_list_url()}"
+	@classmethod
+	def get_ajax_list_url(cls):
+		return reverse(
+			f"{cls._meta.app_label}:ajax:list",
+			)
 
-    @classmethod
-    def get_full_create_url(cls):
-        return f"{get_current_domain()}{cls.get_create_url()}"
+	@classmethod
+	def get_create_url(cls):
+		return reverse(
+			f"{cls._meta.app_label}:create",
+			)
 
-    def get_full_absolute_url(self):
-        return f"{get_current_domain()}{self.get_absolute_url()}"
+	def get_absolute_url(self):
+		return reverse(
+			f"{self._meta.app_label}:detail",
+			kwargs={"pk": self.pk}
+		)
 
-    def get_full_update_url(self):
-        return f"{get_current_domain()}{self.get_update_url()}"
+	def get_update_url(self):
+		return reverse(
+			f"{self._meta.app_label}:update",
+			kwargs={"pk": self.pk}
+			)
 
-    def get_full_delete_url(self):
-        return f"{get_current_domain()}{self.get_delete_url()}"
+	def get_delete_url(self):
+		return reverse(
+			f"{self._meta.app_label}:delete",
+			kwargs={"pk": self.pk}
+			)
 
-    def __str__(self):
-        return self.name
+	@classmethod
+	def get_full_list_url(cls):
+		return f"{get_current_domain()}{cls.get_list_url()}"
 
-class AbstractAuditedModel(BaseModelMixin, HistoryMixin, models.Model):
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    updated_by = models.ForeignKey(get_user_model(), null=True, blank=True, on_delete=models.SET_NULL, related_name='%(app_label)s_%(class)s_verified_by')
-    history = AuditlogHistoryField()
-    comments = models.TextField(null=True, blank=True)
+	@classmethod
+	def get_full_create_url(cls):
+		return f"{get_current_domain()}{cls.get_create_url()}"
 
-    def render_status(self):
-        if self.status:
-            return self.status
-        else:
-            return 'Unknown Status'
-    
-    class Meta:
-        abstract=True
+	def get_full_absolute_url(self):
+		return f"{get_current_domain()}{self.get_absolute_url()}"
 
-class ProtectedModelManager(models.Manager):
-    def get_queryset(self) -> models.QuerySet:
-        return super().get_queryset().filter(deleted_at__isnull=True)
+	def get_full_update_url(self):
+		return f"{get_current_domain()}{self.get_update_url()}"
 
-    def get_unfiltered_queryset(self) -> models.QuerySet:
-        return super().get_queryset()
+	def get_full_delete_url(self):
+		return f"{get_current_domain()}{self.get_delete_url()}"
 
-    def soft_deleted_objects(self) -> models.QuerySet:
-        return super().get_queryset().filter(deleted_at__isnull=False)
+	def __str__(self):
+		if hasattr(self, 'name'):
+			return self.name
+		return f"{self._meta.verbose_name} {self.pk}"
 
-class AbstractProtectedModel(models.Model):
-    """Allows another level to protect object instances by
-    setting deletion to toggle `deleted_at` value.
+	class Meta:
+		abstract = True
 
-    Note: If you are planning to inherit AbstractedProtectedModel,
-    and override Model Manager as well, make sure your model manager 
-    inherits ProtectedModelManager.
-    """
-    objects = ProtectedModelManager()
+class AbstractAuditedModel(AbstractBaseModel):
+	history = AuditlogHistoryField()
+	modified_at = models.DateTimeField(verbose_name="Log Entry Added", editable=False, auto_now=False, auto_now_add=False, null=True, blank=True)
+	object_token = models.UUIDField(null=False, blank=False, editable=False, default=uuid.uuid4)
+	_additional_data = None
 
-    deleted_at = models.DateTimeField(null=True, blank=True, default=None)
+	@property
+	def first_object_token_chars(self):
+		return re.findall(r'\w+', str(self.object_token))[0]
 
-    def delete(self):
-        self.deleted_at=datetime.now()
-        self.save()
+	@property
+	def last_object_token_chars(self):
+		return re.findall(r'\w+', str(self.object_token))[-1]
 
-    def force_delete(self):
-        return super().delete()
+	def get_access_token_for_user(self, user):
+		return f"{self.last_object_token_chars}{user.last_object_token_chars}"
 
-    class Meta:
-        abstract=True
+	def save(self, *args, **kwargs):
+		if self._additional_data:
+			self.modified_at = timezone.now()
+		return super().save(*args, **kwargs)
+
+	def get_additional_data(self):
+		return self._additional_data
+
+	@property
+	def updated_by(self):
+		try:
+			return getattr(self.history.latest(), 'actor', None)
+		except Exception as e:
+			return None
+
+	@property
+	def updated_at(self):
+		return self.history.latest().timestamp
+
+	@property
+	def created_at(self):
+		return self.history.earliest().timestamp
+
+	@property
+	def latest_additional_data(self):
+		return getattr(self.history.latest(), 'additional_data', None)
+
+	@classmethod
+	def get_history_column_defs(self):
+		return [
+			{'name':'pk', 'visible':False},
+			{'name':'timestamp', 'searchable':False},
+			{'name':'actor', 'title':'Updated by', 'foreign_field':'actor__username'},
+			{'name':'action', 'title':'Action done'},
+			{'name':'changes', 'title':'Changes', 'searchable':False},
+			{'name':'additional_data', 'title':'Remarks'},
+		]
+
+	@classmethod
+	def get_history_customize_row(self, row, obj):
+		row["changes"] = "<br/>".join(str(field) for field in obj.changes_display_dict.keys())
+		row["additional_data"] = render_to_string(
+			'history_management/additional_data.html', 
+			context={'additional_data':obj.additional_data}
+			)
+
+	class Meta:
+		abstract=True

@@ -2,7 +2,42 @@
 {% load formsetify %}
 
 {% block content %}
-  <div class="row grid-margin">
-    {% include 'partials/common/form.html' %}    
+<div class="card">
+  <div class="card-body">
+    <div class="row">
+      <div class="col-12 col-md-10 offset-md-1">
+        <div class="card-title">
+          {{page_title}}
+        </div>
+
+        <django-formset endpoint="{{ request.path }}" csrf-token="{{ csrf_token }}">
+          {% if form_collection %}
+          {{ form_collection }}
+          {% elif form %}
+          {% render_form form "bootstrap" field_classes="pb-3 mb-2" %}
+          {% endif %}
+          {% block form_collection_buttons %}
+          <div class="d-flex align-items-center justify-content-md-end">
+            <a class="btn btn-secondary me-3" href="{{request.META.HTTP_REFERER}}">
+              Cancel
+            </a>
+
+            <button class="primaryAction btn btn-primary"
+              click="disable -> submit -> proceed !~ scrollToError">
+              Save
+            </button>
+          </div>
+          {% endblock %}
+        </django-formset>
+      </div>
+    </div>
   </div>
+</div>
+{% if form_collection %}
+{{form_collection.media}}
+{% elif form  %}
+{{form.media}}
+{% endif %}
 {% endblock %}
+
+

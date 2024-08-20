@@ -23,7 +23,7 @@ class ModuleManagementViewTestCase(TestCase):
 
     def setUp(self):
         self.user = UserFactory()
-        self.object = ModuleManagementFactory(updated_by=self.user)
+        self.object = ModuleManagementFactory()
         logger.info(f"{self.object} created")
 
     # def test_list_view(self):

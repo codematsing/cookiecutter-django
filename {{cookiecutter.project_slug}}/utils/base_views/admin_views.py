@@ -1,7 +1,6 @@
 from django import forms
 from django.urls import reverse_lazy
 from django.contrib import messages
-from utils.detail_wrapper.views import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from utils.base_views.views import (
     BaseListView,
@@ -9,9 +8,9 @@ from utils.base_views.views import (
     BaseDetailView,
     BaseUpdateView,
     BaseDeleteView,
+    BaseFormCollectionView,
     BaseCreateFormCollectionView,
     BaseUpdateFormCollectionView,
-    BaseFormCollectionView
 )
 
 import logging
@@ -31,7 +30,7 @@ class AdminUpdateView(LoginRequiredMixin, BaseUpdateView):
 	template_name='pages/admin/update.html'
 
 class AdminDeleteView(LoginRequiredMixin, BaseDeleteView):
-	template_name='pages/admin/delete.html'
+    template_name='pages/admin/delete.html'
 
 class AdminFormCollectionView(LoginRequiredMixin, BaseFormCollectionView):
 	template_name='pages/admin/form.html'

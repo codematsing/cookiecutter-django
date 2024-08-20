@@ -1,18 +1,10 @@
-{% extends 'partials/admin/base.html' %}
+{% extends 'pages/admin/form.html' %}
 {% block content %}
   <div class="row grid-margin">
-    <div class="alert alert-danger" role="alert">
+    <div class="alert alert-warning" role="alert">
       <b>Warning:</b> Approving user application for {{ object }}. Are you sure you want to approve this user?
     </div>
   </div>
-  {{object.as_card | safe}}
-  <div class="d-flex align-items-center justify-content-md-end my-4">
-    <form action="" method="post">
-      {% csrf_token %}
-      <a class="btn btn-secondary me-2" href={{ request.META.HTTP_REFERER }}>
-        Cancel
-      </a>
-      <input type="submit" class="btn btn-primary" value="Approve">
-    </form>
-  </div>
+  {{ object.as_card }}
+  {{ block.super }}
 {% endblock %}

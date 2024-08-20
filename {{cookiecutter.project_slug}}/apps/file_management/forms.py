@@ -6,17 +6,20 @@ from file_management.models import DocumentMetadata, DocumentSubmission
 from utils.base_forms.forms import BaseModelForm
 from utils.base_forms.forms import BaseFormCollection
 from formset.widgets import Selectize
+import logging
+logger = logging.getLogger(__name__)
 
 class DocumentMetadataForm(BaseModelForm):
     default_renderer = FormRenderer(
         form_css_classes="row",
+		fieldset_css_classes="row",
         field_css_classes={
-            "name": "mb-2 col-3",
-            "require_for_tags": "mb-2 col-3",
-            "description": "mb-2 col-3",
+            "name": "mb-2 col-4",
+            "require_for_tags": "mb-2 col-4",
+            "description": "mb-2 col-4",
         },
     )
-    pk = forms.IntegerField(required=False, widget=forms.HiddenInput())
+    id = forms.IntegerField(required=False, widget=forms.HiddenInput())
 
     class Meta:
         model = DocumentMetadata
@@ -27,7 +30,7 @@ class DocumentMetadataForm(BaseModelForm):
         }
 
 
-class DocumentMetadataFormCollection(BaseFormCollection):
+class DocumentMetadataFormset(BaseFormCollection):
     min_siblings = 0
     document_form = DocumentMetadataForm()
     legend = "Additional Documentary Requirements"
@@ -37,6 +40,7 @@ class DocumentMetadataFormCollection(BaseFormCollection):
 class DocumentSubmissionForm(BaseModelForm):
     default_renderer = FormRenderer(
         form_css_classes="row",
+		fieldset_css_classes="row",
         field_css_classes={
             "metadata": "col-md-12 align-self-center",
             # 'description': 'col-md-6 align-self-center',
@@ -65,10 +69,12 @@ class DocumentSubmissionForm(BaseModelForm):
 class DocumentSubmissionWMetadataSelectionForm(BaseModelForm):
     default_renderer = FormRenderer(
         form_css_classes="row",
+		fieldset_css_classes="row",
         field_css_classes={
             "metadata": "col-md-12 align-self-center",
             # 'description': 'col-md-6 align-self-center',
             "attachment": "col-md-6",
+            "notes": "col-md-6",
         },
     )
     id = forms.IntegerField(required=False, widget=forms.HiddenInput())
@@ -81,7 +87,7 @@ class DocumentSubmissionWMetadataSelectionForm(BaseModelForm):
 
     class Meta:
         model = DocumentSubmission
-        fields = ["metadata", "attachment"]
+        fields = ["metadata", "attachment", "notes"]
         widgets = {
             "metadata": Selectize,
         }
@@ -92,3 +98,10 @@ class DocumentSubmissionFormset(BaseFormCollection):
     legend = "Documents"
     document_form = DocumentSubmissionWMetadataSelectionForm()
     add_label = "Add Document"
+
+    def save(self):
+        for document_form in self.cleaned_data:
+            document_kwargs = document_form['document_form']
+            document = DocumentSubmission.objects.create(owner=self.request.user, **document_kwargs)
+            logger.info(document)
+        return self.request.user

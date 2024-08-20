@@ -1,0 +1,27 @@
+<div class="card p-0">
+  <a class="text-decoration-none"
+     data-bs-toggle="collapse"
+     href="#details"
+     aria-expanded="true"
+     aria-controls="apps">
+    <div class="card-header p-3 bg-warning bg-opacity-50">
+      <div class="d-flex justify-content-between px-2">
+        <div class="card-title align-self-center mb-0">{{card_header}}</div>
+      </div>
+    </div>
+  </a>
+  <div class="card-body multi-collapse" id="details">
+    <div class="card-text">
+      <div class="table-responsive">
+        <table class="table table-borderless w-auto">
+          {% for field_name, field_value in fields.items %}
+            <tr>
+              <td class="text-muted">{{ field_name|title }}</td>
+              <td>{{ field_value|safe }}</td>
+            </tr>
+          {% endfor %}
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

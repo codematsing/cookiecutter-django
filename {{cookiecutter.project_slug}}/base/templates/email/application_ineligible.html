@@ -1,0 +1,42 @@
+{% extends 'partials/email/base.html' %}
+{% load account socialaccount util_tags %}
+
+{% block content %}
+<p>Dear {{application.applicant.salutation}},</p>
+
+<p>
+    It is with regret that we inform you that your application for the Scholarship: 
+    <b>{{application.scholarship}}</b> has been deemed ineligible for consideration. 
+</p>
+
+<p>
+    After a thorough review of your application materials, 
+    it has been determined that you do not meet the eligibility criteria outlined 
+    for this particular scholarship.
+</p>
+
+<p>
+    We understand that this news may be disappointing, 
+    and we sincerely apologize for any inconvenience this may cause. 
+    Please be assured that this decision was not made lightly 
+    and that all applications were reviewed with careful consideration.
+</p>
+
+<p>
+    While your application for this scholarship was unsuccessful, 
+    we encourage you to continue exploring other scholarship opportunities 
+    available to you through our site {{current_domain}}. 
+</p>
+
+<p>
+    If you have any questions or require further clarification regarding the 
+    eligibility criteria or the application review process, 
+    please do not hesitate to reach out to us.
+</p>
+
+<p>
+    Thank you for your interest in this program, 
+    and we wish you all the best in your future endeavors.
+</p>
+
+{% endblock  %}

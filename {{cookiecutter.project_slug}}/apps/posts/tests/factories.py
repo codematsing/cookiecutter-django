@@ -1,30 +1,21 @@
-from factory.django import DjangoModelFactory, FileField
-from factory.fuzzy import FuzzyChoice
+from factory.django import DjangoModelFactory
 from factory import (
-    SubFactory,
     Faker,
-    PostGenerationMethodCall,
     Sequence,
-    RelatedFactory,
     Iterator,
-    post_generation,
-    LazyAttribute,
     lazy_attribute
 )
 from django.contrib.auth import get_user_model
 from posts.models import Post
 from random import randint, sample
+import uuid
 
 class PostFactory(DjangoModelFactory):
-    title = Faker("sentence")
     body = Faker("paragraph")
-    is_published = Iterator([True, False])
 
     @lazy_attribute
-    def updated_by(self):
-        user = get_user_model().objects.filter(groups__isnull=False).first()
-        return user
-
+    def title(self):
+        return f"Post Title {Post.objects.count()+1}"
 
     class Meta:
         model = Post

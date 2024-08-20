@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import SidebarItem
+from .models import NavItem
 from utils.base_views.admin_views import (
 	AdminListView,
 	AdminCreateView,
@@ -16,20 +16,20 @@ logger = logging.getLogger(__name__)
 
 # Create your views here.
 class ModuleManagementListView(AdminListView):
-	model = SidebarItem
+	model = NavItem
 	def get_ajax_list_url(self):
 		return reverse("modules:ajax:list")
 
 class ModuleManagementCreateView(AdminCreateView):
-	model = SidebarItem
+	model = NavItem
 	form_class = ModuleModelForm
 
 class ModuleManagementDetailView(AdminDetailView):
-	model = SidebarItem
+	model = NavItem
 
 class ModuleManagementUpdateView(AdminUpdateView):
-	model = SidebarItem
+	model = NavItem
 	form_class = ModuleModelForm
 
 class ModuleManagementDeleteView(AdminDeleteView):
-	model = SidebarItem
+	model = NavItem

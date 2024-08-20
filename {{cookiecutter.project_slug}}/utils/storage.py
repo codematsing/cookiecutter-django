@@ -23,3 +23,6 @@ class InternalFilesStorage(FileSystemStorage):
         if self._base_url is not None and not self._base_url.endswith('/'):
             self._base_url += '/'
         return self._value_or_setting(self._base_url, settings.INTERNAL_MEDIA_URL)
+
+internal_storage = InternalFilesStorage()
+public_storage = PublicFilesStorage()

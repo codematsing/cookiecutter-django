@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from module_management.models import SidebarItem, SidebarClassification
+from module_management.models import NavItem, AccessClassification
 from utils.base_views.ajax.views import (
 	BaseListAjaxView,
 	BaseCreateAjaxView,
@@ -10,6 +10,7 @@ from utils.base_views.ajax.views import (
 from django.template.loader import render_to_string
 from django.views.generic import View
 from django.http import JsonResponse
+from django.urls import reverse
 import logging
 logger = logging.getLogger(__name__)
 
@@ -17,18 +18,17 @@ logger = logging.getLogger(__name__)
 # Create your views here.
 
 class ModuleManagementListAjaxView(BaseListAjaxView):
-	model = SidebarItem
+	model = NavItem
 	column_defs = [
-		{'name':'pk', 'visible':False},
 		{'name':'label'},
 		{'name':'href'},
 		{'name':'header'},
 		{'name':'icon'},
-		{'name':'action', 'searchable':False},
 	]
+	initial_order=[["label", "asc"]]
 
 class SidebarAjaxView(View):
-	model = SidebarItem
+	model = NavItem
 
 	def _sort_headers(self, headers):
 		if "HOME" in headers:
@@ -43,12 +43,15 @@ class SidebarAjaxView(View):
 	def get(self, *args, **kwargs):
 		query=self.request.GET.get("query")
 		items = []
-		qs = SidebarItem.objects.filter(label__icontains=query)
+		qs = NavItem.objects.filter(label__icontains=query).exclude(classification=AccessClassification.PUBLIC)
 		if not(self.request.user.is_superuser or self.request.user.is_staff):
-			qs = qs.filter(classification=SidebarClassification.INTERNAl) | qs.filter(classification=SidebarClassification.CONFIDENTIAL, groups__user=self.request.user)
+			qs = qs.filter(classification=AccessClassification.INTERNAL) | qs.filter(classification=AccessClassification.CONFIDENTIAL, groups__user=self.request.user)
 		headers = list(qs.distinct("header").values_list("header", flat=True))
 		for header in self._sort_headers(headers):
-			items.append(render_to_string("partials/admin/sidebar/nav_item_head.html", {'header':header}))
+			items.append(render_to_string("detail_wrapper/nav_item_head.html", {'header':header}))
 			for sidebar_item in qs.filter(header=header):
 				items.append(sidebar_item.as_nav_link)
+		#append logout
+		items.append(render_to_string("detail_wrapper/nav_item_head.html", {'header':"LOGOUT"}))
+		items.append(render_to_string("detail_wrapper/nav_link.html", {'object':{'href':reverse("account_logout"), 'icon':'mdi-logout', 'label':'logout'}}))
 		return JsonResponse({'html':"".join(items)})

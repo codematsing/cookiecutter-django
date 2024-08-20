@@ -4,35 +4,35 @@
 <html lang="{{ LANGUAGE_CODE }}">
   <head>
     <title>
-      {% block title %}{{cookiecutter.project_name}}{% endblock %}
+      {% block title %}SIKAP{% endblock %}
     </title>
     {% include 'partials/public/head.html' %}
-    {% block extra_css %}
-    {% endblock %}
+    {% block extra_css %}{% endblock %}
   </head>
   <body>
     <div class="container-scroller">
       <!-- partial:partials/_horizontal-navbar.html -->
       {% include 'partials/public/navbar.html' %}
       {% block jumbotron %}{% endblock %}
+      {% include 'partials/common/report_an_issue.html' %}
       <div class="container-fluid page-body-wrapper">
         <div class="main-panel">
           <div class="content-wrapper">
             {% include 'partials/common/messages.html' %}
-            {% block content %}
-            {% endblock %}
-            <!-- content-wrapper ends -->
-            <!-- partial:partials/_footer.html -->
-            {% include 'pages/contact.html' %}
-            {% include 'partials/public/footer.html' %}
-            <!-- partial -->
+            {% block content %}{% endblock %}
           </div>
-          <!-- main-panel ends -->
+          <!-- content-wrapper ends -->
+          <!-- partial:partials/_footer.html -->
+          {% include 'pages/contact.html' %}
+          {% include 'partials/public/footer.html' %}
+          <!-- partial -->
         </div>
-        <!-- page-body-wrapper ends -->
+        <!-- main-panel ends -->
       </div>
-      {% include 'partials/public/js.html' %}
-      {% block extra_js %}{% endblock %}
-      {% include 'session_security/all.html' %}
-    </body>
-  </html>
+      <!-- page-body-wrapper ends -->
+    </div>
+    {% include 'partials/public/js.html' %}
+    {% block extra_js %}{% endblock %}
+    {% include 'session_security/all.html' %}
+  </body>
+</html>

@@ -1,0 +1,35 @@
+{% extends 'partials/email/base.html' %}
+{% load account socialaccount util_tags %}
+
+{% block content %}
+<p>Dear {{application.applicant.salutation}},</p>
+
+<p>
+    After careful review of your profile, we are please to inform you 
+    that your application for the Scholarship: <b>{{application.scholarship}}</b>
+    has been deemed <b>eligible for consideration</b>
+</p>
+
+<p>
+    Your qualifications and achievements have made a positive impression on our selection committee. 
+    As an eligible candidate, you are now one step closer to potentially being being awarded the Scholarship: 
+    <b>{{application.scholarship}}</b>.
+    
+    Our committee will continue to review all eligible applications and will
+    notify successful recipients in due course.
+</p>
+
+<p>
+    In the meantime, We encourage you to continue focusing on your academic pursuits 
+    and explore further scholarship opportunities available to you through our site
+    {{current_domain}}
+</p>
+
+<p>
+    Should you have any questions or require further assistance, 
+    please do not hesitate to reach out to us. 
+    
+    We are here to support you throughout the scholarship application process.
+</p>
+
+{% endblock  %}

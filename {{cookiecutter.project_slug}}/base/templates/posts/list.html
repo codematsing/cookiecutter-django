@@ -1,0 +1,49 @@
+{% extends 'pages/home.html' %}
+{% load static i18n compress %}
+{% load humanize %}
+{% load crispy_forms_tags %}
+{% load formsetify %}
+{% render_form form "bootstrap" %}
+{% block content %}
+  <div class="container">
+    <div class="page-header">
+      <div id="Announcements" class="header-left">
+        <h2>Announcements</h2>
+      </div>
+      <div class="header-right">{% include 'partials/common/pagination.html' %}</div>
+    </div>
+    <div class="row grid-margin">
+      {% for post in object_list %}
+        <div class="grid-margin col-sm-12 col-md-6">
+          <a href="{{ post.get_absolute_url }}" class="text-decoration-none">
+            <div class="card">
+              <div class="row g-0">
+                <div class="col-md-4 text-center my-auto">
+                  <img class="py-3"
+                       style="object-fit:scale-down;overflow:hidden;aspect-ratio:1/1;"
+                       src="{% if post.thumbnail %} {{ post.thumbnail.url }} {% else %} {% static 'logos/icon_green.png' %} {% endif %}"
+                       height="200px"
+                       alt="">
+                </div>
+                <div class="col-md-8">
+                  <div class="card-body">
+                    <h5 class="card-title">{{ post.title }}</h5>
+                    <p class="card-text">{{ post.body | safe | truncatechars:155 }}</p>
+                    <p class="card-text">
+                      <small class="text-muted">{{ post.published_date }} | {{ post.published_date | naturalday }}</small>
+                    </p>
+                    <p class="card-text fw-bold text-success">
+                      {% for tag in post.tags.all %}
+                        {{tag.as_html|safe|striptags}}
+                      {% endfor %}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}

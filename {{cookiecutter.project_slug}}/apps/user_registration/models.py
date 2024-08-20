@@ -1,10 +1,16 @@
 from django.db import models
 from django.urls import reverse
-from utils import lambdas
-from utils.base_models import fields
+from django.contrib.auth import get_user_model
+from django.core.validators import RegexValidator, MaxValueValidator
+from utils.base_models.models import AbstractAuditedModel
+
+import datetime
+import os
+
 
 # Create your models here.
-class Registration(models.Model):
+
+class Registration(AbstractAuditedModel):
     first_name = models.CharField(
         max_length = 128
     )
@@ -13,23 +19,40 @@ class Registration(models.Model):
         max_length = 128
     )
 
-    email = models.EmailField(
-        max_length=128,
+    birth_date = models.DateField(
+        blank=False,
+        null=False,
+        validators=[
+            MaxValueValidator(limit_value=datetime.date.today)
+        ]
+    )
+
+    student_number = models.CharField(
+        max_length=12,
+        validators=[
+            RegexValidator(
+                code="Invalid Student Number",
+                message="Must be numeric. Must not contain symbols or letters",
+                regex="^\\d+$",
+            )
+        ],
         unique=True,
     )
 
-    message = models.EmailField(
-        verbose_name="Message to moderator for user registration",
-        max_length=1024,
+    email = models.EmailField(
+        max_length=128,
+        unique=True,
+        verbose_name="Alternative Email",
+        help_text="Please provide email to notify you once user registration has been approved"
     )
 
-    is_approved = models.BooleanField(default=None, null=True, blank=True, choices=((None, "Unknown"), (True, "Approved"), (False, "Declined")))
-    created_at = fields.DateTimeField(auto_now_add=True)
-    attachment = fields.FileField(upload_to=lambdas.internal_upload)
-
+    is_approved = models.BooleanField(null=True, blank=True, verbose_name="Approval Status", choices=((True, "Approved"), (False, "Rejected")))
 
     def __str__(self):
         return self.email
+
+    def as_card(self, **kwargs):
+        return super().as_card(exclude=["is_approved"])
 
     def get_absolute_url(self):
         return reverse(

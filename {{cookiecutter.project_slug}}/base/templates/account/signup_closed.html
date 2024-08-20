@@ -1,11 +1,31 @@
 {% extends "account/base.html" %}
-
 {% load i18n %}
-
-{% block head_title %}{% translate "Sign Up Closed" %}{% endblock %}
-
+{% load account socialaccount %}
+{% load socialaccount %}
+{% block head_title %}
+  {% translate "Sign In Error" %}
+{% endblock %}
 {% block inner %}
-<h1>{% translate "Sign Up Closed" %}</h1>
-
-<p>{% translate "We are sorry, but the sign up is currently closed." %}</p>
+  <div class="card p-0">
+    <div class="card-header p-3 bg-warning bg-opacity-50">
+      <div class="d-flex justify-content-between px-2">
+        <div class="card-title align-self-center mb-0">
+          <h3>{% translate "Sign In Error" %}</h3>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="card-text">
+        <p>
+            Sorry, it seems that your email is not a <u>valid UP Email account</u>
+        <p>
+            Please ensure you are logging using your UP issued email ('@up.edu.ph')
+        </p>
+        <p>
+            If you do not have an existing UP email, you may register for a <b>SIKAP account</b>
+            <a href="{% url 'user_registration:create' %}">here</a>
+        </p>
+      </div>
+    </div>
+  </div>
 {% endblock %}

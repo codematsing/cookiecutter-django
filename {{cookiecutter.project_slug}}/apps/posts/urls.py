@@ -1,7 +1,9 @@
 from django.urls import path, include
 from .views import (
     PostListView,
-    PostManagementListView,
+    ScholarshipApplicationRedirectView,
+    ScholarshipPostListView,
+    BlogPostListView,
     PostCreateView,
     PostDetailView,
     PostUpdateView,
@@ -18,9 +20,14 @@ urlpatterns = [
         name="list"
     ),
     path(
-        "manage/",
-        PostManagementListView.as_view(),
-        name="managed_list"
+        "scholarships/",
+        ScholarshipPostListView.as_view(),
+        name="scholarship_list"
+    ),
+    path(
+        "blogs/",
+        BlogPostListView.as_view(),
+        name="blog_list"
     ),
     # create
     path(
@@ -47,6 +54,11 @@ urlpatterns = [
         name="delete"
     ),
     # apply
+    path(
+        "<int:pk>/apply/",
+        ScholarshipApplicationRedirectView.as_view(),
+        name="apply_redirect"
+    ),
     path(
         "ajax/",
         include("posts.ajax.urls",

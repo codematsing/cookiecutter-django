@@ -1,16 +1,16 @@
 {% load static %}
-{% load account socialaccount %}
 {% load user_agents %}
 <div class="horizontal-menu">
   <nav class="navbar top-navbar col-lg-12 col-12 p-0">
     <div class="container">
       <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
         <a class="navbar-brand brand-logo" href="{% url 'home' %}">
-          <img src="{% static 'logos/icon_transparent.png' %}" alt="logo" />
-          <span class="font-10 d-block font-weight-light mt-1">{{cookiecutter.project_name}}</span>
+          <img src="{% static 'logos/logo_maroon.png' %}" alt="logo" />
+          <span class="font-10 d-block font-weight-light mt-1">Scholarship Kit Information Portal</span>
         </a>
-        <a class="navbar-brand brand-logo-mini" href="{% url 'home' %}"><img
-            src="{% static 'logos/icon_transparent.png' %}" alt="logo" class="img-fluid"/></a>
+        <a class="navbar-brand brand-logo-mini" href="{% url 'home' %}">
+          <img src="{% static 'logos/icon_transparent.png' %}" alt="logo" />
+        </a>
       </div>
       <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
         {% comment %} <ul class="navbar-nav mr-lg-2">
@@ -21,49 +21,55 @@
                   <i class="mdi mdi-magnify"></i>
                 </span>
               </div>
-              <input type="text" class="form-control" id="navbar-search-input" placeholder="Search" aria-label="search"
-                aria-describedby="search" />
+              <input type="text" class="form-control" id="navbar-search-input" placeholder="Search" aria-label="search" aria-describedby="search" />
             </div>
           </li>
         </ul> {% endcomment %}
         <ul class="navbar-nav navbar-nav-right">
           {% if request.user.is_authenticated %}
-          <li class="nav-item nav-profile dropdown">
-            <a class="nav-link" id="profileDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
-              <div class="nav-profile-text">
-                {% comment %} #TODO {% endcomment %}
-                <p class="text-black font-weight-semibold m-0">
-                  Welcome back, {{request.user.username}}!
-                  <i class="mdi mdi-chevron-down"></i>
-                </p>
+            <li class="nav-item nav-profile dropdown">
+              <a class="nav-link"
+                 id="profileDropdown"
+                 href="#"
+                 data-bs-toggle="dropdown"
+                 aria-expanded="false">
+                <div class="nav-profile-text">
+                  {% comment %} #TODO {% endcomment %}
+                  <p class="text-black font-weight-semibold m-0">
+                    Welcome back, {{ request.user.username }}!
+                    <i class="mdi mdi-chevron-down"></i>
+                  </p>
+                </div>
+              </a>
+              <div class="dropdown-menu navbar-dropdown"
+                   aria-labelledby="profileDropdown">
+                <a class="dropdown-item" href="{% url 'dashboard' %}">
+                  {% comment %} #TODO logout url{% endcomment %}
+                  <i class="mdi mdi-view-quilt me-2 text-success"
+                     title="Go back to dashboard"></i>
+                  Dashboard
+                </a>
+                <a class="dropdown-item" href="{% url 'notifications:all' %}">
+                  {% comment %} #TODO logout url{% endcomment %}
+                  <i class="mdi mdi-bell me-2 text-success"></i> Notifications
+                </a>
+                <div class="dropdown-divider"></div>
+                {% comment %} #TODO logout url{% endcomment %}
+                <a class="dropdown-item" href="{% url 'account_logout' %}">
+                  <i class="mdi mdi-logout me-2 text-primary"></i> Logout
+                </a>
               </div>
-            </a>
-            <div class="dropdown-menu navbar-dropdown" aria-labelledby="profileDropdown">
-              <a class="dropdown-item" href="{% url 'dashboard' %}">
-                {% comment %} #TODO logout url{% endcomment %}
-                <i class="mdi mdi-view-quilt me-2 text-success" title="Go back to dashboard"></i>
-                Dashboard
-              </a>
-              <a class="dropdown-item" href="{% url 'notifications:all' %}">
-                {% comment %} #TODO logout url{% endcomment %}
-                <i class="mdi mdi-bell me-2 text-success"></i> Notifications
-              </a>
-              <div class="dropdown-divider"></div>
-              {% comment %} #TODO logout url{% endcomment %}
-              <a class="dropdown-item" href="{% url 'account_logout' %}">
-                <i class="mdi mdi-logout me-2 text-primary"></i> Logout
-              </a>
-            </div>
-          </li>
-          {% include 'partials/common/hijack.html' %}
+            </li>
+            {% include 'partials/common/hijack.html' %}
           {% else %}
-          <li class="nav-item nav-profile dropdown">
-            <a class="btn btn-danger" href="{% provider_login_url 'google' process='login' %}">Login</a>
-          </li>
-        </ul>
+            <li class="nav-item nav-profile dropdown">
+              <a class="btn btn-lg btn-primary" href="{% url 'account_login' %}">Login</a>
+            </li>
+          </ul>
         {% endif %}
-        <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button"
-          data-toggle="horizontal-menu-toggle">
+        <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center"
+                type="button"
+                data-toggle="horizontal-menu-toggle">
           <span class="mdi mdi-menu"></span>
         </button>
       </div>
@@ -74,19 +80,31 @@
       <ul class="nav page-navigation">
         <li class="nav-item">
           {% comment %} #TODO url {% endcomment %}
-          <a class="nav-link" href="#announcements">
+          <a class="nav-link" href="{% url 'posts:list' %}">
             <i class="mdi mdi-bullhorn menu-icon"></i>
             <span class="menu-title">Announcements</span>
           </a>
         </li>
-        
+        {% comment %} #TODO url {% endcomment %}
         <li class="nav-item">
-          <a class="nav-link" href="#about">
+          <a class="nav-link" href="{% url 'posts:scholarship_list' %}">
+            <i class="mdi mdi-star menu-icon"></i>
+            <span class="menu-title">Scholarships</span>
+          </a>
+        </li>
+        {% comment %} #TODO url {% endcomment %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'about' %}">
             <i class="mdi mdi-information-outline menu-icon"></i>
             <span class="menu-title">About Us</span>
           </a>
         </li>
-
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'faqs' %}">
+            <i class="mdi mdi-help-circle-outline menu-icon"></i>
+            <span class="menu-title">FAQs</span>
+          </a>
+        </li>
         <li class="nav-item">
           <a class="nav-link" href="#contact">
             <i class="mdi mdi-contact-mail menu-icon"></i>
@@ -95,23 +113,27 @@
         </li>
         {% if request.user.is_authenticated %}
           {% if request.user_agent.is_mobile or request.user_agent.is_tablet or request.user_agent.is_touch_capable %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'dashboard' %}">
+                <i class="mdi mdi-view-quilt"></i>
+                <span class="menu-title">Dashboard</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'notifications:all' %}">
+                <i class="mdi mdi-bell-outline"></i>
+                <span class="menu-title">Notifications</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'account_logout' %}">
+                <i class="mdi mdi-logout"></i>
+                <span class="menu-title">Logout</span>
+              </a>
+            </li>
+
+            {% else%}
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'dashboard' %}">
-            <i class="mdi mdi-view-quilt"></i>
-              <span class="menu-title">Dashboard</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'notifications:all' %}">
-              <i class="mdi mdi-bell-outline"></i>
-              <span class="menu-title">Notifications</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'account_logout' %}">
-            <i class="mdi mdi-logout"></i>
-              <span class="menu-title">Logout</span>
-            </a>
           </li>
           {% endif %}
         {% endif %}

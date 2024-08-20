@@ -33,6 +33,7 @@
 <script src="{% static 'js/datapicker/bootstrap-datepicker.js' %}"></script>
 <script src="{% static 'js/datapicker/datepicker-active.js' %}"></script>
 
+{% endcompress %}
 
 <!-- Jquery -->
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
@@ -44,9 +45,7 @@
 <script src="//cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
 <script src="//cdn.datatables.net/select/1.7.0/js/dataTables.select.min.js"></script>
 
+<script type="module" src="{% static 'formset/js/django-formset.js' %}"></script>
+
 {% block partial_js %}
 {% endblock %}
-
-{% endcompress %}
-<!-- Formset-->
-<script type="module" src="{% static 'formset/js/django-formset.js' %}"></script>

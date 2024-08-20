@@ -1,0 +1,35 @@
+{% load static %}
+{% comment %} #TODO: URLS {% endcomment %}
+<li class="pt-2 pb-1">
+    <span class="nav-item-head">Student Home</span>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'dashboard' %}">
+    <i class="mdi mdi-view-quilt menu-icon"></i>
+    <span class="menu-title">Dashboard</span>
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'portfolios:home' %}">
+    <i class="mdi mdi-account-box menu-icon"></i>
+    <span class="menu-title">Portfolio</span>
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'applications:list' %}">
+    <i class="mdi mdi-file-send menu-icon"></i>
+    <span class="menu-title">Applications</span>
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'scholars:list' %}">
+    <i class="mdi mdi-star menu-icon"></i>
+    <span class="menu-title">Scholarships</span>
+    </a>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="{% url 'benefit_transactions:user_benefits' %}">
+    <i class="mdi mdi-coin menu-icon"></i>
+    <span class="menu-title">Benefits Transactions</span>
+    </a>
+</li>

@@ -2,12 +2,9 @@ from django.views.generic import View
 from ajax_datatable.views import AjaxDatatableView
 from django.http import JsonResponse
 from django.template.loader import render_to_string
-from guardian.shortcuts import get_objects_for_user
 from urllib.parse import parse_qs
-from django.urls import resolve
+from utils.lambdas import get_current_domain
 from django.contrib.auth.mixins import UserPassesTestMixin
-
-import re
 import json
 
 import logging
@@ -24,17 +21,11 @@ class BaseListAjaxView(UserPassesTestMixin, AjaxDatatableView):
 	]
 	initial_order=[[1, "asc"]]
 
+	length_menu = [[20, 50, 100], [20, 50, 100]]
+
 	def test_func(self):
-		referrer = self.request.META.get("HTTP_REFERRER", self.request.headers['Referer'])
-		referrer = re.sub(r"(https?://[^\/]+)(.*)", r"\2", referrer)
-		logger.info(referrer)
-		try:
-			resolve(referrer)
-			if self.request.user.is_authenticated:
-				return True
-		except Exception as e:
-			logger.exception(e)
-		return False
+		logger.warning("DEFAULTS to SAO. If student has access please override test_func and get_initial_queryset")
+		return self.request.user.is_sao or self.request.user.is_superuser or self.request.user.is_staff
 
 	def list_autofilter_choices(self, request, column_spec, field, initial_search_value):
 		qs = self.get_initial_queryset(request)
@@ -57,6 +48,7 @@ class BaseListAjaxView(UserPassesTestMixin, AjaxDatatableView):
 				if col_item['name'] in json.loads(hidden):
 					col_item['visible'] = False
 		return column_defs
+
 
 	def filter_queryset_all_columns(self, search_value, qs):
 		searchable_columns = [c['name'] for c in self.column_specs if c['searchable'] and c['name']!='action']
@@ -86,22 +78,25 @@ class BaseListAjaxView(UserPassesTestMixin, AjaxDatatableView):
 		return update_permission
 
 	def customize_row(self, row, obj):
+		super().customize_row(row, obj)
+		try:
+			row['url'] = f"{get_current_domain()}{obj.get_absolute_url()}"
+		except Exception as e:
+			pass
 		row['action'] = render_to_string('tables/action_column.html', {'record':obj, 'has_update_permission':self.get_update_permission()}) 
-		return
 
 class SelectableListAjaxView(BaseListAjaxView):
 
 	def get_column_defs(self, request):
 		column_defs = super().get_column_defs(request)
 		if not any(filter(lambda col: col['name']=='select', column_defs)):
-			column_defs.insert(1, {'name':'select', 'title': 'Select', 'width':'1rem', 'choices':((True, 'Selected'), (False, 'Deselected'))})
+			column_defs.insert(1, {'name':'select', 'title': 'Select', 'className':'select-checkbox', 'width':'1rem', 'choices':((True, 'Selected'), (False, 'Deselected')), 'targets':0})
 		return column_defs
 
 	def customize_row(self, row, obj):
 		super().customize_row(row, obj)
 		row['select'] = f'<input type="checkbox" class="datatable-checkbox" name="select" width="5rem" value={obj.pk}>'
 		return
-	pass
 
 class BaseCreateAjaxView(View):
 	def get(self, request):

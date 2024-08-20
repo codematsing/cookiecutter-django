@@ -1,0 +1,28 @@
+{% extends 'partials/email/base.html' %}
+{% load account socialaccount util_tags %}
+
+{% block content %}
+<p>Dear scholar,</p>
+
+<p>
+    We are writing to inform you that you have been automatically promoted as scholar
+    for the scholarship: <b>{{scholarship}}</b>
+
+</p>
+
+<p>
+    Our SAO has added the message:<br/>
+    {{message}}
+</p>
+
+<p>
+    May we request that you update your profile if you have not done so by logging
+    in to sikap.upd.edu.ph.
+</p>
+
+<p>
+    If there seems to be an error on our end, or if you have any questions or clarifications,
+    please feel free to contact us.
+</p>
+
+{% endblock  %}

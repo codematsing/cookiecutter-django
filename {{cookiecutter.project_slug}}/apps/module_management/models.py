@@ -6,29 +6,31 @@ from django.template.loader import render_to_string
 from logging import getLogger
 from django.urls import reverse
 from django.contrib.auth.models import Group
-from utils.base_models.models import BaseModelMixin
+from utils.base_models.models import AbstractBaseModel
 
 logger = getLogger(__name__)
 
-class SidebarClassification(models.IntegerChoices):
-    INTERNAl = 1
+class AccessClassification(models.IntegerChoices):
+    PUBLIC = 0
+    INTERNAL = 1
     CONFIDENTIAL = 2
 
 # Create your models here.
-class SidebarItem(BaseModelMixin, models.Model):
+class NavItem(AbstractBaseModel, models.Model):
     header = models.CharField(max_length=32, verbose_name="Sidebar grouping header", default="HOME", validators=[RegexValidator(r"[A-Z\ ]+", message="Must be capitalized")])
     label = models.CharField(max_length=32, null=False, blank=False, unique=True)
     description = models.CharField(max_length=128, null=True, blank=True, verbose_name="Description", help_text="short description about module")
     href = models.CharField(max_length=64, null=False, blank=False, verbose_name="Entry point href to module", unique=True)
+    # params = models.JSONField(max_length=64, null=True, blank=True, verbose_name="Entry point href to module", unique=True)
     icon = models.CharField(max_length=64, default="mdi-play", verbose_name="Material Design Icon Code", help_text="ex. mdi-power", validators=[RegexValidator(r'[a-z\-]+', message="Must be one word, dash-separated")])
-    classification = models.IntegerField(choices=SidebarClassification.choices, default=SidebarClassification.INTERNAl, help_text="Show to: Public - Anyone, Internal - Logged in, Confidential - Only allowed roles / groups")
+    classification = models.IntegerField(choices=AccessClassification.choices, default=AccessClassification.INTERNAL, help_text="Show to: Public - Anyone, Internal - Logged in, Confidential - Only allowed roles / groups")
     priority_number = models.IntegerField(verbose_name="Priority Order in sidebar (1 being top-most)", default=5)
-    groups = models.ManyToManyField(Group, blank=True, related_name="sidebar_items")
+    groups = models.ManyToManyField(Group, blank=True, related_name="nav_items")
 
     @property
     def as_nav_link(self):
-        return render_to_string("partials/admin/sidebar/nav_link.html", context={'object':self})
-        
+        return render_to_string("detail_wrapper/nav_link.html", context={'object':self})
+
     def save(self, *args, **kwargs):
         if not self.href:
             self.href = self.content_type.model_class().get_list_url()
@@ -53,6 +55,6 @@ class SidebarItem(BaseModelMixin, models.Model):
 
     class Meta:
         app_label="module_management"
-        verbose_name = "Sidebar Item"
-        verbose_name_plural = "Sidebar Items"
+        verbose_name = "Nav Item"
+        verbose_name_plural = "Nav Items"
         ordering = ["header", "priority_number", "label"]

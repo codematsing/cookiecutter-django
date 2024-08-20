@@ -1,6 +1,10 @@
-{% load account socialaccount %}
+{% extends 'partials/email/base.html' %}
+{% load account socialaccount util_tags %}
 
-<p>Hello <strong>{{ object.first_name }}</strong> - your registration request has been approved.</p>
+{% block content %}
+<p>Hello <strong>{{ object.first_name }},</strong></p>
+  
+<p>Congratulations! Your registration request has been approved.</p>
 
 <ul style="list-style-type: none">
   <li>Name: <strong>{{ object.first_name }} {{ object.last_name }}</strong></li>
@@ -8,4 +12,9 @@
   <li>Email: <strong>{{ object.email }}</strong></li>
 </ul>
 
-<p>You may now signup for a {{cookiecutter.project_name}} account</p>
+<p><b>
+  You may now create your password and login to your sikap account by clicking 
+  {{site_domain}}
+  <a href="{{signup_url}}">here</a>
+</b></p>
+{% endblock  %}

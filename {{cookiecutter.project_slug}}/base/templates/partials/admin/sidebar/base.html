@@ -1,39 +1,43 @@
 {% load static %}
-
 <!-- partial:partials/_sidebar.html -->
 <nav class="sidebar sidebar-offcanvas" id="sidebar">
   <ul class="nav">
     <li class="nav-item nav-profile border-bottom pb-3">
-      <a class="navbar-brand brand-logo-mini" href="{% url 'dashboard' %}">
-        <img src="{% static 'logos/icon_transparent.png' %}"
-          alt="logo"
-          class="img-fluid" />
-      </a>
-      <div class="nav-profile-text d-flex ms-0 flex-column">
-        <span class="font-weight-semibold mb-1 mt-2 text-center">Welcome back, {{ request.user.username }}!</span>
-        {% with request.user.notifications.unread.count as notifs %}
-          <a class="text-center" href="{% url 'notifications:all' %}">
-            {% if notifs %}
-              <span class="badge badge-warning">{{ request.user.notifications.unread.count }} new notifications</span>
-            {% else %}
-            <span class="badge badge-light">No new notifications</span>
-            {% endif %}
-          {% endwith %}
-          </a>
-        {% include 'partials/common/hijack.html' %}
-      </div>
-      </li>
-      <li class="nav-item pt-3 active">
-        <form class="d-flex align-items-center" action="#">
-          <div class="input-group">
-            <div class="input-group-prepend">
-              <i class="input-group-text border-0 mdi mdi-magnify"></i>
-            </div>
-            <input id="sidebar-search" type="text" class="form-control border-0" placeholder="Search" />
+      <a href="#" class="nav-link flex-column">
+        {% comment %} <div class="nav-profile-image"> {% endcomment %}
+        {% comment %} <img src="{% static 'logos/icon_green.png' %}" alt="profile" class="img-fluid" /> {% endcomment %}
+        <!--change to offline or busy as needed-->
+        {% comment %} </div> {% endcomment %}
+        <div class="nav-profile-text d-flex ms-0 flex-column align-items-center justify-content-center">
+          <span class="font-weight-semibold mb-1 mt-2 text-center">Welcome back, {{ request.user.username }}!</span>
+          {% with request.user.notifications.unread.count as notifs %}
+            <a class="py-1" href="{% url 'notifications:all' %}">
+              {% if notifs %}
+                <span class="badge badge-warning">{{ request.user.notifications.unread.count }} new notifications</span>
+              {% else %}
+                <span class="badge badge-light">No new notifications</span>
+              {% endif %}
+            {% endwith %}
           </div>
-        </form>
+          {% include 'partials/common/hijack.html' %}
+        </a>
       </li>
-      <div id="sidebar-results">
-      </div>
+      {% comment %} #TODO sidebar search {% endcomment %}
+      {% comment %} <li class="nav-item pt-3">
+    <form class="d-flex align-items-center" action="#">
+        <div class="input-group">
+        <div class="input-group-prepend">
+            <i class="input-group-text border-0 mdi mdi-magnify"></i>
+        </div>
+        <input type="text" class="form-control border-0" placeholder="Search" />
+        </div>
+    </form>
+      </li> {% endcomment %}
+      {% if request.user.is_sao %}
+        {% include 'partials/admin/sidebar/sao_items.html' %}
+      {% else %}
+        {% include 'partials/admin/sidebar/student_items.html' %}
+      {% endif %}
+      {% comment %} not using if else for superuser cases to show both sidebars{% endcomment %}
     </ul>
   </nav>

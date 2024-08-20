@@ -4,7 +4,7 @@
 <html lang="{{ LANGUAGE_CODE }}">
   <head>
     <title>
-      {% block title %}{{cookiecutter.project_name}}{% endblock %}
+      {% block title %}SIKAP{% endblock %}
     </title>
     {% include 'partials/admin/head.html' %}
     <style>{% block extra_css %}{% endblock %}</style>
@@ -15,18 +15,9 @@
       {% include 'partials/admin/sidebar/base.html' %}
       <!-- partial -->
       <div class="container-fluid page-body-wrapper">
-        <!-- partial:partials/_settings-panel.html -->
-        <div id="settings-trigger" title="History">
-          <i class="mdi mdi-history"></i>
-        </div>
-        <div id="theme-settings" class="settings-panel">
-          <i class="settings-close mdi mdi-close"></i>
-          {% block right_panel_header %}<p class="settings-heading">HISTORY</p>{% endblock %}
-          {% block right_panel_content %}{% endblock %}
-        </div>
-        <!-- partial -->
         <!-- partial:partials/_navbar.html -->
         {% include 'partials/admin/navbar.html' %}
+        {% include 'partials/common/report_an_issue.html' %}
         <!-- partial -->
         <div class="main-panel">
           <div class="content-wrapper pb-0">
@@ -35,7 +26,7 @@
               <div class="d-flex justify-content-between">
                 <div class="card-title m-0 ">
                   <h2 class="m-0">
-                    {% block page_title %}{{ page_title|capfirst }}{% endblock %}
+                    {% block page_title %}{{ page_title|title }}{% endblock %}
                   </h2>
                   <small class="d-block text-muted">
                     {% if breadcrumbs %}
@@ -67,24 +58,6 @@
     </div>
     {% include 'partials/admin/js.html' %}
     {% block extra_js %}{% endblock %}
-
     {% include 'session_security/all.html' %}
-
-    <script>
-        $(document).ready(function() {
-            $('#sidebar-search').on('input', function() {
-              console.log(this.value)
-                $.ajax({
-                    url: '{% url "modules:ajax:sidebar" %}',
-                    data: {
-                      'query': this.value
-                    },
-                    success: function(data) {
-                        $('#sidebar-results').html(data.html);
-                    }
-                });
-            }).trigger("input");
-        });
-    </script>
   </body>
 </html>

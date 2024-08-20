@@ -38,13 +38,14 @@ class FileType:
 class FileEncryptor(ABC):
     def __init__(self, filename):
         self.filename = filename
-        _result = FileEncryptor.decrypt_filename(filename)
-        self.file_type = _result.get("f", FileType.CATCH) 
-        self.access_classification = _result.get("a", AccessClassification.RESTRICTED) 
-        self.owner_pk = _result.get("u", 0) 
+        self.prefix, self.token, *_ = filename.split("_")
+        decrypted_prefix = FileEncryptor.decrypt_prefix(self.prefix)
+        self.file_type = decrypted_prefix.get("f", FileType.CATCH) 
+        self.access_classification = decrypted_prefix.get("a", AccessClassification.RESTRICTED) 
+        self.owner_pk = decrypted_prefix.get("u", 0) 
 
     @staticmethod
-    def decrypt_filename(filename):
+    def decrypt_prefix(filename):
         prefix = filename.split("_")[0]
         pattern = r'([a-z]+)(\d+)'
         matches = re.findall(pattern, prefix)
@@ -74,6 +75,7 @@ class FileEncryptor(ABC):
     @classmethod
     def create_filename(cls, 
             original_filename, 
+            token=0,
             owner_pk=0, 
             file_type=FileType.CATCH, 
             access_classification=AccessClassification.INTERNAL, 
@@ -87,14 +89,12 @@ class FileEncryptor(ABC):
         timestamp = timezone.now().strftime('%Y%m%d%H%M%S')
         encrypted_prefix = FileEncryptor.encrypt_prefix(file_type, owner_pk, access_classification)
 
-        trailing_data = ""
+        trailing_data = []
         if extra_data:
-            trailing_data = "_".join(list(extra_data.values()))
-        if FileType.requires_uid(file_type):
-            # memory bloat if download files will include timestamp. Will constantly store fie in server
-            hash_data = str(uuid.uuid4().hex)[-14:]
-            trailing_data = f"{trailing_data}_{hash_data}_{timestamp}"
+            trailing_data += list(extra_data.values())
+        trailing_data.append(timestamp)
+        trailing_data = "_".join(trailing_data)
 
-        filename = f"{encrypted_prefix}_{trailing_data}{extension}"
+        filename = f"{encrypted_prefix}_{token}_{trailing_data}{extension}"
         logger.info(filename)
         return filename

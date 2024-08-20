@@ -1,3 +1,7 @@
+from django import forms
+from django.urls import reverse_lazy
+from django.contrib import messages
+from utils.detail_wrapper.views import DetailView
 from utils.base_views.views import (
     BaseListView,
     BaseCreateView,

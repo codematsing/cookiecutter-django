@@ -1,0 +1,40 @@
+{% extends 'partials/email/base.html' %}
+{% load account socialaccount util_tags %}
+
+{% block content %}
+<p>Dear scholar,</p>
+  
+<p>You have been promoted as a Scholar in the UP SIKAP System</p>
+
+<p>
+    The purpose for this system is to streamline necessary processes and submissions concerning your scholarship: {{scholar.scholarship}}.  
+    Thus, we are requiring all scholars to create an account for your monitoring purposes as well.
+</p>
+
+<p>
+    Unfortunately, we do not have your UP Email on file. 
+    Consequently, we have created an account for you with this registered email.
+    Please follow the necessary steps below if you are logging in to the UP SIKAP System for the first time
+</p>
+
+<ul>
+    <li>
+        <a href="{{current_domain}}{% url 'account_reset_password' %}">Set a password for your account with email: {{scholar.scholar.email}}</a>
+    </li>
+    <li>
+        <a href="{{current_domain}}{% url 'account_login' %}">Login with your username(student number): {{scholar.scholar.username}} and with your set password</a>
+    </li>
+    <li>
+        Create your portfolio
+    </li>
+    <li>
+        Note that if you have an existing UP Email, you may link it to your account by <a href="{{current_domain}}{% url 'portfolios:student_profile:link_up_email' username=scholar.scholar.username %}">clicking here</a>
+        Linking your UP Email to your account will disable your log in using user credentials for security purposes.
+    </li>
+</ul>
+
+<p>
+    For additional concerns, please do not hesitate to contact us.
+</p>
+
+{% endblock  %}

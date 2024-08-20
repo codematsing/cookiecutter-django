@@ -16,12 +16,8 @@ from django.contrib.auth import get_user_model
 
 class ModuleManagementFactory(DjangoModelFactory):
     @sequence
-    def name(self, n):
-        return f"{self}{n}"
-
-    @lazy_attribute
-    def updated_by(self):
-        return get_user_model().objects.get_or_create(username="updated_by", email="updated_by@example.com")[0]
+    def name(n):
+        return f"Module {n}"
 
     @post_generation
     def post_save_method(self, create, extracted, **kwargs):

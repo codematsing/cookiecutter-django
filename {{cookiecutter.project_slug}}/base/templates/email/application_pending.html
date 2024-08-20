@@ -1,0 +1,43 @@
+{% extends 'partials/email/base.html' %}
+{% load account socialaccount util_tags %}
+
+{% block content %}
+<p>Dear {{application.applicant.salutation}},</p>
+
+<p>
+    We are writing to inform you that your application for the Scholarship:
+    <b>{{application.scholarship}}</b> is currently pending for further review 
+    based on certain requirements that need to be fulfilled.
+</p>
+
+<p>
+    While your initial application has been received and assessed, 
+    we have identified specific criteria or documentation that are still needed for completion. 
+</p>
+
+<p>
+    May we request that you review your 
+    <a href="{{current_domain}}{{application.get_absolute_url}}">application</a>
+    for any further pending requirements with the latest review: 
+    <blockquote>
+        {{application.latest_additional_data | default:"None"}}
+    </blockquote>
+</p>
+
+<p>
+    Please note that your application is still under consideration. 
+    However, failure to submit the requested documents immediately 
+    may result in your application being deemed ineligible for further consideration. 
+
+    We appreciate your attention to this concern
+    and we urge you to promptly provide the necessary documents 
+    to ensure the smooth progress of your application
+</p>
+
+<p>
+    If you have any questions or require further clarification regarding the 
+    eligibility criteria or the application review process, 
+    please do not hesitate to reach out to us.
+</p>
+
+{% endblock  %}

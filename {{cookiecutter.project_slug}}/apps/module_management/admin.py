@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import SidebarItem
+from .models import NavItem
 
 # Register your models here.
-admin.site.register(SidebarItem)
+admin.site.register(NavItem)

@@ -1,0 +1,133 @@
+{% load static %}
+<li class="pt-2 pb-1">
+  <span class="nav-item-head">SAO Home</span>
+</li>
+
+<li class="nav-item">
+  <a class="nav-link" href="{% url 'dashboard' %}">
+    <i class="mdi mdi-view-quilt menu-icon"></i>
+    <span class="menu-title">Dashboard</span>
+  </a>
+</li>
+
+<li class="nav-item">
+  <a class="nav-link" href="{% url 'donors:list' %}">
+    <i class="mdi mdi-account-box menu-icon"></i>
+    <span class="menu-title">Donors</span>
+  </a>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="{% url 'fund_accounts:list' %}">
+    <i class="mdi mdi-coin menu-icon"></i>
+    <span class="menu-title">Funds</span>
+  </a>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="{% url 'scholarships:list' %}">
+    <i class="mdi mdi-star menu-icon"></i>
+    <span class="menu-title">Scholarships</span>
+  </a>
+</li>
+
+<li class="nav-item">
+  <a class="nav-link" href="{% url 'portfolios:home' %}">
+    <i class="mdi mdi-briefcase-upload menu-icon"></i>
+    <span class="menu-title">Portfolio Submissions</span>
+  </a>
+</li>
+
+<li class="nav-item">
+  <a class="nav-link" href="{% url 'applications:list' %}">
+    <i class="mdi mdi-file-send menu-icon"></i>
+    <span class="menu-title">Applications</span>
+  </a>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="{% url 'scholars:list' %}">
+    <i class="mdi mdi-school menu-icon"></i>
+    <span class="menu-title">Scholars</span>
+  </a>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="{% url 'benefit_transactions:list' %}">
+    <i class="mdi mdi-table menu-icon"></i>
+    <span class="menu-title">Benefits Transactions</span>
+  </a>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="{% url 'user_registration:list' %}">
+    <i class="mdi mdi-account-plus menu-icon"></i>
+    <span class="menu-title">User Registrations</span>
+  </a>
+</li>
+<li class="nav-item">
+  <a
+    class="nav-link"
+    href="{% url 'posts:blog_list' %}"
+  >
+    <i class="mdi mdi-newspaper menu-icon"></i>
+    <span class="menu-title">Announcement Posts</span>
+  </a>
+</li>
+<li class="nav-item">
+  <a
+    class="nav-link"
+    href="{% url 'managed_faqs:list' %}"
+  >
+    <i class="mdi mdi-help-circle menu-icon"></i>
+    <span class="menu-title">FAQ Posts</span>
+  </a>
+</li>
+<li class="pt-2 pb-1">
+  <span class="nav-item-head">Settings</span>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="{% url 'settings:universities:list' %}">
+    <i class="mdi mdi-dots-horizontal menu-icon"></i>
+    <span class="menu-title">Constituent Universities</span>
+  </a>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="{% url 'settings:colleges:list' %}">
+    <i class="mdi mdi-dots-horizontal menu-icon"></i>
+    <span class="menu-title">Colleges</span>
+  </a>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="{% url 'settings:courses:list' %}">
+    <i class="mdi mdi-dots-horizontal menu-icon"></i>
+    <span class="menu-title">Courses</span>
+  </a>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="{% url 'settings:degrees:list' %}">
+    <i class="mdi mdi-dots-horizontal menu-icon"></i>
+    <span class="menu-title">Degree Levels</span>
+  </a>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="{% url 'settings:year_levels:list' %}">
+    <i class="mdi mdi-dots-horizontal menu-icon"></i>
+    <span class="menu-title">Year Levels</span>
+  </a>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="{% url 'settings:benefits:list' %}">
+    <i class="mdi mdi-dots-horizontal menu-icon"></i>
+    <span class="menu-title">Benefit Types</span>
+  </a>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="{% url 'settings:status:menu' %}">
+    <i class="mdi mdi-dots-horizontal menu-icon"></i>
+    <span class="menu-title">Status Tags</span>
+  </a>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="{% url 'sao_management:list' %}">
+    <i class="mdi mdi-dots-horizontal menu-icon"></i>
+    <span class="menu-title">SAO Management</span>
+  </a>
+</li>
+
+

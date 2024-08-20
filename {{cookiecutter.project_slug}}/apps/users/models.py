@@ -5,7 +5,6 @@ from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
-from unit_roles.models import UnitRole
 
 
 class HonorificTitles(TextChoices):
@@ -34,8 +33,6 @@ class User(AbstractUser, AbstractAuditedModel):
 	suffix = CharField(_("Suffix"), max_length=150, null=True, blank=True)
 	honorifics = CharField(_("Honorifics"), max_length=5, null=True, blank=True, choices=HonorificTitles.choices, default=HonorificTitles.MX)
 	employee_number = CharField(_("Employee No."), max_length=64, null=True, blank=True)
-	unit_roles = models.ManyToManyField(UnitRole, verbose_name="Unit roles", related_name="users")
-	primary_unit_role = models.ForeignKey(UnitRole, null=True, blank=True, on_delete=models.SET_NULL, verbose_name="Primary Unit Role", related_name="primary_users")
 
 	def as_card(self):
 		return super().as_card(fields=[

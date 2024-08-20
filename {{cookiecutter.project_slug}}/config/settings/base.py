@@ -6,6 +6,7 @@ from pathlib import Path
 import environ
 import sys
 import os
+from django.contrib.messages import constants as messages
 
 ROOT_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 BASE_DIR = ROOT_DIR / "base" #used to be apps dir. for purpose of generalized template, changed to base
@@ -214,6 +215,8 @@ MIDDLEWARE = [
     "auditlog.middleware.AuditlogMiddleware",
     "module_management.middleware.module_management_middleware",
     'django_user_agents.middleware.UserAgentMiddleware',
+    "session_security.middleware.SessionSecurityMiddleware",
+    "users.middleware.user_profile_middleware"
 ]
 
 # STATIC
@@ -517,6 +520,13 @@ USER_AGENTS_CACHE = 'default'
 
 # https://django-session-security.readthedocs.io/en/latest/full.html
 SESSION_SECURITY_INSECURE = True
+SESSION_SECURITY_WARN_AFTER = 60 * 60 #1hr
+SESSION_SECURITY_EXPIRE_AFTER = 24 * 60 * 60 # 1day
 
 DJANGO_NOTIFICATIONS_CONFIG = {"USE_JSONFIELD": True}
 NOTIFICATIONS_NOTIFICATION_MODEL = "notification_management.Notification"
+
+# https://docs.djangoproject.com/en/4.0/ref/contrib/messages/#message-tags
+MESSAGE_TAGS = {
+    messages.ERROR: 'danger',
+}

@@ -63,13 +63,14 @@ INSTALLED_APPS += ["hijack", "hijack.contrib.admin"]  # noqa F405
 MIDDLEWARE += ["debug_toolbar.middleware.DebugToolbarMiddleware", 
                'hijack.middleware.HijackUserMiddleware',
                ]  # noqa F405
-# https://django-debug-toolbar.readthedocs.io/en/latest/configuration.html#debug-toolbar-config
 DEBUG_TOOLBAR_CONFIG = {
     "DISABLE_PANELS": ["debug_toolbar.panels.redirects.RedirectsPanel"],
     "SHOW_TEMPLATE_CONTEXT": True,
     # Toggles debug toolbar pane
-    "SHOW_TOOLBAR_CALLBACK": lambda _: os.environ.get("SHOW_DEBUG_TOOLBAR", "True") == "True",
+    "SHOW_TOOLBAR_CALLBACK": lambda _: os.environ.get("SHOW_DEBUG_TOOLBAR", default="True") == "True",
+    "SHOW_COLLAPSED": True,
 }
+
 # https://django-debug-toolbar.readthedocs.io/en/latest/installation.html#internal-ips
 INTERNAL_IPS = ["127.0.0.1", "10.0.2.2"]
 {% if cookiecutter.use_docker == 'y' -%}

@@ -385,5 +385,5 @@ SPECTACULAR_SETTINGS["SERVERS"] = [  # noqa F405
 ACCOUNT_DEFAULT_HTTP_PROTOCOL='https'
 
 # https://django-session-security.readthedocs.io/en/latest/full.html
-SESSION_SECURITY_EXPIRE_AFTER = 15 * 60
 SESSION_SECURITY_WARN_AFTER = 12 * 60
+SESSION_SECURITY_EXPIRE_AFTER = 30 * 60 #30mins

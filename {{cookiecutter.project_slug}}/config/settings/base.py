@@ -130,6 +130,7 @@ THIRD_PARTY_APPS = [
     "django_extensions",
     "django_user_agents",
     "session_security",
+    "softdelete"
 ]
 
 UTIL_APPS = [

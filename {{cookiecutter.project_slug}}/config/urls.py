@@ -52,7 +52,7 @@ urlpatterns = [
     # Notifications
     path('inbox/notifications/', include("notification_management.urls", namespace='notifications')),
     # Your stuff: custom urls includes go here
-    path("roles/", include("group_management.urls", namespace="roles")),
+    path("roles/", include("role_management.urls", namespace="roles")),
     path("modules/", include("module_management.urls", namespace="modules")),
     # MEDIA ACCESS
     path(f"media/<str:file>", file_views.serve_public_media_view, name="public_media"),

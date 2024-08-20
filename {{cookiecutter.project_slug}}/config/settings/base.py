@@ -143,7 +143,7 @@ LOCAL_APPS = [
     "users",
     "file_management",
     "notification_management",
-    "group_management",
+    "role_management",
     "module_management",
     "user_registration",
     "commons",

@@ -14,33 +14,43 @@ from rest_framework.authtoken.views import obtain_auth_token
 {%- endif %}
 from commons.views import DashboardView
 from commons.admin import user_admin_site
+from posts.views import PostListView, PostDetailView
+from faqs.views import FaqListView
+import apps.file_management.views as file_views
 
 urlpatterns = [
-    path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
+    # Public Pages
+    path("", PostListView.as_view(), name="home"),
     path(
         "about/", TemplateView.as_view(template_name="pages/about.html"), name="about"
     ),
-    # Django Admin, use {% raw %}{% url 'admin:index' %}{% endraw %}
-    path(settings.ADMIN_URL, admin.site.urls),
-    # https://django-session-security.readthedocs.io/en/latest/quick.html
-    path(r'session_security/', include('session_security.urls')),
-    # Notifications
-    path('inbox/notifications/', include("notification_management.urls", namespace='notifications')),
+    path("posts/<int:pk>/", PostDetailView.as_view(), name="post_detail"),
+    path("faqs/", FaqListView.as_view(), name="faqs"),
+    # Admin Home
+    path("dashboard/", DashboardView.as_view(), name="dashboard"),
     # Posts
     path("posts/", include("posts.urls", namespace="posts")),
     # User management
     path("users/registrations/", include("user_registration.urls", namespace="user_registration")),
-    # disabling users portfolio to avoid updating of user information
-    # path("users/", include("users.urls", namespace="users")),
-    # disabling accounts/email
-    path("accounts/email/", default_views.page_not_found, kwargs={"exception": Exception("Page not Found")},),
+    path("profile/", include("users.profile_urls", namespace="profile")),
     path("accounts/", include("allauth.urls")),
-    # FileManagement
+    # FAQ Management
+    path("faqs/manage/", include("faqs.urls", namespace="faqs_management")),
+    # Post Management
+    path("posts/manage/", include("posts.post_management_urls", namespace="posts_management")),
+    # User Management
+    path("users/manage/", include("users.user_management_urls", namespace="user_management")),
+    # File Management
     path("", include("file_management.urls", namespace="file")),
-    # Admin
-    path("dashboard/", DashboardView.as_view(), name="dashboard"),
-    # Comments
-    path(r'comments/', include('django_comments_xtd.urls')),
+    # Guidelines
+    path("guidelines/", include("guidelines.urls", namespace="guidelines")),
+    # Role and Module Management
+    path("roles/", include("role_management.urls", namespace="roles")),
+    path("modules/", include("module_management.urls", namespace="modules")),
+    # History Management
+    path("history/ajax/", include("history_management.urls", namespace="history")),
+    # Notifications
+    path('inbox/notifications/', include("notification_management.urls", namespace='notifications')),
     # Your stuff: custom urls includes go here
     path("roles/", include("group_management.urls", namespace="roles")),
     path("modules/", include("module_management.urls", namespace="modules")),
@@ -48,6 +58,20 @@ urlpatterns = [
     path(f"media/<str:file>", file_views.serve_public_media_view, name="public_media"),
     path(f"internal/media/upload_temp/<str:file>", file_views.serve_temp_media_view, name="temp_media"), #django-formset uploads files in default_storage. See STORAGES. Changed default to InternalFileStorage to protect files
     path(f"internal/media/<str:file>", file_views.serve_internal_media_view, name="internal_media"),
+]
+
+# THIRD PARTY LIBRARIES and DEPENDENCIES
+urlpatterns += [
+    # Django Admin, use {% raw %}{% url 'admin:index' %}{% endraw %}
+    path(settings.ADMIN_URL, admin.site.urls),
+    # https://django-session-security.readthedocs.io/en/latest/quick.html
+    path(r'session_security/', include('session_security.urls')),
+    # Comments
+    path(r'comments/', include('django_comments_xtd.urls')),
+    # disabling accounts/email
+    path("accounts/email/", default_views.page_not_found, kwargs={"exception": Exception("Page not Found")},),
+    # disabling users portfolio to avoid updating of user information
+    # path("users/", include("users.urls", namespace="users")),
 ]
 {%- if cookiecutter.use_async == 'y' %}
 if settings.DEBUG:

@@ -319,6 +319,9 @@ EMAIL_FILE_PATH = BASE_DIR / "logs" / "emails" # change this to a proper locatio
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-timeout
 EMAIL_TIMEOUT = 5
 
+# custom flag to brute force lambdas.utils.send_mail
+EMAIL_FORCE_ALLOW = os.environ.get("EMAIL_FORCE_ALLOW", "False") == "True"
+
 # ADMIN
 # ------------------------------------------------------------------------------
 # Django Admin URL.
